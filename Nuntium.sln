@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2019
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuntium", "Nuntium\Nuntium.csproj", "{A267B0F4-6280-4C28-8274-512C11469D90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A267B0F4-6280-4C28-8274-512C11469D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A267B0F4-6280-4C28-8274-512C11469D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A267B0F4-6280-4C28-8274-512C11469D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A267B0F4-6280-4C28-8274-512C11469D90}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E198F69-DF86-4AEF-824D-55FCC0AF13B6}
+	EndGlobalSection
+EndGlobal
