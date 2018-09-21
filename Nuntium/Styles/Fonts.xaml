@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Nuntium"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!--Font Awsome-->
+    <FontFamily x:Key="FontAwesome">pack://application;,,,/Fonts/#Font Awesome 5 Free</FontFamily>
+    <FontFamily x:Key="FontAwesomeSolid">pack://application;,,,/Fonts/#Font Awesome 5 Free Solid</FontFamily>
+
+    <!--Open Sans Light-->
+    <FontFamily x:Key="OpenSansLight">pack://application;,,,/Fonts/#Open Sans Light</FontFamily>
+    
+    <!--Open Sans Regular-->
+    <FontFamily x:Key="OpenSans">pack://application;,,,/Fonts/#Open Sans</FontFamily>
+
+    <!--Icons-->
+    <system:String x:Key="FontAwesomeBellIcon">&#xf0f3;</system:String>
+    <system:String x:Key="FontAwesomeComment">&#xf27a;</system:String>
+    <system:String x:Key="FontAwesomeSquarePlus">&#xf0fe;</system:String>
+    <system:String x:Key="FontAwesomeSearch">&#xf002;</system:String>
+    <system:String x:Key="FontAwesomeNewspaper">&#xf1ea;</system:String>
+    <system:String x:Key="FontAwesomeBars">&#xf0c9;</system:String>
+    <system:String x:Key="FontAwesomeEnvelopeClosed">&#xf0e0;</system:String>
+    <system:String x:Key="FontAwesomeFether">&#xf56b;</system:String>
+    <system:String x:Key="FontAwesomeInbox">&#xf01c;</system:String>
+    <system:String x:Key="FontAwesomeFile">&#xf15b;</system:String>
+    <system:String x:Key="FontAwesomePaperPlane">&#xf1d8;</system:String>
+    <system:String x:Key="FontAwesomeBin">&#xf1f8;</system:String>
+    <system:String x:Key="FontAwesomeTeacher">&#xf51c;</system:String>
+    <system:String x:Key="FontAwesomeGraduationCap">&#xf19d;</system:String>
+    <system:String x:Key="FontAwesomeStar">&#xf005;</system:String>
+    <system:String x:Key="FontAwesomePaperClip">&#xf0c6;</system:String>
+
+
+
+    <!--Font sizes-->
+    <system:Double x:Key="FontSizeSmallest">4</system:Double>
+    <system:Double x:Key="FontSizeSmaller">6</system:Double>
+    <system:Double x:Key="FontSizeSmall">8</system:Double>
+    <system:Double x:Key="FontSizeRegular">12</system:Double>
+    <system:Double x:Key="FontSizeRegularExtra">14</system:Double>
+    <system:Double x:Key="FontSizeBig">16</system:Double>
+    <system:Double x:Key="FontSizeBigger">24</system:Double>
+    <system:Double x:Key="FontSizeVeryBig">32</system:Double>
+    <system:Double x:Key="FontSizeXL">40</system:Double>
+    <system:Double x:Key="FontSizeXXL">48</system:Double>
+    <system:Double x:Key="FontSizeXXXL">56</system:Double>
+
+</ResourceDictionary>

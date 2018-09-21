@@ -1,0 +1,107 @@
+﻿<RadioButton x:Class="Nuntium.InboxCategory"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" 
+             d:DesignWidth="800" 
+             Style="{DynamicResource ContentStyle}"
+             Name="ThisControl">
+
+    <RadioButton.Resources>
+        <Style x:Key="ContentStyle" TargetType="{x:Type RadioButton}">
+            <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeRegularExtra}"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Grid Background="{TemplateBinding Background}">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Check mark-->
+                            <Border 
+                            x:Name="checkMark"
+                            Grid.Column="0"
+                            BorderThickness="2 0 0 0" 
+                            Visibility="Hidden"
+                            BorderBrush="{StaticResource AccentColorBrush}"/>
+
+                            <!--Icon-->
+                            <Label 
+                            x:Name="icon"
+                            FontFamily="{StaticResource FontAwesomeSolid}"
+                            Content="{TemplateBinding Tag}"
+                            Margin="12 0 8 0"
+                            FontSize="{TemplateBinding FontSize}"
+                            Foreground="{TemplateBinding Foreground}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               
+                               />
+
+                            <!--Content-->
+                            <ContentPresenter 
+                              x:Name="content" 
+                              Grid.Column="1" 
+                              Focusable="False" 
+                              Margin="{TemplateBinding Padding}" 
+                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            
+                              />
+
+                            <!--Number of messages-->
+                            <Label 
+                                Foreground="{TemplateBinding Foreground}"
+                                Grid.Column="2"                            
+                                Visibility="{Binding NumberOfMessages, Converter={local:NumberToVisibilityConverter},ElementName=ThisControl}"
+                                Content="{Binding NumberOfMessages, FallbackValue=0, ElementName=ThisControl}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Padding="8"/>
+                        </Grid>
+
+                        <!--Triggers-->
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.50" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Background" Value="{StaticResource DimAccentColorBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
+                                <Setter Property="Visibility" TargetName="checkMark" Value="Visible"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </RadioButton.Resources>
+
+</RadioButton>

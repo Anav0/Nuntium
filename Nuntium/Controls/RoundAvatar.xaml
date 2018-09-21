@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Nuntium.RoundAvatar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d"
+             x:Name="parent"
+             d:DesignHeight="48" d:DesignWidth="48" 
+             Foreground="White" FontSize="{StaticResource FontSizeRegular}"
+             Background="Transparent"
+             d:DataContext="{Binding RelativeSource={RelativeSource self}}">
+    <Grid>
+        <!--Round initials avatar-->
+        <Border 
+        CornerRadius="90" 
+        Visibility="{Binding ImagePath, ElementName=parent, Converter={local:StringToVisibilityConverter}}"
+        Background="{Binding AvatarBackground, ElementName=parent, FallbackValue=IndianRed}"
+        Width="{Binding Width, ElementName=parent}"
+        Height="{Binding Height, ElementName=parent}">
+
+            <Label 
+               Content="{Binding Initials, ElementName=parent}" 
+               Foreground="{Binding Foreground, ElementName=parent}"
+               FontSize="{Binding FontSize, ElementName=parent}"
+               HorizontalAlignment="Center" 
+               VerticalAlignment="Center"/>
+        </Border>
+
+        <!--User uploaded avatar-->
+        <Image 
+        Source="{Binding ImagePath, ElementName=parent}"
+        Width="{Binding Width, ElementName=parent}"
+        Height="{Binding Height, ElementName=parent}"/>
+        
+    </Grid>
+    
+</UserControl>

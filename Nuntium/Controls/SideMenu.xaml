@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="Nuntium.SideMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="175">
+
+    <Grid Width="Auto">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Right Column-->
+        <Grid  Grid.Column="1" 
+               Background="{StaticResource SideMenuSecondaryColorBrush}"
+               local:AttachedFrameworkElementAnimations.AnimateFromRightToLeft="{Binding IsExpanded}"
+               Visibility="Collapsed"
+               >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{Binding ActualHeight, ElementName=expandButton }"/>
+                <RowDefinition Height="{Binding ActualHeight, ElementName=inboxButton }"/>
+
+            </Grid.RowDefinitions>
+
+            <!--Inbox page label-->
+            <Label
+            Foreground="White"
+            Grid.Row="2"
+            Padding="12"
+            Content="Inbox" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center">
+                <Label.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding GoToInboxPageCommand}"/>
+                </Label.InputBindings>
+            </Label>
+
+        </Grid>
+
+        <!--Left Column-->
+        <Grid Background="{StaticResource SideMenuBackgroundColorBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!--Expand button-->
+            <Button
+                x:Name="expandButton"
+                Grid.Column="0"
+                Grid.Row="0"
+                Style="{StaticResource IconButton}" 
+                FontFamily="{StaticResource FontAwesomeSolid}"
+                Content="{StaticResource FontAwesomeBars}"
+                Foreground="{StaticResource SideMenuForegroundColorBrush}"
+                Padding="12"
+                Command="{Binding ExpandCommand}"
+                ToolTip="Expand menu"
+                />
+
+            <!--Inbox page button-->
+            <RadioButton 
+                IsChecked="True"
+                x:Name="inboxButton"
+                Grid.Column="0"
+                Grid.Row="2"
+                Style="{StaticResource PressableIconButton}" 
+                Content="{StaticResource FontAwesomeEnvelopeClosed}"
+                Padding="12"
+                GroupName="Buttons"
+                Command="{Binding GoToInboxPageCommand}"
+                ToolTip="Inbox page"
+                />
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Nuntium.Core;
 using System.Windows;
 
 namespace Nuntium
@@ -13,5 +8,23 @@ namespace Nuntium
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            SetupIoC();
+
+            Logger.DeleteLogFile();
+
+            Current.MainWindow = new MainWindow();
+            Current.MainWindow.Show();
+        }
+
+        private void SetupIoC()
+        {
+            IoC.Kernel.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
+
+            IoC.Kernel.Bind<SideMenuViewModel>().ToConstant(new SideMenuViewModel());
+        }
     }
 }

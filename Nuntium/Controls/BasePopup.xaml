@@ -1,0 +1,109 @@
+﻿<UserControl
+    x:Class="Nuntium.BasePopup"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:Nuntium"
+    mc:Ignorable="d" 
+    d:DesignHeight="100" d:DesignWidth="125" >
+
+    <Grid SnapsToDevicePixels="True" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.Effect>
+            <DropShadowEffect BlurRadius="2" ShadowDepth="2" Color="{StaticResource SideLightColor}" />
+        </Grid.Effect>
+
+        <!--Bubble-->
+        <Border 
+            Grid.Row="1"
+            Grid.Column="1"
+            CornerRadius="15" 
+            Panel.ZIndex="1"
+            Background="White" Padding="8">
+            <ContentPresenter Content="{Binding Converter={local:PopupContentConverter}}"/>
+        </Border>
+
+        <!--Top bubble arrow-->
+        <Path Grid.Row="0"
+              Name="TopArrow"
+              Visibility="Collapsed"
+              Grid.ColumnSpan="3"
+              Stroke="Black"
+              Panel.ZIndex="0"
+              Margin="25 0 25 -1"
+              Data="M 0 10 L 20 10 L 10 0 Z"
+              StrokeThickness="0"
+              HorizontalAlignment="{Binding ArrowHorizontalAligment}"
+              VerticalAlignment="Top"
+              Fill="White">
+        </Path>
+
+        <!--Bottom bubble arrow-->
+        <Path Grid.Row="2" 
+              Name="BottomArrow"
+              Grid.ColumnSpan="3"
+              Stroke="Black"
+              Panel.ZIndex="0"
+              Margin="25 -1 25 0"
+              Data="M 0,0 L 10,10 L 20,0 L 0,0" 
+              StrokeThickness="0"
+              HorizontalAlignment="{Binding ArrowHorizontalAligment}"
+              VerticalAlignment="Bottom"
+              Fill="White">
+
+            <Path.Effect>
+                <DropShadowEffect BlurRadius="2" ShadowDepth="1" Color="{StaticResource SideLightColor}" />
+            </Path.Effect>
+
+        </Path>
+
+        <!--Left bubble arrow-->
+        <Path Grid.Row="1"
+              Name="LeftArrow"
+              Visibility="Collapsed"
+              Grid.Column="0"
+              Stroke="Black"
+              Panel.ZIndex="0"
+              Margin="0 15 -1 15"
+              Data="M 0 10 L 10 0 L 10 20 Z"
+              StrokeThickness="0"
+              HorizontalAlignment="Left"
+              VerticalAlignment="{Binding ArrowVerticalAligment}"
+              Fill="White">
+
+        </Path>
+
+        <!--Right bubble arrow-->
+        <Path Grid.Row="1" 
+              Name="RightArrow"
+              Visibility="Collapsed"
+              Grid.Column="2"
+              Stroke="Black"
+              Panel.ZIndex="0"
+              Margin="-1 15 0 15"
+              Data="M 0 0 L 10 10 L 0 20 Z"
+              StrokeThickness="0"
+              HorizontalAlignment="Right"
+              VerticalAlignment="{Binding ArrowVerticalAligment}"
+              Fill="White">
+
+            <Path.Effect>
+                <DropShadowEffect BlurRadius="2" ShadowDepth="1" Color="{StaticResource SideLightColor}" />
+            </Path.Effect>
+
+        </Path>
+
+    </Grid>
+</UserControl>

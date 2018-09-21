@@ -1,0 +1,50 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Nuntium">
+
+    <!--Main colors-->
+    <Color x:Key="MainBackgroundColor">#F9F9F9</Color>
+    <SolidColorBrush x:Key="MainBackgroundColorBrush" Color="{StaticResource MainBackgroundColor}" />
+
+    <Color x:Key="MainForeground">#272424</Color>
+    <SolidColorBrush x:Key="MainForegroundBrush" Color="{StaticResource MainForeground}" />
+
+    <!--Accent colors-->
+    <Color x:Key="AccentLightColor">#9383f0</Color>
+    <SolidColorBrush x:Key="AccentLightColorBrush" Color="{StaticResource AccentLightColor}" />
+
+    <Color x:Key="AccentColor">#7864ed</Color>
+    <SolidColorBrush x:Key="AccentColorBrush" Color="{StaticResource AccentColor}" />
+
+    <Color x:Key="DimAccentColor">#e4e0fb</Color>
+    <SolidColorBrush x:Key="DimAccentColorBrush" Color="{StaticResource DimAccentColor}" />
+
+    <!--Side colors-->
+    <Color x:Key="SideBackgroundColor">#F2F1EF</Color>
+    <SolidColorBrush x:Key="SideBackgroundColorBrush" Color="{StaticResource SideBackgroundColor}" />
+    
+    <Color x:Key="SideLightBackgroundColor">#e5e5e4</Color>
+    <SolidColorBrush x:Key="SideLightBackgroundColorBrush" Color="{StaticResource SideLightBackgroundColor}" />
+
+    <Color x:Key="SideForgroundColor">#7E7D7B</Color>
+    <SolidColorBrush x:Key="SideForgroundColorBrush" Color="{StaticResource SideForgroundColor}" />
+
+    <Color x:Key="SideLightColor">#D3D3D3</Color>
+    <SolidColorBrush x:Key="SideLightColorBrush" Color="{StaticResource SideLightColor}" />
+
+    <Color x:Key="SideColor">#a8a8a8</Color>
+    <SolidColorBrush x:Key="SideColorBrush" Color="{StaticResource SideColor}" />
+
+
+    <!--Side menu colors-->
+    <Color x:Key="SideMenuBackgroundColor">#324a76</Color>
+    <SolidColorBrush x:Key="SideMenuBackgroundColorBrush" Color="{StaticResource SideMenuBackgroundColor}" />
+
+    <Color x:Key="SideMenuForegroundColor">#627aa4</Color>
+    <SolidColorBrush x:Key="SideMenuForegroundColorBrush" Color="{StaticResource SideMenuForegroundColor}" />
+
+    <Color x:Key="SideMenuSecondaryColor">#3c598e</Color>
+    <SolidColorBrush x:Key="SideMenuSecondaryColorBrush" Color="{StaticResource SideMenuSecondaryColor}" />
+    
+
+</ResourceDictionary>

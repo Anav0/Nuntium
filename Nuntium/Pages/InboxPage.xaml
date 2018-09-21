@@ -1,0 +1,287 @@
+﻿<local:BasePage
+      x:TypeArguments="local:InboxPageViewModel"
+      x:Class="Nuntium.InboxPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Nuntium"
+      xmlns:core="clr-namespace:Nuntium.Core;assembly=Nuntium.Core"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      >
+
+    <Grid Background="{StaticResource MainBackgroundColorBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Side options-->
+        <Border 
+            Grid.Column="0"
+            Padding="8"
+            BorderThickness="1"
+            BorderBrush="{StaticResource SideLightColorBrush}">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+
+                </Grid.RowDefinitions>
+
+                <!--Messages section-->
+                <StackPanel 
+                    Grid.Row="0"
+                    Margin="6"
+                    Orientation="Horizontal">
+
+                    <!--Message section label-->
+                    <Label 
+                    FontSize="{StaticResource FontSizeBig}"
+                    Padding="12"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    Content="Messages" 
+                    FontWeight="DemiBold"/>
+
+                    <!--Write new message button-->
+                    <Button 
+                    Padding="12"
+                    FontSize="{StaticResource FontSizeBig}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Style="{StaticResource IconButton}"
+                    Foreground="{StaticResource AccentColorBrush}"
+                    Content="{StaticResource FontAwesomeFether}"
+                    BorderThickness="0"
+                    BorderBrush="{StaticResource SideLightColorBrush}"
+                    >
+                        <Button.RenderTransform>
+                            <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1"/>
+                        </Button.RenderTransform>
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="scaleTransform"
+                                                         To="1.20" 
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="scaleTransform"
+                                                         To="1.0" 
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         Duration="0:0:0.1"/>
+
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                </StackPanel>
+
+                <!--Categories-->
+                <StackPanel Grid.Row="1" Margin="0 0 0 25">
+                    <StackPanel.Resources>
+                        <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+                    </StackPanel.Resources>
+                    <!--Inbox-->
+                    <local:InboxCategory
+                        x:Name="firstCategory"
+                        Content="Inbox"
+                        Tag="{StaticResource FontAwesomeInbox}"
+                        GroupName="categories"
+                        NumberOfMessages="{Binding NumberOfInboxMessages}"
+                        Padding="12"
+                        IsChecked="{Binding SelectedCategory, 
+                        Converter={StaticResource EnumToBooleanConverter},
+                        ConverterParameter={x:Static core:InboxCategoryType.Inbox}}"
+                        />
+
+                    <!--Drafts-->
+                    <local:InboxCategory
+                        Content="Drafts"
+                        Tag="{StaticResource FontAwesomeFile}"
+                        GroupName="categories"
+                        NumberOfMessages="{Binding NumberOfDraftMessages}"
+                        Padding="{Binding Padding, ElementName=firstCategory}"
+                        IsChecked="{Binding SelectedCategory, 
+                        Converter={StaticResource EnumToBooleanConverter},
+                        ConverterParameter={x:Static core:InboxCategoryType.Drafts}}"
+                        />
+
+                    <!--Sent-->
+                    <local:InboxCategory
+                        Content="Sent"
+                        Tag="{StaticResource FontAwesomePaperPlane}"
+                        GroupName="categories"
+                        NumberOfMessages="{Binding NumberOfSentMessages}"
+                        Padding="{Binding Padding, ElementName=firstCategory}"
+                        IsChecked="{Binding SelectedCategory, 
+                        Converter={StaticResource EnumToBooleanConverter},
+                        ConverterParameter={x:Static core:InboxCategoryType.Sent}}"
+                        />
+
+                    <!--Deleted-->
+                    <local:InboxCategory
+                        Content="Deleted"
+                        Tag="{StaticResource FontAwesomeBin}"
+                        GroupName="categories"
+                        NumberOfMessages="{Binding NumberOfDeletedMessages}"
+                        Padding="{Binding Padding, ElementName=firstCategory}"
+                        IsChecked="{Binding SelectedCategory, 
+                        Converter={StaticResource EnumToBooleanConverter},
+                        ConverterParameter={x:Static core:InboxCategoryType.Deleted}}"
+                        />
+
+                </StackPanel>
+
+                <!--Contacts section-->
+                <Grid 
+                    Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Label-->
+                    <Label 
+                    Grid.Column="0"
+                    FontSize="{StaticResource FontSizeBig}"
+                    Padding="12"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    Content="Contacts"  
+                    FontWeight="DemiBold"/>
+
+                    <!--Number of contacts-->
+                    <TextBlock 
+                        Grid.Column="1"
+                        FontSize="{StaticResource FontSizeBig}"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="{Binding ContactListData.FilteredItems.Count}"
+                        Visibility="{Binding ContactListData.FilteredItems.Count, 
+                        Converter={local:NumberToVisibilityGoneConverter}}"
+                        Foreground="{StaticResource AccentColorBrush}"
+                               />
+
+                    <!--Sorting combobox-->
+                    <ComboBox Style="{StaticResource ComboBoxFlatStyle}" 
+                              Grid.Column="2"
+                              BorderThickness="0"
+                              Background="Transparent"
+                              Foreground="{StaticResource SideForgroundColorBrush}"
+                              Margin="8"
+                              ItemsSource="{Binding ContactsSortingOptions}"
+                              SelectedItem="{Binding ContactsSortedBy}"
+                              DisplayMemberPath="Option"
+                              SelectedValuePath="Id"
+                              SelectedValue="0"
+                              >
+
+                    </ComboBox>
+
+                </Grid>
+
+                <!--Displayed contacts list-->
+                <local:ContactsList 
+                        x:Name="contactsList"
+                        Grid.Row="3"
+                        DataContext="{Binding ContactListData}"
+                        />
+
+                <!--Tabs-->
+                <Grid 
+                    Grid.Row="4"
+                    >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+
+                    </Grid.ColumnDefinitions>
+
+                    <!--Teachers-->
+                    <RadioButton 
+                        Grid.Column="0"
+                        GroupName="tabs"
+                        IsChecked="True"
+                        Command="{Binding LoadTeachersCommand}"
+                        ToolTip="Teachers"
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        Style="{StaticResource UnderscoreRadioButton}"
+                        Content="{StaticResource FontAwesomeTeacher}" />
+
+                    <!--Pupils-->
+                    <RadioButton 
+                        Grid.Column="1"
+                        GroupName="tabs"
+                        Command="{Binding LoadPupilsCommand}"
+                        ToolTip="Pupils"
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        Style="{StaticResource UnderscoreRadioButton}"
+                        Content="{StaticResource FontAwesomeGraduationCap}" />
+
+
+                </Grid>
+
+            </Grid>
+        </Border>
+
+        <!--List of messages-->
+        <Border 
+            Grid.Column="1"
+            BorderThickness="0 1 1 1"
+            BorderBrush="{StaticResource SideLightColorBrush}">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <local:CheckableComboBox
+                    Grid.Row="0"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource SideLightColorBrush}"
+                    Margin="8"
+                    IsThreeState="True"
+                    IsChecked="{Binding SelectionMode, Mode=TwoWay}"
+                    ItemsSource="{Binding MessagesSortingOptions}"
+                    SelectedItem="{Binding MessagesSortedBy}"
+                    DisplayMemberPath="Option"
+                    SelectedValuePath="Id"
+                    SelectedValue="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    />
+
+                <Border 
+                Grid.Row="1"
+                BorderBrush="{StaticResource SideLightColorBrush}"
+                BorderThickness="0 1 0 0"
+                >
+
+                    <local:MessageMiniatureList   
+                            DataContext="{Binding MessageListData}"/>
+                </Border>
+            </Grid>
+
+        </Border>
+    </Grid>
+</local:BasePage>

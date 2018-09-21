@@ -14,6 +14,8 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +37,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Faker.NET4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Faker.Net.1.0.3\lib\net40\Faker.NET4.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="PropertyChanged, Version=2.5.9.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyChanged.Fody.2.5.9\lib\net452\PropertyChanged.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -55,20 +69,191 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AttachedProperties\AttachedFrameworkAnimations.cs" />
+    <Compile Include="ViewModels\BasePopupViewModel.cs" />
+    <Compile Include="ViewModels\Base\ApplicationViewModel.cs" />
+    <Compile Include="ViewModels\Base\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Base\ConstantViewModels.cs" />
+    <Compile Include="ViewModels\Base\RelayCommand.cs" />
+    <Compile Include="ViewModels\Base\RelayCommandWithParameter.cs" />
+    <Compile Include="ViewModels\ContactsListViewModel.cs" />
+    <Compile Include="ViewModels\ContactViewModel.cs" />
+    <Compile Include="ViewModels\InboxPageViewModel.cs" />
+    <Compile Include="ViewModels\MessageMiniatureListViewModel.cs" />
+    <Compile Include="ViewModels\MessageMiniatureViewModel.cs" />
+    <Compile Include="ViewModels\NotificationIconViewModel.cs" />
+    <Compile Include="ViewModels\SideMenuViewModel.cs" />
+    <Compile Include="ViewModels\UserPopupViewModel.cs" />
+    <Compile Include="ViewModels\WindowViewModel.cs" />
+    <Compile Include="Window\WindowResizer.cs" />
+    <Page Include="Controls\BasePopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\CheckableComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Contact.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ContactsList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InboxCategory.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\MessageMiniatureList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\NotificationIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\RoundAvatar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SideMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\UserPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Animations\AnimationDirection.cs" />
+    <Compile Include="Animations\AnimationTypes.cs" />
+    <Compile Include="Animations\FrameworkElementAnimation.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\BasePopup.xaml.cs">
+      <DependentUpon>BasePopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CheckableComboBox.xaml.cs">
+      <DependentUpon>CheckableComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Contact.xaml.cs">
+      <DependentUpon>Contact.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ContactsList.xaml.cs">
+      <DependentUpon>ContactsList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Design\ContactDesign.cs" />
+    <Compile Include="Controls\Design\ContactListDesign.cs" />
+    <Compile Include="Controls\Design\MessageMiniatureListDesign.cs" />
+    <Compile Include="Controls\Design\NotificationIconDesign.cs" />
+    <Compile Include="Controls\Design\UserPopupDesign.cs" />
+    <Compile Include="Controls\InboxCategory.xaml.cs">
+      <DependentUpon>InboxCategory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MessageMiniatureList.xaml.cs">
+      <DependentUpon>MessageMiniatureList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NotificationIcon.xaml.cs">
+      <DependentUpon>NotificationIcon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RoundAvatar.xaml.cs">
+      <DependentUpon>RoundAvatar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SideMenu.xaml.cs">
+      <DependentUpon>SideMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UserPopup.xaml.cs">
+      <DependentUpon>UserPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\BaseValueConverter.cs" />
+    <Compile Include="Converters\BooleanToBorderThicknessConverter.cs" />
+    <Compile Include="Converters\BooleanToMarginConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityGoneConverter.cs" />
+    <Compile Include="Converters\DateTimeToStringConverter.cs" />
+    <Compile Include="Converters\EnumToBooleanConverter.cs" />
+    <Compile Include="Converters\IconTypeToFontAwesomeConverter.cs" />
+    <Compile Include="Converters\InverseBooleanToVisibilityGoneConverter.cs" />
+    <Compile Include="Converters\InverseNumberToVisibilityGoneConverter.cs" />
+    <Compile Include="Converters\MessageDateTimeConverter.cs" />
+    <Compile Include="Converters\NumberToVisibilityConverter.cs" />
+    <Compile Include="Converters\NumberToVisibilityGoneConverter .cs" />
+    <Compile Include="Converters\PopupContentConverter.cs" />
+    <Compile Include="Converters\StringToBrushConverter.cs" />
+    <Compile Include="Converters\StringToVisibilityConverter.cs" />
+    <Compile Include="ExtentionMethodes\ApplicationPageExtentions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\Base\PageHost.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\InboxPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Buttons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Collections.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\DropDowns.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Fonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\RadioButtons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Scroll.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Tab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Texts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ToolTip.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pages\Base\BasePage.cs" />
+    <Compile Include="Pages\Base\PageHost.xaml.cs">
+      <DependentUpon>PageHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\InboxPage.xaml.cs">
+      <DependentUpon>InboxPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -86,6 +271,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Fonts\FontAwesomeSolid.ttf" />
+    <Resource Include="Fonts\FontAwesome.ttf" />
+    <Resource Include="Fonts\OpenSans-Light.ttf" />
+    <Resource Include="Fonts\OpenSans-Regular.ttf" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -94,5 +284,31 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nuntium.Core\Nuntium.Core.csproj">
+      <Project>{be59be09-a763-43d8-9e1b-3bafb9b0a97d}</Project>
+      <Name>Nuntium.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
+    <Resource Include="Images\faces\if_boy_403024.png" />
+    <Resource Include="Images\faces\if_female1_403023.png" />
+    <Resource Include="Images\faces\if_girl_403021.png" />
+    <Resource Include="Images\faces\if_male3_403019.png" />
+    <Resource Include="Images\faces\if_matureman1_628284.png" />
+    <Resource Include="Images\faces\if_matureman2_628283.png" />
+    <Resource Include="Images\faces\if_maturewoman_628297.png" />
+    <Resource Include="Images\faces\if_supportmale_403020.png" />
+    <Resource Include="Images\Logo\tmp-icon.ico" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Fody.3.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.3.2.1\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.3.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.2.1\build\Fody.targets'))" />
+  </Target>
 </Project>

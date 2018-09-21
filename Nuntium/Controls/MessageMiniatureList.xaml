@@ -1,0 +1,250 @@
+﻿<UserControl x:Class="Nuntium.MessageMiniatureList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{x:Static local:MessageMiniatureListDesign.Instance}">
+
+    <Grid>
+
+        <!--No messages info-->
+        <Label 
+            Content="No messages found"
+            Visibility="{Binding FilteredItems.Count, 
+            Converter={local:InverseNumberToVisibilityGoneConverter}}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Margin="16"
+            FontSize="{StaticResource FontSizeRegularExtra}"
+            Foreground="{StaticResource SideColorBrush}"
+            />
+        <ListView 
+        VirtualizingPanel.ScrollUnit="Pixel"
+        ItemsSource="{Binding FilteredItems}" 
+        SelectedItem="{Binding Selected}"
+        SelectionMode="Extended">
+
+            <!--Item container style-->
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+
+                                <Grid 
+                                Name="mainContainer"
+                                Background="Transparent"
+                                MaxHeight="170"
+                                >
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!--Check mark-->
+                                    <Border 
+                                    Name="checkMark"
+                                    Grid.Column="0"
+                                    Grid.RowSpan="2"
+                                    BorderThickness="2 0 0 0" 
+                                    BorderBrush="Transparent"/>
+
+                                    <!--Avatar-->
+                                    <local:RoundAvatar
+                                    x:Name="avatar"
+                                    Width="36"
+                                    Height="36"
+                                    Margin="8"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Initials="{Binding Initials}"
+                                    AvatarBackground="{Binding AvatarBackground}"
+                                    ImagePath="{Binding ImagePath}"
+                                    />
+
+                                    <!--Name, title and time-->
+                                    <Grid 
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Margin="8" 
+                                    >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--Sender name, message title and "is new" indicator-->
+                                        <StackPanel 
+                                        Grid.Column="1"
+                                        >
+
+                                            <!--Sender's name-->
+                                            <Label 
+                                        Padding="8 8 8 0"
+                                        Foreground="{StaticResource SideForgroundColorBrush}"
+                                        Content="{Binding SenderName}"/>
+
+                                            <Grid >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!--Message title-->
+                                                <TextBlock 
+                                                Name="title"
+                                                Grid.Column="0"
+                                                Padding="8"
+                                                VerticalAlignment="Center"
+                                                FontWeight="UltraBold"
+                                                Foreground="{StaticResource MainForegroundBrush}"
+                                                FontSize="{StaticResource FontSizeRegularExtra}"
+                                                TextTrimming="CharacterEllipsis"
+                                                Text="{Binding Title}"/>
+
+
+                                                <!--Is new indicator-->
+                                                <Border
+                                                Grid.Column="1"
+                                                Width="8"
+                                                Height="8"
+                                                Margin="8"
+                                                VerticalAlignment="Center"
+                                                CornerRadius="100" 
+                                                Visibility="{Binding WasRead,Converter={local:InverseBooleanToVisibilityGoneConverter}}"
+                                                Background="{StaticResource AccentColorBrush}"
+                                                />
+
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <!--Send date and trash button-->
+                                        <StackPanel Grid.Column="2">
+
+                                            <!--Send date-->
+                                            <Label
+                                            Content="{Binding SendDate,
+                                            Converter={local:MessageDateTimeConverter}}"
+                                            ToolTip="{Binding SendDate, Converter={local:DateTimeToStringConverter},
+                                            ConverterParameter=dd.MM.yyyy HH:mm}"
+                                            Foreground="{StaticResource SideForgroundColorBrush}"
+                                            Margin="4"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            />
+                                            <!--Trash icon-->
+                                            <Button 
+                                            Name="deleteButton"
+                                            Style="{StaticResource IconButton}" 
+                                            Command="{Binding DeleteCommand}"
+                                            CommandParameter="{Binding ElementName=mainContainer}"
+                                            Visibility="Hidden"
+                                            Margin="0 0 8 0"
+                                            Foreground="{StaticResource SideForgroundColorBrush}"
+                                            FontFamily="{StaticResource FontAwesomeSolid}"
+                                            FontSize="{StaticResource FontSizeBig}"
+                                            Content="{StaticResource FontAwesomeBin}"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            ToolTip="Delete message"
+                                            />
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <!--Have Attachments indicator-->
+                                    <Label 
+                                    Grid.Column="1"
+                                    Grid.Row="1"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    Margin="8"
+                                    FontFamily="{StaticResource FontAwesomeSolid}"
+                                    Content="{StaticResource FontAwesomePaperClip}"
+                                    Foreground="{StaticResource SideLightColorBrush}"
+                                    FontSize="{StaticResource FontSizeBig}"
+                                    Visibility="{Binding HasAttachments, Converter={local:BooleanToVisibilityGoneConverter}}"
+                                    />
+
+                                    <!--Message snipit-->
+                                    <TextBlock 
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Padding="16 0 16 16"
+                                    Text="{Binding MessageSnipit}"
+                                    TextWrapping="Wrap"
+                                    TextTrimming="CharacterEllipsis"
+                                    Foreground="{StaticResource SideForgroundColorBrush}"
+                                    />
+
+                                </Grid>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="true">
+                                        <Setter Property="Background" TargetName="mainContainer" Value="{StaticResource SideLightBackgroundColorBrush}"/>
+                                        <Setter Property="Visibility" TargetName="deleteButton" Value="Visible"/>
+                                    </Trigger>
+
+                                    <Trigger Property="IsSelected" Value="true">
+                                        <Setter Property="Background" TargetName="mainContainer" Value="{StaticResource DimAccentColorBrush}"/>
+                                        <Setter Property="Foreground" TargetName="title" Value="{StaticResource AccentColorBrush}"/>
+                                        <Setter Property="BorderBrush" TargetName="checkMark" Value="{StaticResource AccentColorBrush}"/>
+                                        <Setter Property="Opacity" TargetName="mainContainer" Value="1"/>
+                                    </Trigger>
+
+                                    <DataTrigger Binding="{Binding IsSelected}" Value="true">
+                                        <Setter Property="Background" TargetName="mainContainer" Value="{StaticResource DimAccentColorBrush}"/>
+                                        <Setter Property="Foreground" TargetName="title" Value="{StaticResource AccentColorBrush}"/>
+                                        <Setter Property="BorderBrush" TargetName="checkMark" Value="{StaticResource AccentColorBrush}"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding WasRead}" Value="True">
+                                        <Setter Property="FontWeight" TargetName="title" Value="medium"/>
+                                        <Setter Property="Opacity" TargetName="mainContainer" Value="0.60"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Placement}" Value="Deleted">
+                                        <Setter Property="Foreground" TargetName="deleteButton" Value="red"/>
+                                        <Setter Property="ToolTip" TargetName="deleteButton" Value="Permamently delete message"/>
+                                    </DataTrigger>
+
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+
+            <ListView.Template>
+                <ControlTemplate>
+                    <ScrollViewer
+                    Focusable="False"
+                    HorizontalScrollBarVisibility="Disabled">
+                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListView.Template>
+        </ListView>
+
+
+    </Grid>
+</UserControl>

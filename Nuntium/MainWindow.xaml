@@ -4,9 +4,122 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nuntium"
+        xmlns:core="clr-namespace:Nuntium;assembly=Nuntium"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        x:Name="AppWindow"
+        Icon="Images/Logo/tmp-icon.ico"
+        MinWidth="{Binding WindowMinimumWidth}"
+        MinHeight="{Binding WindowMinimumHeight}"
+        Title="Nuntium" Height="600" Width="950" >
+
+    <Window.Resources>
+        <Style TargetType="{x:Type local:MainWindow}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
+                        <!-- Outer border with the drop shadow margin -->
+                        <Border Padding="{Binding OuterMarginSize, FallbackValue=0}" BorderBrush="{StaticResource MainForegroundBrush}" BorderThickness="{Binding FlatBorderThickness}">
+
+                            <!-- Main window outline -->
+                            <Grid>
+                                <!-- Outer dragging border -->
+                                <Border BorderThickness="{Binding BeingMoved, Converter={local:BooleanToBorderThicknessConverter}}"
+                                        Panel.ZIndex="2"
+                                        CornerRadius="{Binding WindowCornerRadius, FallbackValue=0}"
+                                        BorderBrush="{StaticResource MainBackgroundColorBrush}" />
+
+                                <!-- Opacity mask for corners on grid -->
+                                <Border x:Name="Container"
+                                        Background="{StaticResource MainBackgroundColorBrush}"
+                                        CornerRadius="{Binding WindowCornerRadius, FallbackValue=0}" />
+
+                                <!-- Window border and drop shadow -->
+                                <Border CornerRadius="{Binding WindowCornerRadius, FallbackValue=0}"
+                                    Background="{StaticResource MainBackgroundColorBrush}">
+                                    <Border.Effect>
+                                        <DropShadowEffect ShadowDepth="0.5" Opacity="0.2" />
+                                    </Border.Effect>
+                                </Border>
+
+                                <!-- The main window content -->
+                                <Grid>
+                                    <!-- Corner clipping -->
+                                    <Grid.OpacityMask>
+                                        <VisualBrush Visual="{Binding ElementName=Container}" />
+                                    </Grid.OpacityMask>
+
+                                    <Grid.RowDefinitions>
+
+                                        <!-- Title Bar -->
+                                        <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=32}" />
+
+                                        <!-- Content -->
+                                        <RowDefinition Height="*" />
+
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Title Bar -->
+                                    <!-- Window Buttons -->
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButton}" Content="_" />
+                                        <Button Command="{Binding MaximizeCommand}" Style="{StaticResource WindowControlButton}" Content="[ ]" />
+                                        <Button Command="{Binding CloseCommand}" Style="{StaticResource WindowCloseButton}" Content="X" />
+                                    </StackPanel>
+
+                                    <!-- Page Content -->
+                                    <Border Grid.Row="1" Padding="{Binding InnerContentPadding}" ClipToBounds="True">
+                                        <ContentPresenter Content="{TemplateBinding Content}" />
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            ResizeBorderThickness="{Binding ResizeBorderThickness}"
+            CaptionHeight="{Binding TitleHeight}"
+            CornerRadius="0"
+            GlassFrameThickness="0"/>
+    </WindowChrome.WindowChrome>
+
+    <!--Main container-->
+    <Grid Background="{StaticResource MainBackgroundColorBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+
+        </Grid.ColumnDefinitions>
         
+        <!--Side menu-->
+        <local:SideMenu 
+            DataContext="{Binding SideMenuViewModelInstance, 
+            Source={x:Static local:ConstantViewModels.Instance}}" 
+            Grid.RowSpan="2" 
+            Grid.Column="0"
+            />
+       
+        <!--Main/Center content-->
+        <local:PageHost
+                Grid.Row="1"
+                Grid.Column="1"
+                CurrentPage="{Binding ApplicationViewModelInstance.CurrentPage, 
+                Source={x:Static local:ConstantViewModels.Instance}}"
+                CurrentPageViewModel="{Binding ApplicationViewModelInstance.CurrentPageViewModel, 
+                Source={x:Static local:ConstantViewModels.Instance}}">
+
+        </local:PageHost>
     </Grid>
+
 </Window>
