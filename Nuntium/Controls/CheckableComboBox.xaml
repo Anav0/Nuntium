@@ -48,7 +48,7 @@
                                     Style="{StaticResource ComboBoxFlatStyle}"
                                     ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay }"
                                     SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay }"
-                                    SelectedValue="{Binding SelectedValue, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay }"
+                                    SelectedValue="{TemplateBinding SelectedValue}"
                                     SelectedIndex="{Binding SelectedIndex, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                     SelectedValuePath="{Binding SelectedValuePath, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay }"
                                     DisplayMemberPath="{Binding DisplayMemberPath, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay }"

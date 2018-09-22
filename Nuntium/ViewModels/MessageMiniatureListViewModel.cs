@@ -10,6 +10,8 @@ namespace Nuntium
 
         public List<MessageMiniatureViewModel> AllItems { get; set; } = new List<MessageMiniatureViewModel>();
 
+        public ObservableCollection<MessageMiniatureViewModel> SelectedItems { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
+
         private MessageMiniatureViewModel _Selected;
         public MessageMiniatureViewModel Selected
         {

@@ -143,7 +143,6 @@ namespace Nuntium
                 From = 0
             };
 
-
             Storyboard.SetTargetProperty(animation, new PropertyPath("Opacity"));
 
             sb.Children.Add(animation);

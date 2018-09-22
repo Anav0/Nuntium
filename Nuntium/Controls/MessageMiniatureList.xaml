@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:local="clr-namespace:Nuntium"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -21,11 +22,17 @@
             FontSize="{StaticResource FontSizeRegularExtra}"
             Foreground="{StaticResource SideColorBrush}"
             />
+        
         <ListView 
+        Name="MessagesList"
         VirtualizingPanel.ScrollUnit="Pixel"
         ItemsSource="{Binding FilteredItems}" 
         SelectedItem="{Binding Selected}"
         SelectionMode="Extended">
+
+            <i:Interaction.Behaviors>
+                <local:MultiSelectionBehavior SelectedItems="{Binding SelectedItems}"/>
+            </i:Interaction.Behaviors>
 
             <!--Item container style-->
             <ListView.ItemContainerStyle>
@@ -36,6 +43,8 @@
                             <ControlTemplate TargetType="{x:Type ListViewItem}">
 
                                 <Grid 
+                                local:AttachedFrameworkElementAnimations.Fading="{Binding AnimateOut, Converter={local:InverseBoolean}}"
+                                local:AttachedFrameworkElementAnimations.AnimationTimeSpan="{Binding AnimateOutTimeSpan}"
                                 Name="mainContainer"
                                 Background="Transparent"
                                 MaxHeight="170"

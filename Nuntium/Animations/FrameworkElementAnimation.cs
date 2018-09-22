@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Animation;
 
@@ -35,6 +36,7 @@ namespace Nuntium
             if (fadeIn && direction != AnimationDirection.Fade)
                 sb.AddFadeInAnimation(duration, element, deacceleration);
 
+            
             sb.Begin(element);
 
             await Task.Delay(duration.TimeSpan);

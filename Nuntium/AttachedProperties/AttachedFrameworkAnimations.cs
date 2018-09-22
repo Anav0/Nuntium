@@ -7,8 +7,6 @@ namespace Nuntium
     public static class AttachedFrameworkElementAnimations
     {
 
-        private static readonly Duration mDefaultAnimDuration = new Duration(new TimeSpan(0, 0, 0, 0, 400));
-
         #region AnimationTimeSpan
 
         public static readonly DependencyProperty AnimationTimeSpanProperty = DependencyProperty.RegisterAttached(
@@ -29,8 +27,6 @@ namespace Nuntium
         }
 
         #endregion
-
-
 
         #region AnimateFromLeftToRight
 
@@ -62,8 +58,8 @@ namespace Nuntium
             await Task.Delay(5);
 
             if ((bool)e.NewValue)
-                await element.AnimateIn(AnimationDirection.Left, mDefaultAnimDuration);
-            else await element.AnimateOut(AnimationDirection.Right, mDefaultAnimDuration);
+                await element.AnimateIn(AnimationDirection.Left, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
+            else await element.AnimateOut(AnimationDirection.Right, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
         }
 
         #endregion
@@ -88,8 +84,8 @@ namespace Nuntium
             await Task.Delay(5);
 
             if ((bool)e.NewValue == true)
-                await element.AnimateIn(AnimationDirection.Right, mDefaultAnimDuration);
-            else await element.AnimateOut(AnimationDirection.Left, mDefaultAnimDuration);
+                await element.AnimateIn(AnimationDirection.Right, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
+            else await element.AnimateOut(AnimationDirection.Left, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
         }
 
         public static void SetAnimateFromRightToLeft(FrameworkElement element, bool value)
@@ -124,8 +120,8 @@ namespace Nuntium
             await Task.Delay(10);
 
             if ((bool)e.NewValue == true)
-                await element.AnimateIn(AnimationDirection.Top, mDefaultAnimDuration);
-            else await element.AnimateOut(AnimationDirection.Bottom, mDefaultAnimDuration);
+                await element.AnimateIn(AnimationDirection.Top, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
+            else await element.AnimateOut(AnimationDirection.Bottom, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
         }
 
         public static void SetAnimateFromTopToBottom(FrameworkElement element, bool value)
@@ -160,8 +156,8 @@ namespace Nuntium
             await Task.Delay(10);
 
             if ((bool)e.NewValue == true)
-                await element.AnimateIn(AnimationDirection.Fade, GetAnimationTimeSpan(element));
-            else await element.AnimateOut(AnimationDirection.Fade, GetAnimationTimeSpan(element));
+                await element.AnimateIn(AnimationDirection.Fade, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element), 0.5);
+            else await element.AnimateOut(AnimationDirection.Fade, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element), 0.5);
         }
 
         public static void SetFading(FrameworkElement element, bool value)
@@ -176,5 +172,25 @@ namespace Nuntium
 
         #endregion
 
+        #region AddFadingToAnimation
+
+        public static readonly DependencyProperty AddFadingToAnimationProperty = DependencyProperty.RegisterAttached(
+        "AddFadingToAnimation",
+        typeof(bool),
+        typeof(AttachedFrameworkElementAnimations),
+        new FrameworkPropertyMetadata(false)
+        );
+
+        public static void SetAddFadingToAnimation(FrameworkElement element, bool value)
+        {
+            element.SetValue(AddFadingToAnimationProperty, value);
+        }
+
+        public static bool GetAddFadingToAnimation(FrameworkElement element)
+        {
+            return (bool)element.GetValue(AddFadingToAnimationProperty);
+        }
+
+        #endregion
     }
 }

@@ -255,15 +255,22 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <local:CheckableComboBox
-                    Grid.Row="0"
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Checkable combobox-->
+                    <local:CheckableComboBox
+                    Grid.Column="0"
                     BorderThickness="1"
                     BorderBrush="{StaticResource SideLightColorBrush}"
                     Margin="8"
                     IsThreeState="True"
                     IsChecked="{Binding SelectionMode, Mode=TwoWay}"
+                    SelectedItem="{Binding MessagesSortedBy, Mode=TwoWay}"
                     ItemsSource="{Binding MessagesSortingOptions}"
-                    SelectedItem="{Binding MessagesSortedBy}"
                     DisplayMemberPath="Option"
                     SelectedValuePath="Id"
                     SelectedValue="0"
@@ -271,15 +278,58 @@
                     VerticalAlignment="Center"
                     />
 
-                <Border 
-                Grid.Row="1"
-                BorderBrush="{StaticResource SideLightColorBrush}"
-                BorderThickness="0 1 0 0"
-                >
+                    <!--Trash icon-->
+                    <Button 
+                        Grid.Column="1"
+                        Style="{StaticResource IconButton}" 
+                        Command="{Binding DeleteSelectedMessagesCommand}"
+                        Visibility="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
+                        Margin="8"
+                        Foreground="{StaticResource SideForgroundColorBrush}"
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        FontSize="{StaticResource FontSizeBig}"
+                        Content="{StaticResource FontAwesomeBin}"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        ToolTip="Delete messages"
+                        />
+                </Grid>
 
-                    <local:MessageMiniatureList   
-                            DataContext="{Binding MessageListData}"/>
-                </Border>
+
+                <!--Messages list-->
+                <Grid Grid.Row="1">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid 
+                        Grid.Row="0"
+                        Background="{StaticResource AccentColorBrush}"
+                          Visibility="Collapsed"
+                          local:AttachedFrameworkElementAnimations.AnimateFromTopToBottom="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToBooleanConverter}}"
+                          local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.10"
+                          local:AttachedFrameworkElementAnimations.AddFadingToAnimation="True"
+                          >
+                        <Label 
+                            Content="{Binding MessageListData.SelectedItems.Count}"
+                            ContentStringFormat="You have selected: {0} messages"
+                            Foreground="White"
+                            />
+
+                    </Grid>
+                    <Border 
+                        Grid.Row="1"
+                        BorderBrush="{StaticResource SideLightColorBrush}"
+                        BorderThickness="0 1 0 0"
+                        >
+
+                        <local:MessageMiniatureList   
+                         DataContext="{Binding MessageListData}"
+                        />
+                    </Border>
+                </Grid>
             </Grid>
 
         </Border>

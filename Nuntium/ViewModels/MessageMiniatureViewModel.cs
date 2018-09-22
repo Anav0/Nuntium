@@ -25,11 +25,13 @@ namespace Nuntium
 
         public bool WasRead { get; set; }
 
+        public bool AnimateOut { get; set; }
+
         public InboxCategoryType Placement { get; set; }
 
         public string MessageSnipit { get; set; }
 
-        public bool? IsSelected { get; set; }
+        public TimeSpan AnimateOutTimeSpan { get; set; } = new TimeSpan(0, 0, 0, 0, 500);
 
         #endregion
 
@@ -66,7 +68,7 @@ namespace Nuntium
             if (!(param is FrameworkElement element))
                 return;
 
-            await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Left, new Duration(new TimeSpan(0, 0, 0, 0, 400)), true, 0.4);
+            await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Left, new Duration(AnimateOutTimeSpan), true, 0.4);
 
             RaiseOnItemDeletedEvent();
         }

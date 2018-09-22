@@ -3,7 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Nuntium
 {
@@ -77,11 +80,8 @@ namespace Nuntium
                 if (_SelectionMode != value)
                     _SelectionMode = value;
 
-                SelectItems();
             }
         }
-
-        
 
         #endregion
 
@@ -90,6 +90,8 @@ namespace Nuntium
         public ICommand LoadTeachersCommand { get; set; }
 
         public ICommand LoadPupilsCommand { get; set; }
+
+        public ICommand DeleteSelectedMessagesCommand { get; set; }
 
         #endregion
 
@@ -101,6 +103,7 @@ namespace Nuntium
 
             LoadPupilsCommand = new RelayCommand(LoadPupils);
             LoadTeachersCommand = new RelayCommand(LoadTeachers);
+            DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
 
             ContactsSortingOptions = new ObservableCollection<SortingOption>
             {
@@ -130,8 +133,8 @@ namespace Nuntium
                 new SortingOption
                 {
                     Id = 0,
-                    Option = "Unread",
-                    SortedBy = Core.SortedBy.Unread
+                    Option = "By date",
+                    SortedBy = Core.SortedBy.Date
                 },
                 new SortingOption
                 {
@@ -149,8 +152,8 @@ namespace Nuntium
                 new SortingOption
                 {
                     Id = 3,
-                    Option = "By author",
-                    SortedBy = Core.SortedBy.Author
+                    Option = "Unread",
+                    SortedBy = Core.SortedBy.Unread
                 },
 
             };
@@ -241,6 +244,9 @@ namespace Nuntium
 
             MessageListData = new MessageMiniatureListViewModel();
 
+            MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>();
+
+            //TODO: delete after frontend is done
             for (int i = 0; i < 150; i++)
             {
                 var msg = new MessageMiniatureViewModel
@@ -276,33 +282,12 @@ namespace Nuntium
             if (!(sender is MessageMiniatureViewModel item))
                 return;
 
-            switch(item.Placement)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                case InboxCategoryType.Inbox:
-                    item.Placement = InboxCategoryType.Deleted;
-                    NumberOfDeletedMessages++;
-                    NumberOfInboxMessages--;
-                    break;
+                MessageListData.FilteredItems.Remove(item);
+            });
 
-                case InboxCategoryType.Deleted:
-                    MessageListData.AllItems.Remove(item);
-                    MessageListData.FilteredItems.Remove(item);
-                    NumberOfDeletedMessages--;
-                    break;
-
-                case InboxCategoryType.Sent:
-                    item.Placement = InboxCategoryType.Deleted;
-                    NumberOfDeletedMessages++;
-                    NumberOfSentMessages--;
-                    break;
-
-                case InboxCategoryType.Drafts:
-                    item.Placement = InboxCategoryType.Deleted;
-                    NumberOfDeletedMessages++;
-                    NumberOfDraftMessages--;
-                    break;
-            }
-
+            PlaceInCategory(item);
         }
 
         #endregion
@@ -333,6 +318,66 @@ namespace Nuntium
             ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.AllItems.FindAll(x => x.IsStudent));
 
             SortContacts();
+        }
+
+        private void PlaceInCategory(MessageMiniatureViewModel item)
+        {
+            if (item == null)
+                return;
+
+            switch (item.Placement)
+            {
+                case InboxCategoryType.Inbox:
+                    item.Placement = InboxCategoryType.Deleted;
+                    NumberOfDeletedMessages++;
+                    NumberOfInboxMessages--;
+                    break;
+
+                case InboxCategoryType.Deleted:
+                    MessageListData.AllItems.Remove(item);
+                    NumberOfDeletedMessages--;
+                    break;
+
+                case InboxCategoryType.Sent:
+                    item.Placement = InboxCategoryType.Deleted;
+                    NumberOfDeletedMessages++;
+                    NumberOfSentMessages--;
+                    break;
+
+                case InboxCategoryType.Drafts:
+                    item.Placement = InboxCategoryType.Deleted;
+                    NumberOfDeletedMessages++;
+                    NumberOfDraftMessages--;
+                    break;
+            }
+        }
+
+        private void DeleteSelectedMessages()
+        {
+            if (MessageListData.SelectedItems.Count == 0)
+                return;
+
+            new Thread(() =>
+            {
+                var itemsToDelete = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
+                var shownItems = new List<MessageMiniatureViewModel>(MessageListData.FilteredItems);
+
+                itemsToDelete.ForEach
+                (x =>
+                {
+                    x.AnimateOut = true;
+                    PlaceInCategory(x);
+                    shownItems.Remove(x);
+                });
+
+                Thread.Sleep(itemsToDelete[0].AnimateOutTimeSpan);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(shownItems);
+                });
+
+            }).Start();
         }
 
         #endregion
@@ -385,11 +430,6 @@ namespace Nuntium
         private void GoToCategory()
         {
             MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.AllItems.FindAll(x => x.Placement == SelectedCategory));
-        }
-
-        private void SelectItems()
-        {
-            //MessageListData.FilteredItems.ForEach(x => x.IsSelected = SelectionMode);
         }
 
         #endregion
