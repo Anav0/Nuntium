@@ -7,7 +7,7 @@ namespace Nuntium
 {
     public static class FrameworkElementAnimation
     {
-        public static async Task AnimateIn(this FrameworkElement element, AnimationDirection direction, Duration duration, bool fadeIn = false, double deacceleration = 0.5f)
+        public static async Task AnimateIn(this FrameworkElement element, AnimationDirection direction, Duration duration, bool fadeIn, double deacceleration)
         {
             var sb = new Storyboard();
 
@@ -43,7 +43,7 @@ namespace Nuntium
 
         }
 
-        public static async Task AnimateOut(this FrameworkElement element, AnimationDirection direction, Duration duration, bool fadeOut = false, double acceleration = 0.5f)
+        public static async Task AnimateOut(this FrameworkElement element, AnimationDirection direction, Duration duration, bool fadeOut, double acceleration)
         {
             var sb = new Storyboard();
 

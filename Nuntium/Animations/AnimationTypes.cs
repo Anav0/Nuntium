@@ -78,7 +78,7 @@ namespace Nuntium
                 AccelerationRatio = acceleration,
                 Duration = duration,
                 From = new Thickness(0),
-                To = new Thickness(0, element.ActualHeight, 0, -element.ActualHeight)
+                To = new Thickness(0, -element.ActualHeight, 0, element.ActualHeight)
             };
 
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
@@ -110,7 +110,7 @@ namespace Nuntium
                 AccelerationRatio = acceleration,
                 Duration = duration,
                 From = new Thickness(0),
-                To = new Thickness(0, -element.ActualHeight, 0, element.ActualHeight)
+                To = new Thickness(0, element.ActualHeight, 0, -element.ActualHeight)
             };
 
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
@@ -125,8 +125,8 @@ namespace Nuntium
             {
                 AccelerationRatio = acceleration,
                 Duration = duration,
-                From = new Thickness(0),
-                To = new Thickness(0, element.ActualHeight, 0, -element.ActualHeight)
+                From = new Thickness(0, element.ActualHeight, 0, -element.ActualHeight),
+                To = new Thickness(0)
             };
 
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));

@@ -311,11 +311,11 @@
                         Grid.Row="0"
                         Background="{StaticResource AccentColorBrush}"
                         Visibility="Collapsed"
-                        local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToBooleanConverter}}"
                         local:AttachedFrameworkElementAnimations.AnimateInDirection="Top"
                         local:AttachedFrameworkElementAnimations.AnimateOutDirection="Top"
-                        local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.10"
+                        local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.15"
                         local:AttachedFrameworkElementAnimations.AddFadingToAnimation="True"
+                        local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToBooleanConverter}}"
                         >
                         
                         <Label 
@@ -346,7 +346,7 @@
                         Visibility="Collapsed"
                         local:AttachedFrameworkElementAnimations.AnimateInDirection="Bottom"
                         local:AttachedFrameworkElementAnimations.AnimateOutDirection="Bottom"
-                        local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.10"
+                        local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.15"
                         local:AttachedFrameworkElementAnimations.AddFadingToAnimation="True"
                         local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding IsDeleting}"
                         
