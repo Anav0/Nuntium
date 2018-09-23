@@ -25,6 +25,8 @@ namespace Nuntium
 
         public bool WasRead { get; set; }
 
+        public bool IsStared { get; set; }
+
         public bool AnimateOut { get; set; }
 
         public InboxCategoryType Placement { get; set; }

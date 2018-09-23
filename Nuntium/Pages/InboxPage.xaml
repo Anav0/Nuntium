@@ -20,6 +20,7 @@
 
         <!--Side options-->
         <Border 
+            Panel.ZIndex="1"
             Grid.Column="0"
             Padding="8"
             BorderThickness="1"
@@ -302,16 +303,21 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
+                    <!--How many messages are selected-->
                     <Grid 
                         Grid.Row="0"
                         Background="{StaticResource AccentColorBrush}"
-                          Visibility="Collapsed"
-                          local:AttachedFrameworkElementAnimations.AnimateFromTopToBottom="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToBooleanConverter}}"
-                          local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.10"
-                          local:AttachedFrameworkElementAnimations.AddFadingToAnimation="True"
-                          >
+                        Visibility="Collapsed"
+                        local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToBooleanConverter}}"
+                        local:AttachedFrameworkElementAnimations.AnimateInDirection="Top"
+                        local:AttachedFrameworkElementAnimations.AnimateOutDirection="Top"
+                        local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.10"
+                        local:AttachedFrameworkElementAnimations.AddFadingToAnimation="True"
+                        >
+                        
                         <Label 
                             Content="{Binding MessageListData.SelectedItems.Count}"
                             ContentStringFormat="You have selected: {0} messages"
@@ -319,6 +325,8 @@
                             />
 
                     </Grid>
+                    
+                    <!--Message list-->
                     <Border 
                         Grid.Row="1"
                         BorderBrush="{StaticResource SideLightColorBrush}"
@@ -328,7 +336,43 @@
                         <local:MessageMiniatureList   
                          DataContext="{Binding MessageListData}"
                         />
+                        
                     </Border>
+
+                    <!--Reverse message deletion-->
+                    <Grid 
+                        Grid.Row="2"
+                        Background="Red"
+                        Visibility="Collapsed"
+                        local:AttachedFrameworkElementAnimations.AnimateInDirection="Bottom"
+                        local:AttachedFrameworkElementAnimations.AnimateOutDirection="Bottom"
+                        local:AttachedFrameworkElementAnimations.AnimationTimeSpan="0:0:0.10"
+                        local:AttachedFrameworkElementAnimations.AddFadingToAnimation="True"
+                        local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding IsDeleting}"
+                        
+                        >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Label 
+                            Grid.Column="0"
+                            Content="Deleted"
+                            Margin="4"
+                            Foreground="White"
+                            />
+
+                        <Button 
+                            Style="{StaticResource IconButton}"
+                            Grid.Column="1"
+                            FontFamily="{StaticResource FontAwesomeSolid}"
+                            Content="{StaticResource FontAwesomeRedo}"
+                            FontSize="{StaticResource FontSizeRegularExtra}"
+                            Foreground="White"
+                            Margin="4"/>
+
+                    </Grid>
                 </Grid>
             </Grid>
 

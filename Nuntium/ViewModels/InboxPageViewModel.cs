@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace Nuntium
 {
@@ -46,7 +45,7 @@ namespace Nuntium
                 _SelectedCategory = value;
 
                 GoToCategory();
-
+                SelectMessages();
             }
         }
 
@@ -59,6 +58,7 @@ namespace Nuntium
                 _MessagesSortedBy = value;
 
                 SortMessages();
+                SelectMessages();
             }
         }
 
@@ -70,7 +70,9 @@ namespace Nuntium
 
         public int NumberOfDeletedMessages { get; set; }
 
-        private bool? _SelectionMode;
+        public bool IsDeleting { get; set; }
+
+        private bool? _SelectionMode = false;
         public bool? SelectionMode
         {
             get => _SelectionMode;
@@ -80,6 +82,7 @@ namespace Nuntium
                 if (_SelectionMode != value)
                     _SelectionMode = value;
 
+                SelectMessages();
             }
         }
 
@@ -154,6 +157,13 @@ namespace Nuntium
                     Id = 3,
                     Option = "Unread",
                     SortedBy = Core.SortedBy.Unread
+                },
+
+                 new SortingOption
+                {
+                    Id = 4,
+                    Option = "Read",
+                    SortedBy = Core.SortedBy.Read
                 },
 
             };
@@ -270,11 +280,26 @@ namespace Nuntium
 
             ContactListData.AllItems.Sort((y, x) => string.Compare(y.PersonName, x.PersonName));
 
-            MessageListData.SelectedItemChanged += SelectedItemChanged;
+            MessageListData.SelectedItemChanged += OnSelectedItemChanged;
 
             NumberOfInboxMessages = MessageListData.FilteredItems.Count;
 
             LoadTeachers();
+        }
+
+        #endregion
+
+        #region Event handlers
+
+        private void OnSelectedItemChanged(object sender, EventArgs e)
+        {
+            if (MessageListData.Selected == null)
+                return;
+
+            if (MessageListData.SelectedItems.Count > 1)
+                return;
+
+            MessageListData.Selected.WasRead = true;
         }
 
         private void OnItemDeleted(object sender, EventArgs e)
@@ -288,18 +313,6 @@ namespace Nuntium
             });
 
             PlaceInCategory(item);
-        }
-
-        #endregion
-
-        #region Event handlers
-
-        private void SelectedItemChanged(object sender, EventArgs e)
-        {
-            if (MessageListData.Selected == null)
-                return;
-
-            MessageListData.Selected.WasRead = true;
         }
 
         #endregion
@@ -359,6 +372,7 @@ namespace Nuntium
 
             new Thread(() =>
             {
+
                 var itemsToDelete = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
                 var shownItems = new List<MessageMiniatureViewModel>(MessageListData.FilteredItems);
 
@@ -377,7 +391,48 @@ namespace Nuntium
                     MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(shownItems);
                 });
 
+                DisplayReverseDeletionPopup();
+
             }).Start();
+        }
+
+        private void SelectMessages()
+        {
+            switch(SelectionMode)
+            {
+                case null:
+                    MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems);
+                    break;
+
+                case true:
+                    switch (MessagesSortedBy.SortedBy)
+                    {
+                        case SortedBy.Unread:
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x=>!x.WasRead));
+                            break;
+
+                        case SortedBy.Read:
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x => x.WasRead));
+                            break;
+
+                        case SortedBy.Stared:
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x => x.IsStared));
+                            break;
+
+                        case SortedBy.Unstared:
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x => !x.IsStared));
+                            break;
+
+                        default:
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems);
+                            break;
+                    }
+                    break;
+
+                case false:
+                    MessageListData.SelectedItems.Clear();
+                    break;
+            }
         }
 
         #endregion
@@ -421,6 +476,15 @@ namespace Nuntium
                 case Core.SortedBy.Unread:
                     MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.WasRead ? 1 : 0));
                     break;
+                case Core.SortedBy.Read:
+                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.WasRead ? 0 : 1));
+                    break;
+                case Core.SortedBy.Stared:
+                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.IsStared ? 1 : 0));
+                    break;
+                case Core.SortedBy.Unstared:
+                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.IsStared ? 0 : 1));
+                    break;
                 case Core.SortedBy.Author:
                     MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.SenderName));
                     break;
@@ -430,6 +494,20 @@ namespace Nuntium
         private void GoToCategory()
         {
             MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.AllItems.FindAll(x => x.Placement == SelectedCategory));
+        }
+
+        private void DisplayReverseDeletionPopup()
+        {
+            IsDeleting = true;
+
+            System.Timers.Timer timer = new System.Timers.Timer();
+            timer.Interval = 1500;
+            timer.Elapsed += (s, e) =>
+            {
+                IsDeleting = false;
+                timer.Stop();
+            };
+            timer.Start();
         }
 
         #endregion

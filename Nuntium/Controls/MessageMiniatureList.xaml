@@ -22,7 +22,7 @@
             FontSize="{StaticResource FontSizeRegularExtra}"
             Foreground="{StaticResource SideColorBrush}"
             />
-        
+
         <ListView 
         Name="MessagesList"
         VirtualizingPanel.ScrollUnit="Pixel"
@@ -43,8 +43,10 @@
                             <ControlTemplate TargetType="{x:Type ListViewItem}">
 
                                 <Grid 
-                                local:AttachedFrameworkElementAnimations.Fading="{Binding AnimateOut, Converter={local:InverseBoolean}}"
-                                local:AttachedFrameworkElementAnimations.AnimationTimeSpan="{Binding AnimateOutTimeSpan}"
+                                local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding AnimateOut, Converter={local:InverseBoolean}}"
+                                 local:AttachedFrameworkElementAnimations.AnimateInDirection="Fade"
+                        local:AttachedFrameworkElementAnimations.AnimateOutDirection="Fade"
+                                    local:AttachedFrameworkElementAnimations.AnimationTimeSpan="{Binding AnimateOutTimeSpan}"
                                 Name="mainContainer"
                                 Background="Transparent"
                                 MaxHeight="170"
@@ -213,12 +215,6 @@
                                         <Setter Property="BorderBrush" TargetName="checkMark" Value="{StaticResource AccentColorBrush}"/>
                                         <Setter Property="Opacity" TargetName="mainContainer" Value="1"/>
                                     </Trigger>
-
-                                    <DataTrigger Binding="{Binding IsSelected}" Value="true">
-                                        <Setter Property="Background" TargetName="mainContainer" Value="{StaticResource DimAccentColorBrush}"/>
-                                        <Setter Property="Foreground" TargetName="title" Value="{StaticResource AccentColorBrush}"/>
-                                        <Setter Property="BorderBrush" TargetName="checkMark" Value="{StaticResource AccentColorBrush}"/>
-                                    </DataTrigger>
 
                                     <DataTrigger Binding="{Binding WasRead}" Value="True">
                                         <Setter Property="FontWeight" TargetName="title" Value="medium"/>

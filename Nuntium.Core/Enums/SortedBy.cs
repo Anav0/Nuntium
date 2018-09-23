@@ -8,7 +8,10 @@
         NewMessage,
         Author,
         Date,
-        Unread
-    
+        Unread,
+        Read,
+        Stared,
+        Unstared
+
     }
 }

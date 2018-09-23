@@ -40,6 +40,7 @@ namespace Nuntium
             sb.Begin(element);
 
             await Task.Delay(duration.TimeSpan);
+
         }
 
         public static async Task AnimateOut(this FrameworkElement element, AnimationDirection direction, Duration duration, bool fadeOut = false, double acceleration = 0.5f)

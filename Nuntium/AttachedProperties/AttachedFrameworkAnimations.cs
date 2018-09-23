@@ -28,146 +28,23 @@ namespace Nuntium
 
         #endregion
 
-        #region AnimateFromLeftToRight
+        #region AnimationAccelerationRate
 
-        public static readonly DependencyProperty AnimateFromLeftToRightProperty = DependencyProperty.RegisterAttached(
-        "AnimateFromLeftToRight",
-        typeof(bool),
+        public static readonly DependencyProperty AnimationAccelerationRateProperty = DependencyProperty.RegisterAttached(
+        "AnimationAccelerationRate",
+        typeof(double),
         typeof(AttachedFrameworkElementAnimations),
-        new FrameworkPropertyMetadata(false, new PropertyChangedCallback(AnimateFromLeftToRightChanged))
+        new FrameworkPropertyMetadata(0.5)
         );
 
-        public static void SetAnimateFromLeftToRight(FrameworkElement element, bool value)
+        public static void SetAnimationAccelerationRate(FrameworkElement element, double value)
         {
-            element.SetValue(AnimateFromLeftToRightProperty, value);
+            element.SetValue(AnimationAccelerationRateProperty, value);
         }
 
-        public static bool GetAnimateFromLeftToRight(FrameworkElement element)
+        public static double GetAnimationAccelerationRate(FrameworkElement element)
         {
-            return (bool)element.GetValue(AnimateFromLeftToRightProperty);
-        }
-
-        private async static void AnimateFromLeftToRightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (!(d is FrameworkElement element))
-                return;
-
-            if (e.OldValue == e.NewValue)
-                return;
-
-            await Task.Delay(5);
-
-            if ((bool)e.NewValue)
-                await element.AnimateIn(AnimationDirection.Left, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
-            else await element.AnimateOut(AnimationDirection.Right, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
-        }
-
-        #endregion
-
-        #region AnimateFromRightToLeft
-
-        public static readonly DependencyProperty AnimateFromRightToLeftProperty = DependencyProperty.RegisterAttached(
-        "AnimateFromRightToLeft",
-        typeof(bool),
-        typeof(AttachedFrameworkElementAnimations),
-        new FrameworkPropertyMetadata(false, new PropertyChangedCallback(AnimateFromRightToLeftPropertyChanged))
-        );
-
-        private static async void AnimateFromRightToLeftPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (!(d is FrameworkElement element))
-                return;
-
-            if (e.OldValue == e.NewValue)
-                return;
-
-            await Task.Delay(5);
-
-            if ((bool)e.NewValue == true)
-                await element.AnimateIn(AnimationDirection.Right, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
-            else await element.AnimateOut(AnimationDirection.Left, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
-        }
-
-        public static void SetAnimateFromRightToLeft(FrameworkElement element, bool value)
-        {
-            element.SetValue(AnimateFromLeftToRightProperty, value);
-        }
-
-        public static bool GetAnimateFromRightToLeft(FrameworkElement element)
-        {
-            return (bool)element.GetValue(AnimateFromLeftToRightProperty);
-        }
-
-        #endregion
-
-        #region AnimateFromTopToBottom
-
-        public static readonly DependencyProperty AnimateFromTopToBottomProperty = DependencyProperty.RegisterAttached(
-        "AnimateFromTopToBottom",
-        typeof(bool),
-        typeof(AttachedFrameworkElementAnimations),
-        new FrameworkPropertyMetadata(false, new PropertyChangedCallback(AnimateFromTopToBottomPropertyChanged))
-        );
-
-        private static async void AnimateFromTopToBottomPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (!(d is FrameworkElement element))
-                return;
-
-            if (e.OldValue == e.NewValue)
-                return;
-
-            await Task.Delay(10);
-
-            if ((bool)e.NewValue == true)
-                await element.AnimateIn(AnimationDirection.Top, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
-            else await element.AnimateOut(AnimationDirection.Bottom, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element));
-        }
-
-        public static void SetAnimateFromTopToBottom(FrameworkElement element, bool value)
-        {
-            element.SetValue(AnimateFromTopToBottomProperty, value);
-        }
-
-        public static bool GetAnimateFromTopToBottom(FrameworkElement element)
-        {
-            return (bool)element.GetValue(AnimateFromTopToBottomProperty);
-        }
-
-        #endregion
-
-        #region Fading
-
-        public static readonly DependencyProperty FadingProperty = DependencyProperty.RegisterAttached(
-        "Fading",
-        typeof(bool),
-        typeof(AttachedFrameworkElementAnimations),
-        new FrameworkPropertyMetadata(false, new PropertyChangedCallback(FadingPropertyChanged))
-        );
-
-        private static async void FadingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (!(d is FrameworkElement element))
-                return;
-
-            if (e.OldValue == e.NewValue)
-                return;
-
-            await Task.Delay(10);
-
-            if ((bool)e.NewValue == true)
-                await element.AnimateIn(AnimationDirection.Fade, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element), 0.5);
-            else await element.AnimateOut(AnimationDirection.Fade, GetAnimationTimeSpan(element), GetAddFadingToAnimation(element), 0.5);
-        }
-
-        public static void SetFading(FrameworkElement element, bool value)
-        {
-            element.SetValue(AnimateFromTopToBottomProperty, value);
-        }
-
-        public static bool GetFading(FrameworkElement element)
-        {
-            return (bool)element.GetValue(FadingProperty);
+            return (double)element.GetValue(AnimationAccelerationRateProperty);
         }
 
         #endregion
@@ -192,5 +69,84 @@ namespace Nuntium
         }
 
         #endregion
+
+        #region AnimateInDirection
+
+        public static readonly DependencyProperty AnimateInDirectionProperty = DependencyProperty.RegisterAttached(
+        "AnimateInDirection",
+        typeof(AnimationDirection),
+        typeof(AttachedFrameworkElementAnimations),
+        new FrameworkPropertyMetadata(AnimationDirection.Fade)
+        );
+
+        public static void SetAnimateInDirection(FrameworkElement element, AnimationDirection value)
+        {
+            element.SetValue(AnimateInDirectionProperty, value);
+        }
+
+        public static AnimationDirection GetAnimateInDirection(FrameworkElement element)
+        {
+            return (AnimationDirection)element.GetValue(AnimateInDirectionProperty);
+        }
+
+        #endregion
+
+        #region AnimateOutDirection
+
+        public static readonly DependencyProperty AnimateOutDirectionProperty = DependencyProperty.RegisterAttached(
+        "AnimateOutDirection",
+        typeof(AnimationDirection),
+        typeof(AttachedFrameworkElementAnimations),
+        new FrameworkPropertyMetadata(AnimationDirection.Fade)
+        );
+
+        public static void SetAnimateOutDirection(FrameworkElement element, AnimationDirection value)
+        {
+            element.SetValue(AnimateOutDirectionProperty, value);
+        }
+
+        public static AnimationDirection GetAnimateOutDirection(FrameworkElement element)
+        {
+            return (AnimationDirection)element.GetValue(AnimateOutDirectionProperty);
+        }
+
+        #endregion
+
+        #region AnimationCondition
+
+        public static readonly DependencyProperty AnimationConditionProperty = DependencyProperty.RegisterAttached(
+        "AnimationCondition",
+        typeof(bool),
+        typeof(AttachedFrameworkElementAnimations),
+        new FrameworkPropertyMetadata(false, new PropertyChangedCallback(AnimationConditionChanged))
+        );
+
+        private static async void AnimationConditionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(d is FrameworkElement element))
+                return;
+
+            if (e.OldValue == e.NewValue)
+                return;
+
+            await Task.Delay(10);
+
+            if ((bool)e.NewValue == true)
+                await element.AnimateIn(GetAnimateInDirection(element), GetAnimationTimeSpan(element), GetAddFadingToAnimation(element), GetAnimationAccelerationRate(element));
+            else await element.AnimateOut(GetAnimateOutDirection(element), GetAnimationTimeSpan(element), GetAddFadingToAnimation(element), GetAnimationAccelerationRate(element));
+        }
+
+        public static void SetAnimationCondition(FrameworkElement element, bool value)
+        {
+            element.SetValue(AnimationConditionProperty, value);
+        }
+
+        public static bool GetAnimationCondition(FrameworkElement element)
+        {
+            return (bool)element.GetValue(AnimationConditionProperty);
+        }
+
+        #endregion
+
     }
 }

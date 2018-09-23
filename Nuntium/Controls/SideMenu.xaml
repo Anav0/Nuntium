@@ -16,7 +16,9 @@
         <!--Right Column-->
         <Grid  Grid.Column="1" 
                Background="{StaticResource SideMenuSecondaryColorBrush}"
-               local:AttachedFrameworkElementAnimations.AnimateFromRightToLeft="{Binding IsExpanded}"
+               local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding IsExpanded}"
+               local:AttachedFrameworkElementAnimations.AnimateInDirection="Left"
+               local:AttachedFrameworkElementAnimations.AnimateOutDirection="Left"
                Visibility="Collapsed"
                >
             <Grid.RowDefinitions>

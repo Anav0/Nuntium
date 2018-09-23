@@ -15,15 +15,15 @@ namespace Nuntium
 
         #region IsChecked
 
-        public bool IsChecked
+        public bool? IsChecked
         {
-            get => (bool)GetValue(IsCheckedProperty);
+            get => (bool?)GetValue(IsCheckedProperty);
             set => SetValue(IsCheckedProperty, value);
         }
 
         public static readonly DependencyProperty IsCheckedProperty =
             DependencyProperty.Register(nameof(IsChecked),
-                typeof(bool), typeof(CheckableComboBox),
+                typeof(bool?), typeof(CheckableComboBox),
                 new UIPropertyMetadata(false));
 
         #endregion
@@ -42,6 +42,8 @@ namespace Nuntium
                 new UIPropertyMetadata(false));
 
         #endregion
+
+
 
     }
 }
