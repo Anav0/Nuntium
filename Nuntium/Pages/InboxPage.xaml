@@ -106,7 +106,7 @@
                         Content="Inbox"
                         Tag="{StaticResource FontAwesomeInbox}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding InboxMessagesList.Count}"
+                        NumberOfMessages="{Binding Messages[Inbox].Count}"
                         Padding="12"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -118,7 +118,7 @@
                         Content="Drafts"
                         Tag="{StaticResource FontAwesomeFile}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding DraftMessagesList.Count}"
+                        NumberOfMessages="{Binding Messages[Drafts].Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -130,7 +130,7 @@
                         Content="Sent"
                         Tag="{StaticResource FontAwesomePaperPlane}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding SentMessagesList.Count}"
+                        NumberOfMessages="{Binding Messages[Sent].Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -142,7 +142,7 @@
                         Content="Spam"
                         Tag="{StaticResource FontAwesomeBan}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding SpamMessagesList.Count}"
+                        NumberOfMessages="{Binding Messages[Spam].Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -154,7 +154,7 @@
                         Content="Stared"
                         Tag="{StaticResource FontAwesomeStar}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding StaredMessagesList.Count}"
+                        NumberOfMessages="{Binding Messages[Stared].Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -166,7 +166,7 @@
                         Content="Deleted"
                         Tag="{StaticResource FontAwesomeBin}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding DeletedMessagesList.Count}"
+                        NumberOfMessages="{Binding Messages[Deleted].Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},

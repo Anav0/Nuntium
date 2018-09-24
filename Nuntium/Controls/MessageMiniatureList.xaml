@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Nuntium"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{x:Static local:MessageMiniatureListDesign.Instance}">
+             >
 
     <Grid>
 
@@ -23,6 +23,7 @@
             Foreground="{StaticResource SideColorBrush}"
             />
 
+        <!--List of messages-->
         <ListView 
         Name="MessagesList"
         VirtualizingPanel.ScrollUnit="Pixel"
@@ -43,14 +44,14 @@
                             <ControlTemplate TargetType="{x:Type ListViewItem}">
 
                                 <Grid 
-                                local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding AnimateOut, Converter={local:InverseBoolean}}"
-                                 local:AttachedFrameworkElementAnimations.AnimateInDirection="Fade"
-                        local:AttachedFrameworkElementAnimations.AnimateOutDirection="Fade"
+                                    local:AttachedFrameworkElementAnimations.AnimationCondition="{Binding AnimateOut, Converter={local:InverseBoolean}}"
+                                    local:AttachedFrameworkElementAnimations.AnimateInDirection="Fade"
+                                    local:AttachedFrameworkElementAnimations.AnimateOutDirection="Fade"
                                     local:AttachedFrameworkElementAnimations.AnimationTimeSpan="{Binding AnimateOutTimeSpan}"
-                                Name="mainContainer"
-                                Background="Transparent"
-                                MaxHeight="170"
-                                >
+                                    Name="mainContainer"
+                                    Background="Transparent"
+                                    MaxHeight="170"
+                                    >
 
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -104,9 +105,9 @@
 
                                             <!--Sender's name-->
                                             <Label 
-                                        Padding="8 8 8 0"
-                                        Foreground="{StaticResource SideForgroundColorBrush}"
-                                        Content="{Binding SenderName}"/>
+                                            Padding="8 8 8 0"
+                                            Foreground="{StaticResource SideForgroundColorBrush}"
+                                            Content="{Binding SenderName}"/>
 
                                             <Grid >
                                                 <Grid.ColumnDefinitions>
@@ -125,7 +126,6 @@
                                                 FontSize="{StaticResource FontSizeRegularExtra}"
                                                 TextTrimming="CharacterEllipsis"
                                                 Text="{Binding Title}"/>
-
 
                                                 <!--Is new indicator-->
                                                 <Border
@@ -156,39 +156,83 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Top"
                                             />
+
                                             <!--Trash icon-->
                                             <Button 
                                             Name="deleteButton"
-                                            Style="{StaticResource IconButton}" 
                                             Command="{Binding DeleteCommand}"
                                             CommandParameter="{Binding ElementName=mainContainer}"
                                             Visibility="Hidden"
                                             Margin="0 0 8 0"
-                                            Foreground="{StaticResource SideForgroundColorBrush}"
                                             FontFamily="{StaticResource FontAwesomeSolid}"
-                                            FontSize="{StaticResource FontSizeBig}"
                                             Content="{StaticResource FontAwesomeBin}"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             ToolTip="Delete message"
-                                            />
+                                            >
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+                                                        <Setter Property="FontFamily" Value="{StaticResource FontAwesome}"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource SideLightColorBrush}"/>
+
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                         </StackPanel>
 
                                     </Grid>
 
-                                    <!--Have Attachments indicator-->
-                                    <Label 
-                                    Grid.Column="1"
-                                    Grid.Row="1"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Top"
-                                    Margin="8"
-                                    FontFamily="{StaticResource FontAwesomeSolid}"
-                                    Content="{StaticResource FontAwesomePaperClip}"
-                                    Foreground="{StaticResource SideLightColorBrush}"
-                                    FontSize="{StaticResource FontSizeBig}"
-                                    Visibility="{Binding HasAttachments, Converter={local:BooleanToVisibilityGoneConverter}}"
-                                    />
+                                    <!--Have Attachments and has star indicators-->
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Grid.Row="1"
+                                        >
+
+                                        <!--Star icon-->
+                                        <Button 
+                                            x:Name="starButton"
+                                            HorizontalAlignment="Center"
+                                            Content="{StaticResource FontAwesomeStar}"
+                                            ToolTip="Mark it as important"
+                                            Command="{Binding ToggleStarCommand}"
+                                            >
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+                                                    <Setter Property="FontFamily" Value="{StaticResource FontAwesome}"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource SideLightColorBrush}"/>
+
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+                                                        </Trigger>
+                                                        <DataTrigger Binding="{Binding IsStared}" Value="True">
+                                                            <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
+                                                            <Setter Property="Foreground" Value="LightGoldenrodYellow"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <!--Have Attachments indicator-->
+                                        <Label 
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            Margin="4"
+                                            FontFamily="{StaticResource FontAwesomeSolid}"
+                                            Content="{StaticResource FontAwesomePaperClip}"
+                                            Foreground="{StaticResource SideLightColorBrush}"
+                                            FontSize="{StaticResource FontSizeBig}"
+                                            Visibility="{Binding HasAttachments, Converter={local:BooleanToVisibilityGoneConverter}}"
+                                            />
+
+
+                                    </StackPanel>
 
                                     <!--Message snipit-->
                                     <TextBlock 
@@ -203,6 +247,7 @@
 
                                 </Grid>
 
+                                <!--Triggers-->
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="true">
                                         <Setter Property="Background" TargetName="mainContainer" Value="{StaticResource SideLightBackgroundColorBrush}"/>
@@ -233,18 +278,20 @@
                 </Style>
             </ListView.ItemContainerStyle>
 
+            <!--ItemsPanel-->
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
 
+            <!--Template-->
             <ListView.Template>
                 <ControlTemplate>
                     <ScrollViewer
-                    Focusable="False"
-                    HorizontalScrollBarVisibility="Disabled">
-                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            Focusable="False"
+                            HorizontalScrollBarVisibility="Disabled">
+                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </ScrollViewer>
                 </ControlTemplate>
             </ListView.Template>

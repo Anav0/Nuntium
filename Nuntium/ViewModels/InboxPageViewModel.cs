@@ -36,19 +36,7 @@ namespace Nuntium
 
         public ObservableCollection<SortingOption> MessagesSortingOptions { get; set; }
 
-        public ObservableCollection<MessageMiniatureViewModel> InboxMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
-
-        public ObservableCollection<MessageMiniatureViewModel> DraftMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
-
-        public ObservableCollection<MessageMiniatureViewModel> SentMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
-
-        public ObservableCollection<MessageMiniatureViewModel> DeletedMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
-
-        public ObservableCollection<MessageMiniatureViewModel> SpamMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
-
-        public ObservableCollection<MessageMiniatureViewModel> StaredMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
-
-        //public Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>> Messages { get; set; } = new Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>>();
+        public Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>> Messages { get; set; } = new Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>>();
 
         public SortingOption ContactsSortedBy
         {
@@ -276,24 +264,34 @@ namespace Nuntium
 
             MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>();
 
+            //Create list for each category
+            foreach (var category in (InboxCategoryType[])Enum.GetValues(typeof(InboxCategoryType)))
+            {
+                Messages.Add(category, new ObservableCollection<MessageMiniatureViewModel>());
+            }
+
             //TODO: delete after frontend is done
             for (int i = 0; i < 4; i++)
             {
                 var msg = new MessageMiniatureViewModel
                 {
+                    Id = i.ToString(),
                     AvatarBackground = ColorHelpers.GenerateRandomColor(),
                     HasAttachments = rnd.Next(0, 100) < 60,
                     SendDate = DateHelper.RandomDate(),
                     SenderName = Faker.Name.FullName(Faker.NameFormats.Standard),
                     Title = Faker.Lorem.Sentence(),
-                    Placement = InboxCategoryType.Inbox,
+                    Placement = new List<InboxCategoryType>(),
                     WasRead = rnd.Next(0, 100) < 60,
                     MessageSnipit = string.Join(" ", Faker.Lorem.Sentences(10))
 
                 };
+                msg.Placement.Add(InboxCategoryType.Inbox);
                 msg.OnItemDeleted += OnItemDeleted;
+                msg.OnItemStared += OnItemStared;
                 msg.Initials = msg.SenderName.GetInitials();
-                InboxMessagesList.Add(msg);
+
+                Messages[InboxCategoryType.Inbox].Add(msg);
             }
 
             ContactListData.AllItems.Sort((y, x) => string.Compare(y.PersonName, x.PersonName));
@@ -304,6 +302,8 @@ namespace Nuntium
             GoToCategory();
             SortMessages();
         }
+
+
 
         #endregion
 
@@ -330,12 +330,30 @@ namespace Nuntium
                 MessageListData.Items.Remove(item);
             });
 
-            MoveDownCategoryHierarchy(item);
+            MoveMessageDownCategoryHierarchy(item);
 
             mRecentlyDeletedMessages.Clear();
             mRecentlyDeletedMessages.Add(item);
 
             DisplayReverseDeletionPopup();
+        }
+
+        private void OnItemStared(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            if (item.IsStared)
+            {
+                Messages[InboxCategoryType.Stared].Add(item);
+                item.Placement.Add(InboxCategoryType.Stared);
+            }
+            else
+            {
+                Messages[InboxCategoryType.Stared].Remove(item);
+                item.Placement.Remove(InboxCategoryType.Stared);
+            }
+
         }
 
         #endregion
@@ -360,7 +378,7 @@ namespace Nuntium
         {
             if (MessageListData.SelectedItems.Count == 0)
                 return;
-            
+
             new Thread(() =>
             {
 
@@ -372,7 +390,7 @@ namespace Nuntium
                 (x =>
                 {
                     x.AnimateOut = true;
-                    MoveDownCategoryHierarchy(x);
+                    MoveMessageDownCategoryHierarchy(x);
                     shownItems.Remove(x);
                 });
 
@@ -391,7 +409,7 @@ namespace Nuntium
 
         private void SelectMessages()
         {
-            switch(SelectionMode)
+            switch (SelectionMode)
             {
                 case null:
                     MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items);
@@ -401,7 +419,7 @@ namespace Nuntium
                     switch (MessagesSortedBy.SortedBy)
                     {
                         case SortedBy.Unread:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x=>!x.WasRead));
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => !x.WasRead));
                             break;
 
                         case SortedBy.Read:
@@ -434,53 +452,21 @@ namespace Nuntium
 
             mRecentlyDeletedMessages.ForEach(x =>
             {
-                switch(x.Placement)
+
+                //send message back to category from which it came
+                foreach (var place in x.PrevPlacement)
                 {
-                    case InboxCategoryType.Inbox:
-                        InboxMessagesList.Remove(x);
-                        break;
-                    case InboxCategoryType.Deleted:
-                        DeletedMessagesList.Remove(x);
-                        break;
-                    case InboxCategoryType.Sent:
-                        SentMessagesList.Remove(x);
-                        break;
-                    case InboxCategoryType.Drafts:
-                        DraftMessagesList.Remove(x);
-                        break;
-                    case InboxCategoryType.Spam:
-                        SpamMessagesList.Remove(x);
-                        break;
-                    case InboxCategoryType.Stared:
-                        StaredMessagesList.Remove(x);
-                        break;
+                    Messages[place].Add(x);
                 }
 
-                switch(x.PrevPlacement)
+                foreach (var place in x.Placement)
                 {
-                    case InboxCategoryType.Inbox:
-                        InboxMessagesList.Add(x);
-                        break;
-                    case InboxCategoryType.Deleted:
-                        DeletedMessagesList.Add(x);
-                        break;
-                    case InboxCategoryType.Sent:
-                        SentMessagesList.Add(x);
-                        break;
-                    case InboxCategoryType.Drafts:
-                        DraftMessagesList.Add(x);
-                        break;
-                    case InboxCategoryType.Spam:
-                        SpamMessagesList.Add(x);
-                        break;
-                    case InboxCategoryType.Stared:
-                        StaredMessagesList.Add(x);
-                        break;
+                    Messages[place].Remove(x);
                 }
 
-                var tmp = x.Placement;
-                x.Placement = x.PrevPlacement;
-                x.PrevPlacement = tmp;
+                //swap message location
+                x.Placement = new List<InboxCategoryType>(x.PrevPlacement);
+                x.PrevPlacement.Clear();
             });
 
             GoToCategory();
@@ -546,76 +532,43 @@ namespace Nuntium
 
         private void GoToCategory()
         {
-            switch(SelectedCategory)
-            {
-                case InboxCategoryType.Inbox:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(InboxMessagesList);
-                    break;
-                case InboxCategoryType.Drafts:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(DraftMessagesList);
-                    break;
-                case InboxCategoryType.Sent:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(SentMessagesList);
-                    break;
-                case InboxCategoryType.Deleted:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(DeletedMessagesList);
-                    break;
-                case InboxCategoryType.Stared:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(StaredMessagesList);
-                    break;
-                case InboxCategoryType.Spam:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(SpamMessagesList);
-                    break;
-            }
-
+            MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(Messages[SelectedCategory]);
         }
 
-        private void MoveDownCategoryHierarchy(MessageMiniatureViewModel item)
+        private void MoveMessageDownCategoryHierarchy(MessageMiniatureViewModel item)
         {
             if (item == null)
                 return;
 
-            switch (item.Placement)
+            var places = new List<InboxCategoryType>(item.Placement);
+
+            foreach (var placement in places)
             {
-                case InboxCategoryType.Inbox:
-                    InboxMessagesList.Remove(item);
-                    DeletedMessagesList.Add(item);
-                    item.PrevPlacement = InboxCategoryType.Inbox;
-                    item.Placement = InboxCategoryType.Deleted;
-                    break;
 
-                case InboxCategoryType.Deleted:
-                    item.PrevPlacement = InboxCategoryType.Deleted;
-                    DeletedMessagesList.Remove(item);
-                    break;
+                switch (placement)
+                {
+                    default:
+                        //remove item from where it is now...
+                        Messages[placement].Remove(item);
 
-                case InboxCategoryType.Sent:
-                    SentMessagesList.Remove(item);
-                    DeletedMessagesList.Add(item);
-                    item.PrevPlacement = InboxCategoryType.Sent;
-                    item.Placement = InboxCategoryType.Deleted;
-                    break;
+                        //add item to deleted items list
+                        if(!Messages[InboxCategoryType.Deleted].Contains(item))
+                            Messages[InboxCategoryType.Deleted].Add(item);
 
-                case InboxCategoryType.Drafts:
-                    DraftMessagesList.Remove(item);
-                    DeletedMessagesList.Add(item);
-                    item.PrevPlacement = InboxCategoryType.Drafts;
-                    item.Placement = InboxCategoryType.Deleted;
-                    break;
-                case InboxCategoryType.Spam:
-                    SpamMessagesList.Remove(item);
-                    DeletedMessagesList.Add(item);
-                    item.PrevPlacement = InboxCategoryType.Spam;
-                    item.Placement = InboxCategoryType.Deleted;
-                    break;
-                case InboxCategoryType.Stared:
-                    item.IsStared = false;
-                    StaredMessagesList.Remove(item);
-                    DeletedMessagesList.Add(item);
-                    item.PrevPlacement = InboxCategoryType.Stared;
-                    item.Placement = InboxCategoryType.Deleted;
-                    break;
+                        item.Placement.Remove(placement);
+                        item.PrevPlacement.Add(placement);
+                        item.Placement.Add(InboxCategoryType.Deleted);
+                        break;
+
+                    case InboxCategoryType.Deleted:
+                        Messages[placement].Remove(item);
+                        break;
+                }
+
             }
+
+           
+
         }
 
         private void DisplayReverseDeletionPopup()

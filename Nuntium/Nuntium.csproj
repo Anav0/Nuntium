@@ -155,7 +155,6 @@
     </Compile>
     <Compile Include="Controls\Design\ContactDesign.cs" />
     <Compile Include="Controls\Design\ContactListDesign.cs" />
-    <Compile Include="Controls\Design\MessageMiniatureListDesign.cs" />
     <Compile Include="Controls\Design\NotificationIconDesign.cs" />
     <Compile Include="Controls\Design\UserPopupDesign.cs" />
     <Compile Include="Controls\InboxCategory.xaml.cs">

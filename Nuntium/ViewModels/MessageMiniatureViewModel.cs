@@ -1,5 +1,6 @@
 ﻿using Nuntium.Core;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
@@ -8,6 +9,8 @@ namespace Nuntium
     public class MessageMiniatureViewModel : BaseViewModel
     {
         #region Public properties
+
+        public string Id { get; set; }
 
         public string Initials { get; set; }
 
@@ -29,10 +32,9 @@ namespace Nuntium
 
         public bool AnimateOut { get; set; }
 
-        public InboxCategoryType Placement { get; set; }
+        public List<InboxCategoryType> Placement { get; set; } = new List<InboxCategoryType>();
 
-        public InboxCategoryType PrevPlacement { get; set; }
-
+        public List<InboxCategoryType> PrevPlacement { get; set; } = new List<InboxCategoryType>();
 
         public string MessageSnipit { get; set; }
 
@@ -43,11 +45,14 @@ namespace Nuntium
         public MessageMiniatureViewModel()
         {
             DeleteCommand = new RelayCommandWithParameter((parameter) =>  Delete(parameter));
+            ToggleStarCommand = new RelayCommand(ToggleStar);
         }
 
         #region EventHandlers
 
         public event EventHandler OnItemDeleted;
+
+        public event EventHandler OnItemStared;
 
         #endregion
 
@@ -58,11 +63,18 @@ namespace Nuntium
             OnItemDeleted?.Invoke(this, new EventArgs());
         }
 
+        protected virtual void RaiseOnItemStared()
+        {
+            OnItemStared?.Invoke(this, new EventArgs());
+        }
+
         #endregion
 
         #region Public Commands
 
         public ICommand DeleteCommand { get; set; }
+
+        public ICommand ToggleStarCommand { get; set; }
 
         #endregion
 
@@ -76,6 +88,16 @@ namespace Nuntium
             await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Left, new Duration(AnimateOutTimeSpan), true, 0.4);
 
             RaiseOnItemDeletedEvent();
+        }
+
+        private void ToggleStar()
+        {
+            if(!Placement.Contains(InboxCategoryType.Deleted))
+            {
+                IsStared ^= true;
+                RaiseOnItemStared();
+            }
+              
         }
 
         #endregion
