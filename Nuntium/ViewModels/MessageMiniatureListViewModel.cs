@@ -6,9 +6,7 @@ namespace Nuntium
 {
     public class MessageMiniatureListViewModel : BaseViewModel
     {
-        public ObservableCollection<MessageMiniatureViewModel> FilteredItems { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
-
-        public List<MessageMiniatureViewModel> AllItems { get; set; } = new List<MessageMiniatureViewModel>();
+        public ObservableCollection<MessageMiniatureViewModel> Items { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
 
         public ObservableCollection<MessageMiniatureViewModel> SelectedItems { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
 

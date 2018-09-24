@@ -11,6 +11,21 @@ namespace Nuntium
 {
     public class InboxPageViewModel : BaseViewModel
     {
+
+        #region Private Members
+
+        private List<MessageMiniatureViewModel> mRecentlyDeletedMessages = new List<MessageMiniatureViewModel>();
+
+        private SortingOption _ContactsSortedBy;
+
+        private InboxCategoryType _SelectedCategory;
+
+        private SortingOption _MessagesSortedBy;
+
+        private bool? _SelectionMode = false;
+
+        #endregion
+
         #region Public properties
 
         public ContactsListViewModel ContactListData { get; set; }
@@ -21,7 +36,20 @@ namespace Nuntium
 
         public ObservableCollection<SortingOption> MessagesSortingOptions { get; set; }
 
-        private SortingOption _ContactsSortedBy;
+        public ObservableCollection<MessageMiniatureViewModel> InboxMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
+
+        public ObservableCollection<MessageMiniatureViewModel> DraftMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
+
+        public ObservableCollection<MessageMiniatureViewModel> SentMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
+
+        public ObservableCollection<MessageMiniatureViewModel> DeletedMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
+
+        public ObservableCollection<MessageMiniatureViewModel> SpamMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
+
+        public ObservableCollection<MessageMiniatureViewModel> StaredMessagesList { get; set; } = new ObservableCollection<MessageMiniatureViewModel>();
+
+        //public Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>> Messages { get; set; } = new Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>>();
+
         public SortingOption ContactsSortedBy
         {
             get => _ContactsSortedBy;
@@ -33,7 +61,6 @@ namespace Nuntium
             }
         }
 
-        private InboxCategoryType _SelectedCategory;
         public InboxCategoryType SelectedCategory
         {
             get => _SelectedCategory;
@@ -49,7 +76,6 @@ namespace Nuntium
             }
         }
 
-        private SortingOption _MessagesSortedBy;
         public SortingOption MessagesSortedBy
         {
             get => _MessagesSortedBy;
@@ -62,17 +88,8 @@ namespace Nuntium
             }
         }
 
-        public int NumberOfInboxMessages { get; set; }
-
-        public int NumberOfDraftMessages { get; set; }
-
-        public int NumberOfSentMessages { get; set; }
-
-        public int NumberOfDeletedMessages { get; set; }
-
         public bool IsDeleting { get; set; }
 
-        private bool? _SelectionMode = false;
         public bool? SelectionMode
         {
             get => _SelectionMode;
@@ -96,6 +113,8 @@ namespace Nuntium
 
         public ICommand DeleteSelectedMessagesCommand { get; set; }
 
+        public ICommand RestoreDeletedMessagesCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -107,6 +126,7 @@ namespace Nuntium
             LoadPupilsCommand = new RelayCommand(LoadPupils);
             LoadTeachersCommand = new RelayCommand(LoadTeachers);
             DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
+            RestoreDeletedMessagesCommand = new RelayCommand(RestoreDeletedMessages);
 
             ContactsSortingOptions = new ObservableCollection<SortingOption>
             {
@@ -254,10 +274,10 @@ namespace Nuntium
 
             MessageListData = new MessageMiniatureListViewModel();
 
-            MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>();
+            MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>();
 
             //TODO: delete after frontend is done
-            for (int i = 0; i < 150; i++)
+            for (int i = 0; i < 4; i++)
             {
                 var msg = new MessageMiniatureViewModel
                 {
@@ -273,18 +293,16 @@ namespace Nuntium
                 };
                 msg.OnItemDeleted += OnItemDeleted;
                 msg.Initials = msg.SenderName.GetInitials();
-                MessageListData.AllItems.Add(msg);
+                InboxMessagesList.Add(msg);
             }
-
-            MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.AllItems);
 
             ContactListData.AllItems.Sort((y, x) => string.Compare(y.PersonName, x.PersonName));
 
             MessageListData.SelectedItemChanged += OnSelectedItemChanged;
 
-            NumberOfInboxMessages = MessageListData.FilteredItems.Count;
-
             LoadTeachers();
+            GoToCategory();
+            SortMessages();
         }
 
         #endregion
@@ -309,10 +327,15 @@ namespace Nuntium
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MessageListData.FilteredItems.Remove(item);
+                MessageListData.Items.Remove(item);
             });
 
-            PlaceInCategory(item);
+            MoveDownCategoryHierarchy(item);
+
+            mRecentlyDeletedMessages.Clear();
+            mRecentlyDeletedMessages.Add(item);
+
+            DisplayReverseDeletionPopup();
         }
 
         #endregion
@@ -333,54 +356,23 @@ namespace Nuntium
             SortContacts();
         }
 
-        private void PlaceInCategory(MessageMiniatureViewModel item)
-        {
-            if (item == null)
-                return;
-
-            switch (item.Placement)
-            {
-                case InboxCategoryType.Inbox:
-                    item.Placement = InboxCategoryType.Deleted;
-                    NumberOfDeletedMessages++;
-                    NumberOfInboxMessages--;
-                    break;
-
-                case InboxCategoryType.Deleted:
-                    MessageListData.AllItems.Remove(item);
-                    NumberOfDeletedMessages--;
-                    break;
-
-                case InboxCategoryType.Sent:
-                    item.Placement = InboxCategoryType.Deleted;
-                    NumberOfDeletedMessages++;
-                    NumberOfSentMessages--;
-                    break;
-
-                case InboxCategoryType.Drafts:
-                    item.Placement = InboxCategoryType.Deleted;
-                    NumberOfDeletedMessages++;
-                    NumberOfDraftMessages--;
-                    break;
-            }
-        }
-
         private void DeleteSelectedMessages()
         {
             if (MessageListData.SelectedItems.Count == 0)
                 return;
-
+            
             new Thread(() =>
             {
 
                 var itemsToDelete = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
-                var shownItems = new List<MessageMiniatureViewModel>(MessageListData.FilteredItems);
+                var shownItems = new List<MessageMiniatureViewModel>(MessageListData.Items);
+                mRecentlyDeletedMessages = new List<MessageMiniatureViewModel>(itemsToDelete);
 
                 itemsToDelete.ForEach
                 (x =>
                 {
                     x.AnimateOut = true;
-                    PlaceInCategory(x);
+                    MoveDownCategoryHierarchy(x);
                     shownItems.Remove(x);
                 });
 
@@ -388,8 +380,9 @@ namespace Nuntium
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(shownItems);
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(shownItems);
                 });
+
 
                 DisplayReverseDeletionPopup();
 
@@ -401,30 +394,30 @@ namespace Nuntium
             switch(SelectionMode)
             {
                 case null:
-                    MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems);
+                    MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items);
                     break;
 
                 case true:
                     switch (MessagesSortedBy.SortedBy)
                     {
                         case SortedBy.Unread:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x=>!x.WasRead));
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x=>!x.WasRead));
                             break;
 
                         case SortedBy.Read:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x => x.WasRead));
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => x.WasRead));
                             break;
 
                         case SortedBy.Stared:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x => x.IsStared));
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => x.IsStared));
                             break;
 
                         case SortedBy.Unstared:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.Where(x => !x.IsStared));
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => !x.IsStared));
                             break;
 
                         default:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems);
+                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items);
                             break;
                     }
                     break;
@@ -433,6 +426,66 @@ namespace Nuntium
                     MessageListData.SelectedItems.Clear();
                     break;
             }
+        }
+
+        private void RestoreDeletedMessages()
+        {
+            IsDeleting = false;
+
+            mRecentlyDeletedMessages.ForEach(x =>
+            {
+                switch(x.Placement)
+                {
+                    case InboxCategoryType.Inbox:
+                        InboxMessagesList.Remove(x);
+                        break;
+                    case InboxCategoryType.Deleted:
+                        DeletedMessagesList.Remove(x);
+                        break;
+                    case InboxCategoryType.Sent:
+                        SentMessagesList.Remove(x);
+                        break;
+                    case InboxCategoryType.Drafts:
+                        DraftMessagesList.Remove(x);
+                        break;
+                    case InboxCategoryType.Spam:
+                        SpamMessagesList.Remove(x);
+                        break;
+                    case InboxCategoryType.Stared:
+                        StaredMessagesList.Remove(x);
+                        break;
+                }
+
+                switch(x.PrevPlacement)
+                {
+                    case InboxCategoryType.Inbox:
+                        InboxMessagesList.Add(x);
+                        break;
+                    case InboxCategoryType.Deleted:
+                        DeletedMessagesList.Add(x);
+                        break;
+                    case InboxCategoryType.Sent:
+                        SentMessagesList.Add(x);
+                        break;
+                    case InboxCategoryType.Drafts:
+                        DraftMessagesList.Add(x);
+                        break;
+                    case InboxCategoryType.Spam:
+                        SpamMessagesList.Add(x);
+                        break;
+                    case InboxCategoryType.Stared:
+                        StaredMessagesList.Add(x);
+                        break;
+                }
+
+                var tmp = x.Placement;
+                x.Placement = x.PrevPlacement;
+                x.PrevPlacement = tmp;
+            });
+
+            GoToCategory();
+            SortMessages();
+            SelectMessages();
         }
 
         #endregion
@@ -468,32 +521,101 @@ namespace Nuntium
             switch (MessagesSortedBy.SortedBy)
             {
                 case Core.SortedBy.Alphabetical:
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.Title));
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.Title));
                     break;
                 case Core.SortedBy.Date:
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderByDescending(x => x.SendDate));
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderByDescending(x => x.SendDate));
                     break;
                 case Core.SortedBy.Unread:
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.WasRead ? 1 : 0));
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.WasRead ? 1 : 0));
                     break;
                 case Core.SortedBy.Read:
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.WasRead ? 0 : 1));
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.WasRead ? 0 : 1));
                     break;
                 case Core.SortedBy.Stared:
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.IsStared ? 1 : 0));
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.IsStared ? 1 : 0));
                     break;
                 case Core.SortedBy.Unstared:
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.IsStared ? 0 : 1));
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.IsStared ? 0 : 1));
                     break;
                 case Core.SortedBy.Author:
-                    MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.FilteredItems.OrderBy(x => x.SenderName));
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.SenderName));
                     break;
             }
         }
 
         private void GoToCategory()
         {
-            MessageListData.FilteredItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.AllItems.FindAll(x => x.Placement == SelectedCategory));
+            switch(SelectedCategory)
+            {
+                case InboxCategoryType.Inbox:
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(InboxMessagesList);
+                    break;
+                case InboxCategoryType.Drafts:
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(DraftMessagesList);
+                    break;
+                case InboxCategoryType.Sent:
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(SentMessagesList);
+                    break;
+                case InboxCategoryType.Deleted:
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(DeletedMessagesList);
+                    break;
+                case InboxCategoryType.Stared:
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(StaredMessagesList);
+                    break;
+                case InboxCategoryType.Spam:
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(SpamMessagesList);
+                    break;
+            }
+
+        }
+
+        private void MoveDownCategoryHierarchy(MessageMiniatureViewModel item)
+        {
+            if (item == null)
+                return;
+
+            switch (item.Placement)
+            {
+                case InboxCategoryType.Inbox:
+                    InboxMessagesList.Remove(item);
+                    DeletedMessagesList.Add(item);
+                    item.PrevPlacement = InboxCategoryType.Inbox;
+                    item.Placement = InboxCategoryType.Deleted;
+                    break;
+
+                case InboxCategoryType.Deleted:
+                    item.PrevPlacement = InboxCategoryType.Deleted;
+                    DeletedMessagesList.Remove(item);
+                    break;
+
+                case InboxCategoryType.Sent:
+                    SentMessagesList.Remove(item);
+                    DeletedMessagesList.Add(item);
+                    item.PrevPlacement = InboxCategoryType.Sent;
+                    item.Placement = InboxCategoryType.Deleted;
+                    break;
+
+                case InboxCategoryType.Drafts:
+                    DraftMessagesList.Remove(item);
+                    DeletedMessagesList.Add(item);
+                    item.PrevPlacement = InboxCategoryType.Drafts;
+                    item.Placement = InboxCategoryType.Deleted;
+                    break;
+                case InboxCategoryType.Spam:
+                    SpamMessagesList.Remove(item);
+                    DeletedMessagesList.Add(item);
+                    item.PrevPlacement = InboxCategoryType.Spam;
+                    item.Placement = InboxCategoryType.Deleted;
+                    break;
+                case InboxCategoryType.Stared:
+                    item.IsStared = false;
+                    StaredMessagesList.Remove(item);
+                    DeletedMessagesList.Add(item);
+                    item.PrevPlacement = InboxCategoryType.Stared;
+                    item.Placement = InboxCategoryType.Deleted;
+                    break;
+            }
         }
 
         private void DisplayReverseDeletionPopup()
@@ -501,7 +623,7 @@ namespace Nuntium
             IsDeleting = true;
 
             System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 1500;
+            timer.Interval = 2000;
             timer.Elapsed += (s, e) =>
             {
                 IsDeleting = false;

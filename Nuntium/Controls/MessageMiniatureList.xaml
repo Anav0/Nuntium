@@ -14,7 +14,7 @@
         <!--No messages info-->
         <Label 
             Content="No messages found"
-            Visibility="{Binding FilteredItems.Count, 
+            Visibility="{Binding Items.Count, 
             Converter={local:InverseNumberToVisibilityGoneConverter}}"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
@@ -26,7 +26,7 @@
         <ListView 
         Name="MessagesList"
         VirtualizingPanel.ScrollUnit="Pixel"
-        ItemsSource="{Binding FilteredItems}" 
+        ItemsSource="{Binding Items}" 
         SelectedItem="{Binding Selected}"
         SelectionMode="Extended">
 

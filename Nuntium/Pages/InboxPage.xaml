@@ -99,13 +99,14 @@
                     <StackPanel.Resources>
                         <local:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
                     </StackPanel.Resources>
+                    
                     <!--Inbox-->
                     <local:InboxCategory
                         x:Name="firstCategory"
                         Content="Inbox"
                         Tag="{StaticResource FontAwesomeInbox}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding NumberOfInboxMessages}"
+                        NumberOfMessages="{Binding InboxMessagesList.Count}"
                         Padding="12"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -117,7 +118,7 @@
                         Content="Drafts"
                         Tag="{StaticResource FontAwesomeFile}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding NumberOfDraftMessages}"
+                        NumberOfMessages="{Binding DraftMessagesList.Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -129,11 +130,35 @@
                         Content="Sent"
                         Tag="{StaticResource FontAwesomePaperPlane}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding NumberOfSentMessages}"
+                        NumberOfMessages="{Binding SentMessagesList.Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
                         ConverterParameter={x:Static core:InboxCategoryType.Sent}}"
+                        />
+
+                    <!--Spam-->
+                    <local:InboxCategory
+                        Content="Spam"
+                        Tag="{StaticResource FontAwesomeBan}"
+                        GroupName="categories"
+                        NumberOfMessages="{Binding SpamMessagesList.Count}"
+                        Padding="{Binding Padding, ElementName=firstCategory}"
+                        IsChecked="{Binding SelectedCategory, 
+                        Converter={StaticResource EnumToBooleanConverter},
+                        ConverterParameter={x:Static core:InboxCategoryType.Spam}}"
+                        />
+
+                    <!--Stared-->
+                    <local:InboxCategory
+                        Content="Stared"
+                        Tag="{StaticResource FontAwesomeStar}"
+                        GroupName="categories"
+                        NumberOfMessages="{Binding StaredMessagesList.Count}"
+                        Padding="{Binding Padding, ElementName=firstCategory}"
+                        IsChecked="{Binding SelectedCategory, 
+                        Converter={StaticResource EnumToBooleanConverter},
+                        ConverterParameter={x:Static core:InboxCategoryType.Stared}}"
                         />
 
                     <!--Deleted-->
@@ -141,7 +166,7 @@
                         Content="Deleted"
                         Tag="{StaticResource FontAwesomeBin}"
                         GroupName="categories"
-                        NumberOfMessages="{Binding NumberOfDeletedMessages}"
+                        NumberOfMessages="{Binding DeletedMessagesList.Count}"
                         Padding="{Binding Padding, ElementName=firstCategory}"
                         IsChecked="{Binding SelectedCategory, 
                         Converter={StaticResource EnumToBooleanConverter},
@@ -369,6 +394,7 @@
                             FontFamily="{StaticResource FontAwesomeSolid}"
                             Content="{StaticResource FontAwesomeRedo}"
                             FontSize="{StaticResource FontSizeRegularExtra}"
+                            Command="{Binding RestoreDeletedMessagesCommand}"
                             Foreground="White"
                             Margin="4"/>
 

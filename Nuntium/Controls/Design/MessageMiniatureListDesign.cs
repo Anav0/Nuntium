@@ -11,7 +11,7 @@ namespace Nuntium
 
         public MessageMiniatureListDesign()
         {
-            FilteredItems = new ObservableCollection<MessageMiniatureViewModel>();
+            Items = new ObservableCollection<MessageMiniatureViewModel>();
 
             for (int i = 0; i < 150; i++)
             {
@@ -27,10 +27,10 @@ namespace Nuntium
                 };
 
                 msg.Initials = msg.SenderName.GetInitials();
-                FilteredItems.Add(msg);
+                Items.Add(msg);
             }
 
-            FilteredItems = new ObservableCollection<MessageMiniatureViewModel>();
+            Items = new ObservableCollection<MessageMiniatureViewModel>();
             SelectedItems = new ObservableCollection<MessageMiniatureViewModel>();
         }
     }
