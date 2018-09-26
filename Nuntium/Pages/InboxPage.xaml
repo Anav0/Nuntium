@@ -161,6 +161,18 @@
                         ConverterParameter={x:Static core:InboxCategoryType.Stared}}"
                         />
 
+                    <!--Archive-->
+                    <local:InboxCategory
+                        Content="Archive"
+                        Tag="{StaticResource FontAwesomeArchive}"
+                        GroupName="categories"
+                        NumberOfMessages="{Binding Messages[Archive].Count}"
+                        Padding="{Binding Padding, ElementName=firstCategory}"
+                        IsChecked="{Binding SelectedCategory, 
+                        Converter={StaticResource EnumToBooleanConverter},
+                        ConverterParameter={x:Static core:InboxCategoryType.Archive}}"
+                        />
+
                     <!--Deleted-->
                     <local:InboxCategory
                         Content="Deleted"

@@ -281,14 +281,14 @@ namespace Nuntium
                     SendDate = DateHelper.RandomDate(),
                     SenderName = Faker.Name.FullName(Faker.NameFormats.Standard),
                     Title = Faker.Lorem.Sentence(),
-                    Placement = new List<InboxCategoryType>(),
+                    Placement = InboxCategoryType.Inbox,
                     WasRead = rnd.Next(0, 100) < 60,
                     MessageSnipit = string.Join(" ", Faker.Lorem.Sentences(10))
 
                 };
-                msg.Placement.Add(InboxCategoryType.Inbox);
                 msg.OnItemDeleted += OnItemDeleted;
                 msg.OnItemStared += OnItemStared;
+                msg.OnItemArchived += OnItemArchived;
                 msg.Initials = msg.SenderName.GetInitials();
 
                 Messages[InboxCategoryType.Inbox].Add(msg);
@@ -302,9 +302,7 @@ namespace Nuntium
             GoToCategory();
             SortMessages();
         }
-
-
-
+        
         #endregion
 
         #region Event handlers
@@ -325,17 +323,38 @@ namespace Nuntium
             if (!(sender is MessageMiniatureViewModel item))
                 return;
 
+            Messages[item.Placement].Remove(item);
+
+            if (item.Placement != InboxCategoryType.Deleted)
+                Messages[InboxCategoryType.Deleted].Add(item);
+
+            if (item.IsArchived)
+                item.IsArchived = false;
+
+            if (item.IsStared)
+            {
+                Messages[InboxCategoryType.Stared].Remove(item);
+                item.IsStared = false;
+            }
+
+            var tmp = item.Placement;
+            item.Placement = InboxCategoryType.Deleted;
+            item.PrevPlacement = tmp;
+
+            mRecentlyDeletedMessages.Clear();
+            mRecentlyDeletedMessages.Add(item);
+
+            //delete item from currently displayed list
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MessageListData.Items.Remove(item);
             });
 
-            MoveMessageDownCategoryHierarchy(item);
-
-            mRecentlyDeletedMessages.Clear();
-            mRecentlyDeletedMessages.Add(item);
+            GoToCategory();
+            SortMessages();
 
             DisplayReverseDeletionPopup();
+
         }
 
         private void OnItemStared(object sender, EventArgs e)
@@ -346,14 +365,40 @@ namespace Nuntium
             if (item.IsStared)
             {
                 Messages[InboxCategoryType.Stared].Add(item);
-                item.Placement.Add(InboxCategoryType.Stared);
             }
             else
             {
                 Messages[InboxCategoryType.Stared].Remove(item);
-                item.Placement.Remove(InboxCategoryType.Stared);
             }
 
+        }
+
+        private void OnItemArchived(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            if (item.IsArchived)
+            {
+                Messages[item.Placement].Remove(item);
+                Messages[InboxCategoryType.Archive].Add(item);
+
+                item.PrevPlacement = item.Placement;
+                item.Placement = InboxCategoryType.Archive;
+
+            }
+            else
+            {
+                Messages[item.Placement].Remove(item);
+                Messages[item.PrevPlacement].Add(item);
+
+                var tmp = item.Placement;
+                item.Placement = item.PrevPlacement;
+                item.PrevPlacement = tmp;
+            }
+
+            GoToCategory();
+            SortMessages();
         }
 
         #endregion
@@ -383,28 +428,51 @@ namespace Nuntium
             {
 
                 var itemsToDelete = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
-                var shownItems = new List<MessageMiniatureViewModel>(MessageListData.Items);
+                var displayedTtems = new List<MessageMiniatureViewModel>(MessageListData.Items);
                 mRecentlyDeletedMessages = new List<MessageMiniatureViewModel>(itemsToDelete);
 
                 itemsToDelete.ForEach
-                (x =>
+                (item =>
                 {
-                    x.AnimateOut = true;
-                    MoveMessageDownCategoryHierarchy(x);
-                    shownItems.Remove(x);
+                    item.AnimateOut = true;
+
+                    Messages[item.Placement].Remove(item);
+
+                    if (item.IsArchived)
+                        item.IsArchived = false;
+
+                    if (item.IsStared)
+                    {
+                        Messages[InboxCategoryType.Stared].Remove(item);
+                        item.IsStared = false;
+                    }
+
+                    if (item.Placement != InboxCategoryType.Deleted)
+                        Messages[InboxCategoryType.Deleted].Add(item);
+
+                    var tmp = item.Placement;
+                    item.Placement = InboxCategoryType.Deleted;
+                    item.PrevPlacement = tmp;
+
+                    displayedTtems.Remove(item);
+
                 });
 
+                //wait for delete animation to finish
                 Thread.Sleep(itemsToDelete[0].AnimateOutTimeSpan);
 
+                //Update list that display the data
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(shownItems);
+                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(displayedTtems);
                 });
 
-
+                GoToCategory();
+                SortMessages();
                 DisplayReverseDeletionPopup();
 
             }).Start();
+
         }
 
         private void SelectMessages()
@@ -453,20 +521,7 @@ namespace Nuntium
             mRecentlyDeletedMessages.ForEach(x =>
             {
 
-                //send message back to category from which it came
-                foreach (var place in x.PrevPlacement)
-                {
-                    Messages[place].Add(x);
-                }
 
-                foreach (var place in x.Placement)
-                {
-                    Messages[place].Remove(x);
-                }
-
-                //swap message location
-                x.Placement = new List<InboxCategoryType>(x.PrevPlacement);
-                x.PrevPlacement.Clear();
             });
 
             GoToCategory();
@@ -533,42 +588,6 @@ namespace Nuntium
         private void GoToCategory()
         {
             MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(Messages[SelectedCategory]);
-        }
-
-        private void MoveMessageDownCategoryHierarchy(MessageMiniatureViewModel item)
-        {
-            if (item == null)
-                return;
-
-            var places = new List<InboxCategoryType>(item.Placement);
-
-            foreach (var placement in places)
-            {
-
-                switch (placement)
-                {
-                    default:
-                        //remove item from where it is now...
-                        Messages[placement].Remove(item);
-
-                        //add item to deleted items list
-                        if(!Messages[InboxCategoryType.Deleted].Contains(item))
-                            Messages[InboxCategoryType.Deleted].Add(item);
-
-                        item.Placement.Remove(placement);
-                        item.PrevPlacement.Add(placement);
-                        item.Placement.Add(InboxCategoryType.Deleted);
-                        break;
-
-                    case InboxCategoryType.Deleted:
-                        Messages[placement].Remove(item);
-                        break;
-                }
-
-            }
-
-           
-
         }
 
         private void DisplayReverseDeletionPopup()

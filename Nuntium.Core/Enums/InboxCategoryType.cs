@@ -8,5 +8,6 @@
         Spam,
         Deleted,
         Stared,
+        Archive
     }
 }

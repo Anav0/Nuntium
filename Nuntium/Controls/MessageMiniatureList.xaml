@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:local="clr-namespace:Nuntium"
+             xmlns:core="clr-namespace:Nuntium.Core;assembly=Nuntium.Core"
+
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              >
@@ -157,6 +159,10 @@
                                             VerticalAlignment="Top"
                                             />
 
+                                            <StackPanel
+                                                Orientation="Horizontal"
+                                                >
+                                                
                                             <!--Trash icon-->
                                             <Button 
                                             Name="deleteButton"
@@ -183,6 +189,46 @@
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
+                                                
+                                            <!--Archive icon-->
+                                            <Button 
+                                            Name="archiveButton"
+                                            Command="{Binding ToggleArchiveCommand}"
+                                            CommandParameter="{Binding ElementName=mainContainer}"
+                                            Margin="0 0 8 0"
+                                            FontFamily="{StaticResource FontAwesomeSolid}"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            >
+                                                    <Button.Style>
+                                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
+                                                            <Setter Property="FontFamily" Value="{StaticResource FontAwesome}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource SideLightColorBrush}"/>
+                                                            <Setter Property="Content" Value="{StaticResource FontAwesomeArchive}"/>
+                                                            <Setter Property="Visibility" Value="Hidden"/>
+
+                                                            <Setter Property="ToolTip" Value="Archive message"/>
+
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+                                                                </Trigger>
+                                                                
+                                                                <DataTrigger Binding="{Binding IsArchived}" Value="True">
+                                                                    <Setter Property="Content" Value="{StaticResource FontAwesomeRedo}"/>
+                                                                    <Setter Property="ToolTip" Value="Restore message"/>
+                                                                </DataTrigger>
+
+                                                                <DataTrigger Binding="{Binding Placement}" Value="Deleted">
+                                                                    <Setter Property="Foreground" Value="{StaticResource SideLightColorBrush}"/>
+                                                                </DataTrigger>
+
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                
+                                            </StackPanel>
                                         </StackPanel>
 
                                     </Grid>
@@ -213,6 +259,9 @@
                                                         <DataTrigger Binding="{Binding IsStared}" Value="True">
                                                             <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
                                                             <Setter Property="Foreground" Value="LightGoldenrodYellow"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Placement}" Value="Deleted">
+                                                            <Setter Property="Foreground" Value="{StaticResource SideLightColorBrush}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -252,6 +301,7 @@
                                     <Trigger Property="IsMouseOver" Value="true">
                                         <Setter Property="Background" TargetName="mainContainer" Value="{StaticResource SideLightBackgroundColorBrush}"/>
                                         <Setter Property="Visibility" TargetName="deleteButton" Value="Visible"/>
+                                        <Setter Property="Visibility" TargetName="archiveButton" Value="Visible"/>
                                     </Trigger>
 
                                     <Trigger Property="IsSelected" Value="true">
