@@ -309,7 +309,7 @@ namespace Nuntium
             GoToCategory();
             SortMessages();
         }
-
+        
         #endregion
 
         #region Event handlers
@@ -374,6 +374,50 @@ namespace Nuntium
             MessageListData.Items.Remove(item);
 
             DisplayRestorationPopup();
+        }
+
+        private void OnItemStared(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            if (item.IsStared)
+            {
+                Messages[InboxCategoryType.Stared].Add(item);
+            }
+            else
+            {
+                Messages[InboxCategoryType.Stared].Remove(item);
+            }
+
+        }
+
+        private void OnItemArchived(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            if (item.IsArchived)
+            {
+                Messages[item.Placement].Remove(item);
+                Messages[InboxCategoryType.Archive].Add(item);
+
+                item.PrevPlacement = item.Placement;
+                item.Placement = InboxCategoryType.Archive;
+
+            }
+            else
+            {
+                Messages[item.Placement].Remove(item);
+                Messages[item.PrevPlacement].Add(item);
+
+                var tmp = item.Placement;
+                item.Placement = item.PrevPlacement;
+                item.PrevPlacement = tmp;
+            }
+
+            GoToCategory();
+            SortMessages();
         }
 
         #endregion
@@ -482,6 +526,7 @@ namespace Nuntium
                 DisplayRestorationPopup();
 
             }).Start();
+
         }
 
         private void ArchiveSelectedMessages()
@@ -525,6 +570,21 @@ namespace Nuntium
                 if (!Messages[InboxCategoryType.Stared].Contains(message))
                     Messages[InboxCategoryType.Stared].Add(message);
             }
+        }
+
+        private void RestoreDeletedMessages()
+        {
+            IsDeleting = false;
+
+            mRecentlyDeletedMessages.ForEach(x =>
+            {
+
+
+            });
+
+            GoToCategory();
+            SortMessages();
+            SelectMessages();
         }
 
         #endregion
