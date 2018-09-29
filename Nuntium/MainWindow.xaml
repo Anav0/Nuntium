@@ -10,7 +10,7 @@
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         x:Name="AppWindow"
-        Icon="Images/Logo/tmp-icon.ico"
+        Icon="Images/Logo/logo.ico"
         MinWidth="{Binding WindowMinimumWidth}"
         MinHeight="{Binding WindowMinimumHeight}"
         Title="Nuntium" Height="600" Width="950" >

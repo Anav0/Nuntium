@@ -5,6 +5,9 @@
         Inbox,
         Drafts,
         Sent,
-        Deleted
+        Spam,
+        Deleted,
+        Stared,
+        Archive
     }
 }

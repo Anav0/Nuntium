@@ -36,7 +36,8 @@ namespace Nuntium
             if (fadeIn && direction != AnimationDirection.Fade)
                 sb.AddFadeInAnimation(duration, element, deacceleration);
 
-            
+            Timeline.SetDesiredFrameRate(sb, 60);
+
             sb.Begin(element);
 
             await Task.Delay(duration.TimeSpan);
@@ -68,6 +69,8 @@ namespace Nuntium
 
             if (fadeOut && direction != AnimationDirection.Fade)
                 sb.AddFadeOutAnimation(duration, element, acceleration);
+
+            Timeline.SetDesiredFrameRate(sb, 60);
 
             sb.Begin(element);
 

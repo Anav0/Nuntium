@@ -31,6 +31,8 @@
     <system:String x:Key="FontAwesomeStar">&#xf005;</system:String>
     <system:String x:Key="FontAwesomePaperClip">&#xf0c6;</system:String>
     <system:String x:Key="FontAwesomeRedo">&#xf2f9;</system:String>
+    <system:String x:Key="FontAwesomeBan">&#xf05e;</system:String>
+    <system:String x:Key="FontAwesomeArchive">&#xf187;</system:String>
 
 
 

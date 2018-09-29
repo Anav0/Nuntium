@@ -1,5 +1,6 @@
 ﻿using Nuntium.Core;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
@@ -8,6 +9,8 @@ namespace Nuntium
     public class MessageMiniatureViewModel : BaseViewModel
     {
         #region Public properties
+
+        public string Id { get; set; }
 
         public string Initials { get; set; }
 
@@ -27,9 +30,13 @@ namespace Nuntium
 
         public bool IsStared { get; set; }
 
+        public bool IsArchived { get; set; }
+
         public bool AnimateOut { get; set; }
 
         public InboxCategoryType Placement { get; set; }
+
+        public InboxCategoryType PrevPlacement { get; set; }
 
         public string MessageSnipit { get; set; }
 
@@ -39,12 +46,18 @@ namespace Nuntium
 
         public MessageMiniatureViewModel()
         {
-            DeleteCommand = new RelayCommandWithParameter((parameter) =>  Delete(parameter));
+            DeleteCommand = new RelayCommandWithParameter((parameter) => Delete(parameter));
+            ToggleStarCommand = new RelayCommand(ToggleStar);
+            ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
         }
 
         #region EventHandlers
 
         public event EventHandler OnItemDeleted;
+
+        public event EventHandler OnItemStared;
+
+        public event EventHandler OnItemArchived;
 
         #endregion
 
@@ -55,25 +68,60 @@ namespace Nuntium
             OnItemDeleted?.Invoke(this, new EventArgs());
         }
 
+        protected virtual void RaiseOnItemStared()
+        {
+            OnItemStared?.Invoke(this, new EventArgs());
+        }
+
+        protected virtual void RaiseOnItemArchived()
+        {
+            OnItemArchived?.Invoke(this, new EventArgs());
+        }
+
         #endregion
 
         #region Public Commands
 
         public ICommand DeleteCommand { get; set; }
 
+        public ICommand ToggleStarCommand { get; set; }
+
+        public ICommand ToggleArchiveCommand { get; set; }
+
         #endregion
 
         #region Command Methods
+
+        private void ToggleStar()
+        {
+            IsStared ^= true;
+            RaiseOnItemStared();
+        }
+
+        private async void Archive(object param)
+        {
+            if (!(param is FrameworkElement element))
+                return;
+
+            if (IsArchived)
+                return;
+
+            await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Right, new Duration(AnimateOutTimeSpan), true, 0.25);
+
+            IsArchived = true;
+            RaiseOnItemArchived();
+        }
 
         private async void Delete(object param)
         {
             if (!(param is FrameworkElement element))
                 return;
 
-            await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Left, new Duration(AnimateOutTimeSpan), true, 0.4);
+            await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Left, new Duration(AnimateOutTimeSpan), true, 0.25);
 
             RaiseOnItemDeletedEvent();
         }
+
 
         #endregion
     }

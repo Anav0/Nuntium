@@ -17,6 +17,7 @@ namespace Nuntium
                 To = new Thickness(0),
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -33,6 +34,7 @@ namespace Nuntium
                 To = new Thickness(-element.ActualWidth, 0, element.ActualWidth, 0)
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -49,6 +51,7 @@ namespace Nuntium
                 To = new Thickness(0)
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -65,6 +68,8 @@ namespace Nuntium
                 To = new Thickness(element.ActualWidth, 0, -element.ActualWidth, 0)
             };
 
+
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -81,6 +86,7 @@ namespace Nuntium
                 To = new Thickness(0, -element.ActualHeight, 0, element.ActualHeight)
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -97,6 +103,7 @@ namespace Nuntium
                 To = new Thickness(0)
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -113,6 +120,7 @@ namespace Nuntium
                 To = new Thickness(0, element.ActualHeight, 0, -element.ActualHeight)
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -129,6 +137,7 @@ namespace Nuntium
                 To = new Thickness(0)
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
 
             sb.Children.Add(animation);
@@ -143,6 +152,7 @@ namespace Nuntium
                 From = 0
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Opacity"));
 
             sb.Children.Add(animation);
@@ -157,6 +167,7 @@ namespace Nuntium
                 From = 1
             };
 
+            
             Storyboard.SetTargetProperty(animation, new PropertyPath("Opacity"));
 
             sb.Children.Add(animation);
