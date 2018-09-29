@@ -140,4 +140,31 @@
         </Setter>
     </Style>
 
+
+    <Style x:Key="BasicContextMenuStyle" TargetType="{x:Type ContextMenu}" >
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="False" />
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    
+                    <Border x:Name="Border"
+                            Background="{StaticResource MainBackgroundColorBrush}"
+                            BorderThickness="1">
+                        
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{StaticResource SideLightColor}" />
+                        </Border.BorderBrush>
+                        
+                        <StackPanel IsItemsHost="True" 
+                                    KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

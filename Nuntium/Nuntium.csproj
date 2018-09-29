@@ -131,10 +131,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\UserPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -161,7 +157,6 @@
     <Compile Include="Controls\Design\ContactDesign.cs" />
     <Compile Include="Controls\Design\ContactListDesign.cs" />
     <Compile Include="Controls\Design\NotificationIconDesign.cs" />
-    <Compile Include="Controls\Design\UserPopupDesign.cs" />
     <Compile Include="Controls\InboxCategory.xaml.cs">
       <DependentUpon>InboxCategory.xaml</DependentUpon>
     </Compile>
@@ -176,9 +171,6 @@
     </Compile>
     <Compile Include="Controls\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserPopup.xaml.cs">
-      <DependentUpon>UserPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BaseValueConverter.cs" />
     <Compile Include="Converters\BooleanToBorderThicknessConverter.cs" />
@@ -232,6 +224,10 @@
     <Page Include="Styles\Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\MenuItems.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\RadioButtons.xaml">
       <Generator>MSBuild:Compile</Generator>

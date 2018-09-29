@@ -9,8 +9,8 @@ namespace Nuntium
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is UserPopupViewModel baseViewModel)
-                return new UserPopup { DataContext = baseViewModel };
+            //if (value is UserPopupViewModel baseViewModel)
+            //    return new UserPopup { DataContext = baseViewModel };
 
 
             return null;

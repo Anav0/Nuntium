@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Nuntium
@@ -368,7 +369,7 @@ namespace Nuntium
             //Update placement of the message
             item.PrevPlacement = item.Placement;
             item.Placement = InboxCategoryType.Deleted;
-            
+
             //Delete message from displayed list
             MessageListData.Items.Remove(item);
 
@@ -466,7 +467,7 @@ namespace Nuntium
 
                 mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
 
-                for (int i = MessageListData.SelectedItems.Count - 1; i >= 0 ; i--)
+                for (int i = MessageListData.SelectedItems.Count - 1; i >= 0; i--)
                 {
                     var item = MessageListData.SelectedItems[i];
 
@@ -495,7 +496,7 @@ namespace Nuntium
 
                 mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
 
-                for (int i = MessageListData.SelectedItems.Count-1; i >= 0; i--)
+                for (int i = MessageListData.SelectedItems.Count - 1; i >= 0; i--)
                 {
                     MessageListData.SelectedItems[i].IsArchived = true;
 
@@ -589,7 +590,6 @@ namespace Nuntium
 
         private void DisplayRestorationPopup()
         {
-            //show new one
             IsRestorePopupShown = true;
 
             System.Timers.Timer timer = new System.Timers.Timer();
