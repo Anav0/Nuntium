@@ -13,7 +13,7 @@
         Icon="Images/Logo/logo.ico"
         MinWidth="{Binding WindowMinimumWidth}"
         MinHeight="{Binding WindowMinimumHeight}"
-        Title="Nuntium" Height="800" Width="1350"  >
+        Title="Nuntium" Height="800" Width="1350">
 
     <Window.Resources>
         <Style TargetType="{x:Type local:MainWindow}">

@@ -9,7 +9,7 @@
              d:DataContext="{x:Static local:AttachmentsSectionDesign.Instance}"
              Background="Transparent"
              >
-   
+
     <!--Attachments-->
     <StackPanel 
         Orientation="Vertical" 
@@ -26,6 +26,7 @@
         <ListView
         ItemsSource="{Binding Items}"
         BorderThickness="0"
+            Background="Transparent"
         >
 
             <!--ItemsPanel-->

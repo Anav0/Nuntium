@@ -90,6 +90,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\BlankPage.xaml.cs">
+      <DependentUpon>BlankPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Editor\AddressSection\AddressInputBox.xaml.cs">
       <DependentUpon>AddressInputBox.xaml</DependentUpon>
     </Compile>
@@ -130,6 +133,10 @@
     <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\NumberToBooleanConverter.cs" />
     <Compile Include="Converters\InverseBoolean.cs" />
+    <Compile Include="EmailDetails\EmailDetailsPage.xaml.cs">
+      <DependentUpon>EmailDetailsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EmailDetails\EmailDetailsPageViewModel.cs" />
     <Compile Include="EventArgs\ControlEventArgs.cs" />
     <Compile Include="EventArgs\FilePathEventArgs.cs" />
     <Compile Include="Events\Events.cs" />
@@ -203,6 +210,10 @@
     <Compile Include="ViewModels\UserPopupViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Window\WindowResizer.cs" />
+    <Page Include="Controls\BlankPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Editor\AddressSection\AddressInputBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -278,6 +289,10 @@
     <Page Include="Editor\InsertSubmenu\InsertSubmenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EmailDetails\EmailDetailsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -13,15 +13,12 @@ namespace Nuntium
 
         public SideMenuViewModel()
         {
-            GoToInboxPageCommand = new RelayCommand(GoToInboxPage);
             ExpandCommand = new RelayCommand(Expand);
         }
 
         #region Public Commands
 
         public ICommand ExpandCommand { get; set; }
-
-        public ICommand GoToInboxPageCommand { get; set; }
 
         #endregion
 
@@ -30,11 +27,6 @@ namespace Nuntium
         private void Expand()
         {
             IsExpanded ^= true;
-        }
-
-        private void GoToInboxPage()
-        {
-            //ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor);
         }
 
         #endregion

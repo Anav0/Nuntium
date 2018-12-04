@@ -71,9 +71,10 @@
                 Grid.Row="2"
                 Style="{StaticResource PressableIconButton}" 
                 Content="{StaticResource FontAwesomeEnvelopeClosed}"
+                FontFamily="{StaticResource FontAwesomeSolid}"
+                FontSize="{StaticResource FontSizeBig}"
                 Padding="12"
                 GroupName="Buttons"
-                Command="{Binding GoToInboxPageCommand}"
                 ToolTip="Inbox page"
                 />
 

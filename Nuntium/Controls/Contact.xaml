@@ -69,7 +69,7 @@
 
                                 <!--Position-->
                                 <Label 
-                                Foreground="{StaticResource SideForgroundColorBrush}"
+                                Foreground="{StaticResource SideForegroundColorBrush}"
                                 FontSize="{StaticResource FontSizeRegular}"
                                 Padding="0"
                                 Content="{Binding PersonPosition, FallbackValue=App developer}"/>

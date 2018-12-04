@@ -68,14 +68,15 @@
     <system:String x:Key="FontAwesomeCog">&#xf013;</system:String>
     <system:String x:Key="FontAwesomeCaretLeft">&#xf104;</system:String>
     <system:String x:Key="FontAwesomeCaretRight">&#xf105;</system:String>
+    <system:String x:Key="FontAwesomeSadEmoji">&#xf5b3;</system:String>
     
     <!--Font sizes-->
-    <system:Double x:Key="FontSizeSmallest">4</system:Double>
-    <system:Double x:Key="FontSizeSmaller">6</system:Double>
     <system:Double x:Key="FontSizeSmall">8</system:Double>
     <system:Double x:Key="FontSizeRegular">12</system:Double>
     <system:Double x:Key="FontSizeRegularExtra">14</system:Double>
     <system:Double x:Key="FontSizeBig">16</system:Double>
+    <system:Double x:Key="FontSizeLittleBigger">18</system:Double>
+
     <system:Double x:Key="FontSizeBigger">24</system:Double>
     <system:Double x:Key="FontSizeVeryBig">32</system:Double>
     <system:Double x:Key="FontSizeXL">40</system:Double>

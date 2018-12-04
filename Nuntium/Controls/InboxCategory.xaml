@@ -12,7 +12,7 @@
 
     <RadioButton.Resources>
         <Style x:Key="ContentStyle" TargetType="{x:Type RadioButton}">
-            <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource SideForegroundColorBrush}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
             <Setter Property="BorderThickness" Value="2"/>

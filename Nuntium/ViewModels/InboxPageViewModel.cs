@@ -127,7 +127,7 @@ namespace Nuntium
             DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
             StarSelectedMessagesCommand = new RelayCommand(ToggleStarForSelectedMesseges);
             ArchiveSelectedMessagesCommand = new RelayCommand(ArchiveSelectedMessages);
-            //ShowTextEditorCommand = new RelayCommand()
+            ShowTextEditorCommand = new RelayCommand(ShowTextEditor);
             ContactsSortingOptions = new ObservableCollection<SortingOption>
             {
                 new SortingOption
@@ -311,7 +311,9 @@ namespace Nuntium
             GoToCategory();
             SortMessages();
         }
-        
+
+       
+
         #endregion
 
         #region Event handlers
@@ -572,6 +574,11 @@ namespace Nuntium
                 if (!Messages[InboxCategoryType.Stared].Contains(message))
                     Messages[InboxCategoryType.Stared].Add(message);
             }
+        }
+
+        private void ShowTextEditor()
+        {
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
         }
 
         #endregion

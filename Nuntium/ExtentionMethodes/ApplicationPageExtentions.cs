@@ -1,6 +1,7 @@
 ﻿using Nuntium;
 using Nuntium.Core;
 using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace Nuntium
 {
@@ -14,6 +15,12 @@ namespace Nuntium
                 case ApplicationPage.TextEditor:
                     return new TextEditor(viewModel as TextEditorViewModel);
 
+                case ApplicationPage.EmailDetailsPage:
+                    return new EmailDetailsPage(viewModel as EmailDetailsPageViewModel);
+
+                case ApplicationPage.Blank:
+                    return new BlankPage();
+
                 default:
                     Debugger.Break();
                     return null;
@@ -25,8 +32,10 @@ namespace Nuntium
             if (page is TextEditor)
                 return ApplicationPage.TextEditor;
 
-            Debugger.Break();
-            return default(ApplicationPage);
+            if (page is EmailDetailsPage)
+                return ApplicationPage.EmailDetailsPage;
+
+            else return default(ApplicationPage);
         }
     }
 }

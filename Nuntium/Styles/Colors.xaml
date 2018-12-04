@@ -27,7 +27,7 @@
     <SolidColorBrush x:Key="SideLightBackgroundColorBrush" Color="{StaticResource SideLightBackgroundColor}" />
 
     <Color x:Key="SideForgroundColor">#7E7D7B</Color>
-    <SolidColorBrush x:Key="SideForgroundColorBrush" Color="{StaticResource SideForgroundColor}" />
+    <SolidColorBrush x:Key="SideForegroundColorBrush" Color="{StaticResource SideForgroundColor}" />
 
     <Color x:Key="SideLightColor">#D3D3D3</Color>
     <SolidColorBrush x:Key="SideLightColorBrush" Color="{StaticResource SideLightColor}" />

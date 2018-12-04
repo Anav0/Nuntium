@@ -224,7 +224,7 @@
                               Grid.Column="2"
                               BorderThickness="0"
                               Background="Transparent"
-                              Foreground="{StaticResource SideForgroundColorBrush}"
+                              Foreground="{StaticResource SideForegroundColorBrush}"
                               Margin="8"
                               ItemsSource="{Binding ContactsSortingOptions}"
                               SelectedItem="{Binding ContactsSortedBy}"
@@ -327,7 +327,7 @@
                         Command="{Binding DeleteSelectedMessagesCommand}"
                         Visibility="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
                         Margin="8"
-                        Foreground="{StaticResource SideForgroundColorBrush}"
+                        Foreground="{StaticResource SideForegroundColorBrush}"
                         FontFamily="{StaticResource FontAwesomeSolid}"
                         FontSize="{StaticResource FontSizeBig}"
                         Content="{StaticResource FontAwesomeBin}"
@@ -343,7 +343,7 @@
                         Command="{Binding StarSelectedMessagesCommand}"
                         Visibility="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
                         Margin="{Binding Margin,ElementName=deleteSelectedButton}"
-                        Foreground="{StaticResource SideForgroundColorBrush}"
+                        Foreground="{StaticResource SideForegroundColorBrush}"
                         FontFamily="{StaticResource FontAwesomeSolid}"
                         FontSize="{StaticResource FontSizeBig}"
                         Content="{StaticResource FontAwesomeStar}"
@@ -367,7 +367,7 @@
                         >
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButton}">
-                                <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource SideForegroundColorBrush}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SelectedCategory}" Value="{x:Static core:InboxCategoryType.Archive}">
                                         <Setter Property="Foreground" Value="{StaticResource SideLightColorBrush}"/>

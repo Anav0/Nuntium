@@ -117,7 +117,7 @@
                                             <!--Sender's name-->
                                             <Label 
                                             Padding="8 8 8 0"
-                                            Foreground="{StaticResource SideForgroundColorBrush}"
+                                            Foreground="{StaticResource SideForegroundColorBrush}"
                                             Content="{Binding SenderName}"/>
 
                                             <Grid >
@@ -163,7 +163,7 @@
                                             Converter={local:MessageDateTimeConverter}}"
                                             ToolTip="{Binding SendDate, Converter={local:DateTimeToStringConverter},
                                             ConverterParameter=dd.MM.yyyy HH:mm}"
-                                            Foreground="{StaticResource SideForgroundColorBrush}"
+                                            Foreground="{StaticResource SideForegroundColorBrush}"
                                             Margin="4"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Top"
@@ -195,7 +195,7 @@
 
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+                                                                <Setter Property="Foreground" Value="{StaticResource SideForegroundColorBrush}"/>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -222,7 +222,7 @@
 
                                                             <Style.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+                                                                    <Setter Property="Foreground" Value="{StaticResource SideForegroundColorBrush}"/>
                                                                 </Trigger>
                                                                 
                                                                 <DataTrigger Binding="{Binding IsArchived}" Value="True">
@@ -260,7 +260,7 @@
 
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Foreground" Value="{StaticResource SideForgroundColorBrush}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource SideForegroundColorBrush}"/>
                                                         </Trigger>
                                                         <DataTrigger Binding="{Binding IsStared}" Value="True">
                                                             <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
@@ -294,7 +294,7 @@
                                     Text="{Binding MessageSnipit}"
                                     TextWrapping="Wrap"
                                     TextTrimming="CharacterEllipsis"
-                                    Foreground="{StaticResource SideForgroundColorBrush}"
+                                    Foreground="{StaticResource SideForegroundColorBrush}"
                                     />
 
                                 </Grid>
