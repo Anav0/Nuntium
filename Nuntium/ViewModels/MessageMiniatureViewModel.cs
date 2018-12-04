@@ -51,8 +51,6 @@ namespace Nuntium
             ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
         }
 
-       
-
         #region EventHandlers
 
         public event EventHandler OnItemDeleted;

@@ -13,6 +13,9 @@
     <!--Open Sans Regular-->
     <FontFamily x:Key="OpenSans">pack://application;,,,/Fonts/#Open Sans</FontFamily>
 
+    <!--Noto Sans-->
+    <FontFamily x:Key="NotoSansRegular">pack://application;,,,/Fonts/#Noto Sans</FontFamily>
+    
     <!--Icons-->
     <system:String x:Key="FontAwesomeBellIcon">&#xf0f3;</system:String>
     <system:String x:Key="FontAwesomeComment">&#xf27a;</system:String>
@@ -33,9 +36,39 @@
     <system:String x:Key="FontAwesomeRedo">&#xf2f9;</system:String>
     <system:String x:Key="FontAwesomeBan">&#xf05e;</system:String>
     <system:String x:Key="FontAwesomeArchive">&#xf187;</system:String>
-
-
-
+    <system:String x:Key="FontAwesomeAlignLeft">&#xf036;</system:String>
+    <system:String x:Key="FontAwesomeAlignRight">&#xf038;</system:String>
+    <system:String x:Key="FontAwesomeAlignCenter">&#xf037;</system:String>
+    <system:String x:Key="FontAwesomeAlignJustify">&#xf039;</system:String>
+    <system:String x:Key="FontAwesomeIndent">&#xf03c;</system:String>
+    <system:String x:Key="FontAwesomeOutdent">&#xf03b;</system:String>
+    <system:String x:Key="FontAwesomeUndo">&#xf0e2;</system:String>
+    <system:String x:Key="FontAwesomeTrash">&#xf1f8;</system:String>
+    <system:String x:Key="FontAwesomeSend">&#xf1d8;</system:String>
+    <system:String x:Key="FontAwesomeCopy">&#xf0c5;</system:String>
+    <system:String x:Key="FontAwesomePaste">&#xf0ea;</system:String>
+    <system:String x:Key="FontAwesomeUpperIndex">&#xf12b;</system:String>
+    <system:String x:Key="FontAwesomeLowerIndex">&#xf12c;</system:String>
+    <system:String x:Key="FontAwesomeStrikeThrough">&#xf0cc;</system:String>
+    <system:String x:Key="FontAwesomeNumberList">&#xf0cb;</system:String>
+    <system:String x:Key="FontAwesomeDotedList">&#xf0ca;</system:String>
+    <system:String x:Key="FontAwesomeTable">&#xf0ce;</system:String>
+    <system:String x:Key="FontAwesomeBald">&#xf032;</system:String>
+    <system:String x:Key="FontAwesomeUnderLine">&#xf0cd;</system:String>
+    <system:String x:Key="FontAwesomeItalic">&#xf033;</system:String>
+    <system:String x:Key="FontAwesomeFont">&#xf031;</system:String>
+    <system:String x:Key="FontAwesomeLink">&#xf0c1;</system:String>
+    <system:String x:Key="FontAwesomeUnlink">&#xf127;</system:String>
+    <system:String x:Key="FontAwesomeMarker">&#xf591;</system:String>
+    <system:String x:Key="FontAwesomePaperclip">&#xf0c6;</system:String>
+    <system:String x:Key="FontAwesomeImage">&#xf03e;</system:String>
+    <system:String x:Key="FontAwesomeClose">&#xf00d;</system:String>
+    <system:String x:Key="FontAwesomePaperplane">&#xf1d8;</system:String>
+    <system:String x:Key="FontAwesomeGlasses">&#xf530;</system:String>
+    <system:String x:Key="FontAwesomeCog">&#xf013;</system:String>
+    <system:String x:Key="FontAwesomeCaretLeft">&#xf104;</system:String>
+    <system:String x:Key="FontAwesomeCaretRight">&#xf105;</system:String>
+    
     <!--Font sizes-->
     <system:Double x:Key="FontSizeSmallest">4</system:Double>
     <system:Double x:Key="FontSizeSmaller">6</system:Double>

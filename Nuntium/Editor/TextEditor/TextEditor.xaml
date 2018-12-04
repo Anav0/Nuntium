@@ -1,0 +1,193 @@
+﻿<local:BasePage
+             x:TypeArguments="local:TextEditorViewModel"
+             x:Class="Nuntium.TextEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             xmlns:core="clr-namespace:Nuntium.Core;assembly=Nuntium.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="780" 
+             x:Name="control"
+             DataContext="{Binding TextEditorVM, 
+             Source={x:Static local:ConstantViewModels.Instance}}"
+             Background="Transparent"
+             BorderThickness="1"
+             BorderBrush="{StaticResource DefaultBorderColorBrush}"
+             >
+
+    <!--Main container-->
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--Menu bar-->
+        <Grid Grid.Row="0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="56"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Formatting menu item-->
+            <RadioButton 
+                    Style="{StaticResource UnderscoreRadioButton}" 
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="8"
+                    IsChecked="{Binding SelectedMenu, 
+                    Converter={local:EnumToBooleanConverter},
+                    ConverterParameter={x:Static core:MenuCategories.Format}}"
+                    GroupName="menuCategories" 
+                    Content="Formatting"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                        />
+
+            <!--Insert menu item-->
+            <RadioButton 
+                    Style="{StaticResource UnderscoreRadioButton}" 
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="8"
+                    GroupName="menuCategories" 
+                    Content="Insert"
+                    IsChecked="{Binding SelectedMenu, 
+                    Converter={local:EnumToBooleanConverter},
+                    ConverterParameter={x:Static core:MenuCategories.Insert}}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    />
+
+            <!--Options menu item-->
+            <RadioButton 
+                    Style="{StaticResource UnderscoreRadioButton}" 
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="8"
+                    GroupName="menuCategories" 
+                    Content="Options"
+                    IsChecked="{Binding SelectedMenu, 
+                    Converter={local:EnumToBooleanConverter},
+                    ConverterParameter={x:Static core:MenuCategories.Options}}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    />
+
+            <!--Send discard buttons-->
+            <StackPanel 
+                    Orientation="Horizontal"
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="8"   
+                    HorizontalAlignment="Right"
+                            >
+
+                <!--Discard message button-->
+                <local:IconButtonWithText
+                            FontSize="{StaticResource FontSizeRegularExtra}"
+                            Icon="{StaticResource FontAwesomeBin}"
+                            Command="{Binding DisplayDiscardEmailModalBoxCommand}"
+                            Text="Discard"/>
+
+                <!--Send message button-->
+                <local:IconButtonWithText 
+                            FontSize="{StaticResource FontSizeRegularExtra}"
+                            Icon="{StaticResource FontAwesomePaperplane}" 
+                            Command="{Binding SendEmailCommand}"
+                            Text="Send"
+                            />
+            </StackPanel>
+
+            <!--Selected submenu-->
+            <ContentPresenter 
+                Grid.Row="1"
+                Grid.ColumnSpan="5"
+                Content="{Binding SelectedMenu, 
+                Converter={local:MenuCategoriesToControlConverter}}"
+                />
+
+            <!--Search section-->
+            <local:SearchSection 
+                DataContext="{Binding SearchSectionVM, 
+                Source={x:Static local:ConstantViewModels.Instance}}" 
+                Grid.Row="3"
+                Grid.ColumnSpan="5"
+                Margin="0 8"
+                />
+
+        </Grid>
+
+        <!--Address section/attachments/editor-->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                      Grid.Row="1">
+
+            <StackPanel Orientation="Vertical" >
+
+                <!--Address section-->
+                <local:AddressSection  
+                            DataContext="{Binding AddressSectionVM, 
+                            Source={x:Static local:ConstantViewModels.Instance}}" 
+                            Margin="0 8 0 0"/>
+
+                <!--Separator-->
+                <Border Style="{StaticResource HorizontalSeparator}"/>
+
+                <!--Attachments section-->
+                <local:AttachmentsSection
+                            DataContext="{Binding AttachmentsSectionVM, 
+                            Source={x:Static local:ConstantViewModels.Instance}}" 
+                            Visibility="{Binding Items.Count, Converter={local:NumberToVisibilityGoneConverter}}"
+                            />
+
+
+                <!--Editor-->
+                <local:CustomRichTextBox
+                        Grid.Row="3"
+                        MinHeight="100"
+                        x:Name="editor"
+                        ScrollViewer.CanContentScroll="True"
+                        IsDocumentEnabled = "true"
+                        Focusable="True"
+                        IsInactiveSelectionHighlightEnabled="True"
+                        SelectionBrush="Blue"
+                        Background="{Binding Background, ElementName=control}"
+                        Foreground="{Binding Foreground, ElementName=control}"
+                        BorderThickness="0"
+                        BorderBrush="Transparent"
+                        AllowDrop="True"
+                        SpellCheck.IsEnabled="True"
+                        AcceptsTab="True"
+                        AcceptsReturn="True"
+                        Margin="0"
+                        Padding="0"
+                        >
+
+                    <!--Deletes spacing between lines-->
+                    <local:CustomRichTextBox.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="LineHeight" Value="{Binding LineSpacing}" />
+                        </Style>
+                    </local:CustomRichTextBox.Resources>
+
+                </local:CustomRichTextBox>
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+    </Grid>
+
+
+</local:BasePage>

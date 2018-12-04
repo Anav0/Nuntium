@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="Nuntium.OptionsSubmenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d" 
+             d:DesignHeight="60" 
+             d:DesignWidth="800"
+             Name="control"
+             Background="{StaticResource DefaultTabBackgroundColorBrush}"
+             >
+
+    <StackPanel Orientation="Horizontal" 
+                Background="Transparent"
+                >
+
+        <!--Selected language-->
+        <ComboBox
+            ItemsSource="{Binding LanguageList}"
+            SelectedItem="{Binding SelectedCultureGroup}"
+            IsEditable="True"
+            >
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel
+                                VirtualizingPanel.ScrollUnit="Pixel"
+                                />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <Label 
+                        Content="{Binding DisplayName}"
+                        />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <!--Spellcheck button-->
+        <local:IconButtonWithText 
+            Foreground="{StaticResource DefaultTabForegroundColorBrush}"
+            Text="Spellcheck"
+            Icon="{StaticResource FontAwesomeGlasses}" 
+            Command="{Binding PerformSpellCheckCommand}"
+            Margin="4 0 4 0"
+            />
+
+        <!--Find button-->
+        <local:IconButtonWithText 
+            Foreground="{StaticResource DefaultTabForegroundColorBrush}"
+            Text="Search"
+            Icon="{StaticResource FontAwesomeSearch}" 
+            Command="{Binding ShowSearchSectionCommand}"
+            Margin="4 0 4 0"
+            />
+
+
+    </StackPanel>
+
+    <UserControl.Style>
+        <Style TargetType="{x:Type UserControl}">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Opacity" Value="{StaticResource OpacityForUnabledControl}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
+
+</UserControl>

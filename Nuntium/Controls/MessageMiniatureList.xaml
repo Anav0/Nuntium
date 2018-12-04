@@ -54,7 +54,7 @@
                                     MaxHeight="170"
                                     >
                                     <Grid.ContextMenu>
-                                        <ContextMenu Style="{StaticResource BasicContextMenuStyle}">
+                                        <ContextMenu >
                                             <MenuItem Header="Move to category"/>
                                             <MenuItem Header="Delete message"/>
                                             <MenuItem Header="Star message"/>

@@ -34,7 +34,7 @@ namespace Nuntium
 
         private void GoToInboxPage()
         {
-            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Inbox);
+            //ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor);
         }
 
         #endregion

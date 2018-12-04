@@ -110,6 +110,8 @@ namespace Nuntium
 
         public ICommand RestoreDeletedMessagesCommand { get; set; }
 
+        public ICommand ShowTextEditorCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -125,7 +127,7 @@ namespace Nuntium
             DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
             StarSelectedMessagesCommand = new RelayCommand(ToggleStarForSelectedMesseges);
             ArchiveSelectedMessagesCommand = new RelayCommand(ArchiveSelectedMessages);
-
+            //ShowTextEditorCommand = new RelayCommand()
             ContactsSortingOptions = new ObservableCollection<SortingOption>
             {
                 new SortingOption
@@ -570,21 +572,6 @@ namespace Nuntium
                 if (!Messages[InboxCategoryType.Stared].Contains(message))
                     Messages[InboxCategoryType.Stared].Add(message);
             }
-        }
-
-        private void RestoreDeletedMessages()
-        {
-            IsDeleting = false;
-
-            mRecentlyDeletedMessages.ForEach(x =>
-            {
-
-
-            });
-
-            GoToCategory();
-            SortMessages();
-            SelectMessages();
         }
 
         #endregion

@@ -2,21 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Nuntium">
 
-    <Style TargetType="{x:Type ContentControl}" x:Key="BaseRadioButtonStyle">
-        <Setter Property="FontFamily" Value="{StaticResource FontAwesome}"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeBigger}"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource SideMenuForegroundColorBrush}"/>
-        <Setter Property="Padding" Value="4"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-    </Style>
+  
 
-    <!--<Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource BaseRadioButtonStyle}"/>-->
-
-    <!-- Icon RadioButton -->
-    <Style TargetType="{x:Type RadioButton}" x:Key="PressableIconButton" BasedOn="{StaticResource BaseRadioButtonStyle}">
+    <!-- Pressable RadioButton -->
+    <Style TargetType="{x:Type RadioButton}" x:Key="PressableIconButton" >
 
         <Setter Property="Template">
             <Setter.Value>
@@ -56,13 +45,13 @@
 
     </Style>
 
-    <!-- UnderscoreRadioButton -->
+    <!-- Underscore RadioButton -->
     <Style TargetType="{x:Type RadioButton}" 
            x:Key="UnderscoreRadioButton" 
            BasedOn="{StaticResource BaseRadioButtonStyle}">
 
         <Setter Property="Foreground" Value="{StaticResource SideColorBrush}"/>
-        <Setter Property="Background" Value="{StaticResource SideLightBackgroundColorBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
 
         <Setter Property="Template">
             <Setter.Value>

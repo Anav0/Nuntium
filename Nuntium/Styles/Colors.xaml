@@ -45,6 +45,39 @@
 
     <Color x:Key="SideMenuSecondaryColor">#3c598e</Color>
     <SolidColorBrush x:Key="SideMenuSecondaryColorBrush" Color="{StaticResource SideMenuSecondaryColor}" />
+
     
+    <!--TextEditor colors-->
+    
+    <!--Default forground and background-->
+    <Color x:Key="DefaultForegroundColor">#272424</Color>
+    <SolidColorBrush x:Key="DefaultForegroundColorBrush" Color="{StaticResource DefaultForegroundColor}" />
+
+    <Color x:Key="DefaultBackgroundColor">#FFFF</Color>
+    <SolidColorBrush x:Key="DefaultBackgroundColorBrush" Color="{StaticResource DefaultBackgroundColor}" />
+
+    <!--Default placeholder-->
+    <Color x:Key="DefaultPlaceHolderColor">#8c9292</Color>
+    <SolidColorBrush x:Key="DefaultPlaceHolderColorBrush" Color="{StaticResource DefaultPlaceHolderColor}" />
+
+    <!--Default tabs color-->
+    <Color x:Key="DefaultTabForegroundColor">#878a8c</Color>
+    <SolidColorBrush x:Key="DefaultTabForegroundColorBrush" Color="{StaticResource DefaultTabForegroundColor}" />
+
+    <Color x:Key="DefaultTabBackgroundColor">#e8eaed</Color>
+    <SolidColorBrush x:Key="DefaultTabBackgroundColorBrush" Color="{StaticResource DefaultTabBackgroundColor}" />
+
+    <Color x:Key="DefaultDarkerTabBackgroundColor">#dadde2</Color>
+    <SolidColorBrush x:Key="DefaultDarkerTabBackgroundColorBrush" Color="{StaticResource DefaultDarkerTabBackgroundColor}" />
+
+    <!--Default border color-->
+    <Color x:Key="DefaultBorderColor">#D3D3D3</Color>
+    <SolidColorBrush x:Key="DefaultBorderColorBrush" Color="{StaticResource DefaultBorderColor}" />
+
+    <Color x:Key="AccentBackgroundColor">#e7ebf1</Color>
+    <SolidColorBrush x:Key="AccentBackgroundColorBrush" Color="{StaticResource AccentBackgroundColor}" />
+
+
+
 
 </ResourceDictionary>

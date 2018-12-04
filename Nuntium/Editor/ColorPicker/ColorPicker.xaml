@@ -1,0 +1,198 @@
+﻿<UserControl x:Class="Nuntium.ColorPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="675" d:DesignWidth="400" 
+             Background="{StaticResource DefaultTabBackgroundColorBrush}"
+             >
+
+    <UserControl.Resources>
+        <ObjectDataProvider 
+            ObjectInstance="{x:Type Colors}" 
+            MethodName="GetProperties" 
+            x:Key="colors"/>
+
+        <SolidColorBrush x:Key="ForegroundColor" Color="{StaticResource DefaultForegroundColor}"/>
+        <SolidColorBrush x:Key="LabelBackground" Color="{StaticResource DefaultDarkerTabBackgroundColor}"/>
+    </UserControl.Resources>
+
+
+    <ScrollViewer>
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!--Theme colors label-->
+            <Label 
+            Grid.Row="0"
+            Content="Theme colors"
+            Padding="6"
+            Foreground="{StaticResource ForegroundColor}"
+            Background="{DynamicResource LabelBackground}"
+            />
+
+            <!--Theme colors list-->
+            <ItemsControl
+                    Grid.Row="1"
+                    ItemsSource="{Binding Source={StaticResource colors}}" 
+                    HorizontalAlignment="Left"
+                    Margin="8"
+                    Name="list"
+                    >
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="10"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border 
+                        Name="themeColor"
+                        Background="{Binding Name}" 
+                        BorderThickness="1"
+                        BorderBrush="{StaticResource DefaultBorderColorBrush}"
+                        Margin="2"
+                        Width="32" 
+                        Height="32"
+                        Cursor="Hand"
+                               >
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" 
+                                              Command="{Binding ElementName=list, Path=DataContext.StandardColorClickedCommand}"
+                                              CommandParameter="{Binding ElementName=themeColor, Path=Background}"/>
+                            </Border.InputBindings>
+
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Opacity" Value="0.8"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+            <!--Standard colors label-->
+            <Label 
+                Grid.Row="2"
+                Content="Standard color palette"
+                Padding="6"
+                Foreground="{StaticResource ForegroundColor}"
+                Background="{DynamicResource LabelBackground}"
+                />
+
+            <!--Standard colors list-->
+            <ItemsControl
+                Grid.Row="3"
+                ItemsSource="{Binding StandardColors}" 
+                HorizontalAlignment="Left"
+                Margin="8"
+                Name="list2"
+                >
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border 
+                            Name="standardColor"
+                            Background="{Binding}" 
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource DefaultBorderColorBrush}"
+                            Margin="2"
+                            Width="32" 
+                            Height="32"
+                            Cursor="Hand"
+                                   >
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" 
+                                              Command="{Binding ElementName=list2, Path=DataContext.StandardColorClickedCommand}"
+                                              CommandParameter="{Binding ElementName=standardColor, Path=Background}"/>
+                            </Border.InputBindings>
+
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Setter Property="Opacity" Value="0.8"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+            <!--Automatic color-->
+            <StackPanel 
+                    Grid.Row="4"
+                    Orientation="Horizontal" 
+                    Background="{DynamicResource LabelBackground}">
+
+                <Border 
+                    Name="automaticColor"
+                    Background="Black" 
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource DefaultBorderColorBrush}"
+                    Margin="8"
+                    Width="24" 
+                    Height="24"
+                    Cursor="Hand">
+
+                    <Border.InputBindings>
+                        <MouseBinding MouseAction="LeftClick" 
+                                              Command="{Binding ElementName=list2, Path=DataContext.StandardColorClickedCommand}"
+                                              CommandParameter="{Binding ElementName=automaticColor, Path=Background}"/>
+                    </Border.InputBindings>
+
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter Property="Opacity" Value="0.8"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                <Label 
+                    Content="Automatic"
+                    Padding="6"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Left"
+                    Foreground="{StaticResource ForegroundColor}"
+            
+                    />
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+
+
+
+</UserControl>

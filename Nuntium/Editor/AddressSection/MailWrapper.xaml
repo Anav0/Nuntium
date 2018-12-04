@@ -1,0 +1,108 @@
+﻿<UserControl x:Class="Nuntium.MailWrapper"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="200"
+             d:DataContext="{x:Static local:MailWrapperDesign.Instance}"
+             Background="Transparent"
+             >
+
+    <Border 
+        Background="{StaticResource AccentBackgroundColorBrush}" 
+        CornerRadius="{Binding CornerRadius, ElementName=firstLetterBubble}"
+        Name="content">
+
+        <!--Main container-->
+        <StackPanel Orientation="Horizontal">
+
+            <!--addresse's first letter-->
+            <Border 
+                x:Name="firstLetterBubble"
+                CornerRadius="{Binding CornerRadius}"
+                Background="{Binding BubbleColor, Converter={local:StringToBrushConverter}}"
+                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                Height="{Binding Height, ElementName=content}"
+                HorizontalAlignment="Left"
+                Panel.ZIndex="1"
+                >
+                <Label Content="{Binding FirstLetter}" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"
+                   Padding="0"
+                   Margin="0"
+                   Foreground="{StaticResource SideMenuForegroundColorBrush}"
+                   />
+            </Border>
+
+            <!--Address -->
+            <Label 
+                Content="{Binding Address}"
+                Padding="8"
+                Foreground="{StaticResource SideMenuForegroundColorBrush}"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                />
+
+            <!--Remove button-->
+            <Button 
+                Style="{StaticResource IconButton}"
+                Padding="8"
+                Margin="0"
+                Foreground="{StaticResource SideMenuForegroundColorBrush}"
+                Command="{Binding DeleteCommand}"
+                Content="{StaticResource FontAwesomeClose}"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTip="Remove address"
+                >
+                <Button.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
+                                            To="Red"
+                                            Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
+                                            To="{StaticResource DefaultTabForegroundColor}"
+                                            Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Button.Triggers>
+            </Button>
+
+        </StackPanel>
+    </Border>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="MouseEnter">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                            To="0.75"
+                                            Duration="0:0:0.1"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+
+        <EventTrigger RoutedEvent="MouseLeave">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                            To="1"
+                                            Duration="0:0:0.1"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+</UserControl>

@@ -7,7 +7,7 @@ namespace Nuntium
     {
         #region Public Properties
 
-        public ApplicationPage CurrentPage { get; private set; } = ApplicationPage.Inbox;
+        public ApplicationPage CurrentPage { get; private set; } = ApplicationPage.TextEditor;
 
         public BaseViewModel CurrentPageViewModel { get; set; }
 

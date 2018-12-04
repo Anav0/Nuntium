@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuntium", "Nuntium\Nuntium.csproj", "{A267B0F4-6280-4C28-8274-512C11469D90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuntium.Core", "Nuntium.Core\Nuntium.Core.csproj", "{BE59BE09-A763-43D8-9E1B-3BAFB9B0A97D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuntium.Core", "Nuntium.Core\Nuntium.Core.csproj", "{BE59BE09-A763-43D8-9E1B-3BAFB9B0A97D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

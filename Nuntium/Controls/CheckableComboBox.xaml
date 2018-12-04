@@ -45,7 +45,6 @@
                                 <ComboBox
                                     Name="comboBox"
                                     Grid.Column="1"
-                                    Style="{StaticResource ComboBoxFlatStyle}"
                                     ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay }"
                                     SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay }"
                                     SelectedValue="{TemplateBinding SelectedValue}"

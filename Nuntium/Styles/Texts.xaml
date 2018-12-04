@@ -2,28 +2,20 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Nuntium">
 
-    <Style x:Key="BaseStyle" TargetType="{x:Type Control}">
-        <Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource MainForegroundBrush}"/>
-    </Style>
-
-    <!--Basic styles-->
-    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource BaseStyle}" />
-    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}" />
-    
     <!--Placeholder Textbox-->
     <Style TargetType="{x:Type TextBox}" x:Key="PlaceholderTextBox"  BasedOn="{StaticResource BaseStyle}">
 
         <Setter Property="Padding" Value="8" />
         <Setter Property="Margin" Value="0" />
-        <Setter Property="BorderBrush" Value="{StaticResource SideLightColorBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="AcceptsReturn" Value="True" />
-        <Setter Property="AcceptsTab" Value="True" />
+        <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColorBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="AcceptsReturn" Value="False" />
+        <Setter Property="AcceptsTab" Value="False" />
         <Setter Property="MaxLines" Value="25" />
         <Setter Property="SpellCheck.IsEnabled" Value="True" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="MinWidth" Value="100" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -36,8 +28,15 @@
                                 BorderBrush="{TemplateBinding BorderBrush}" 
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                
                                 SnapsToDevicePixels="True">
-                            <ScrollViewer x:Name="PART_ContentHost" Focusable="False" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                          Focusable="False" 
+                                          HorizontalScrollBarVisibility="Hidden" 
+                                          VerticalScrollBarVisibility="Hidden"/>
                         </Border>
 
                         <!--Placeholder text-->
@@ -45,10 +44,9 @@
                                    Text="{TemplateBinding Tag}"
                                    x:Name="placeholder"
                                    Padding="{TemplateBinding Padding}"
-                                   Margin="{TemplateBinding Margin}"
-                                   VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                                   HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                   Foreground="{StaticResource SideForgroundColorBrush}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   Foreground="{StaticResource DefaultPlaceHolderColorBrush}"
                                    >
 
                             <TextBlock.Style>
@@ -65,18 +63,10 @@
                         </TextBlock>
 
                     </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource SideColorBrush}"/>
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource SideColorBrush}"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
 
     </Style>
-
 </ResourceDictionary>

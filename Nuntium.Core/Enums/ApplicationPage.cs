@@ -2,6 +2,7 @@
 {
     public enum ApplicationPage
     {
-        Inbox
+        TextEditor,
+        EmailDetails
     }
 }

@@ -13,7 +13,7 @@
         Icon="Images/Logo/logo.ico"
         MinWidth="{Binding WindowMinimumWidth}"
         MinHeight="{Binding WindowMinimumHeight}"
-        Title="Nuntium" Height="600" Width="950" >
+        Title="Nuntium" Height="800" Width="1350"  >
 
     <Window.Resources>
         <Style TargetType="{x:Type local:MainWindow}">
@@ -98,6 +98,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
 
         </Grid.ColumnDefinitions>
@@ -109,11 +110,14 @@
             Grid.RowSpan="2" 
             Grid.Column="0"
             />
-       
-        <!--Main/Center content-->
+
+        <!--Inbox page-->
+        <local:InboxPage Grid.RowSpan="2" Grid.Column="1"/>
+
+        <!--Details page content-->
         <local:PageHost
-                Grid.Row="1"
-                Grid.Column="1"
+                Grid.RowSpan="2"
+                Grid.Column="2"
                 CurrentPage="{Binding ApplicationViewModelInstance.CurrentPage, 
                 Source={x:Static local:ConstantViewModels.Instance}}"
                 CurrentPageViewModel="{Binding ApplicationViewModelInstance.CurrentPageViewModel, 

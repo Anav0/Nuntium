@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="Nuntium.InsertSubmenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d" 
+             d:DesignHeight="60" d:DesignWidth="800"
+             Name="control"
+             Background="{StaticResource DefaultTabBackgroundColorBrush}"
+             >
+
+    <StackPanel Orientation="Horizontal" 
+                Background="Transparent"
+                >
+
+        <!--Attach file button-->
+        <local:IconButtonWithText 
+            Foreground="{StaticResource DefaultTabForegroundColorBrush}"
+            Text="File"
+            Icon="{StaticResource FontAwesomePaperclip}" 
+            Command="{Binding InsertFileCommand}"
+            Margin="0 0 4 0"
+            />
+
+        <!--Insert image button-->
+        <local:IconButtonWithText 
+            Foreground="{StaticResource DefaultTabForegroundColorBrush}"
+            Text="Image"
+            Icon="{StaticResource FontAwesomeImage}" 
+            Command="{Binding InsertImageCommand}"
+            Margin="4 0 4 0"
+            />
+
+        <!--Insert link button-->
+        <local:IconButtonWithText 
+            Foreground="{StaticResource DefaultTabForegroundColorBrush}"
+            Text="Link"
+            Icon="{StaticResource FontAwesomeLink}" 
+            Command="{Binding InsertLinkCommand}"
+            Margin="4 0 4 0"
+            />
+
+    </StackPanel>
+
+    <UserControl.Style>
+        <Style TargetType="{x:Type UserControl}">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Opacity" Value="{StaticResource OpacityForUnabledControl}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
+    
+</UserControl>

@@ -11,8 +11,8 @@ namespace Nuntium
             switch (page)
             {
 
-                case ApplicationPage.Inbox:
-                    return new InboxPage(viewModel as InboxPageViewModel);
+                case ApplicationPage.TextEditor:
+                    return new TextEditor(viewModel as TextEditorViewModel);
 
                 default:
                     Debugger.Break();
@@ -22,8 +22,8 @@ namespace Nuntium
 
         public static ApplicationPage ToApplicationPage(this BasePage page)
         {
-            if (page is InboxPage)
-                return ApplicationPage.Inbox;
+            if (page is TextEditor)
+                return ApplicationPage.TextEditor;
 
             Debugger.Break();
             return default(ApplicationPage);
