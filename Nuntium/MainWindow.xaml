@@ -102,7 +102,7 @@
             <ColumnDefinition Width="*"/>
 
         </Grid.ColumnDefinitions>
-        
+
         <!--Side menu-->
         <local:SideMenu 
             DataContext="{Binding SideMenuViewModelInstance, 
@@ -115,15 +115,22 @@
         <local:InboxPage Grid.RowSpan="2" Grid.Column="1"/>
 
         <!--Details page content-->
-        <local:PageHost
+
+        <Border BorderThickness="0 1 0 0" 
+                BorderBrush="{StaticResource DefaultBorderColorBrush}"
                 Grid.RowSpan="2"
                 Grid.Column="2"
+                >
+
+            <local:PageHost
+               
                 CurrentPage="{Binding ApplicationViewModelInstance.CurrentPage, 
                 Source={x:Static local:ConstantViewModels.Instance}}"
                 CurrentPageViewModel="{Binding ApplicationViewModelInstance.CurrentPageViewModel, 
                 Source={x:Static local:ConstantViewModels.Instance}}">
 
-        </local:PageHost>
+            </local:PageHost>
+        </Border>
     </Grid>
 
 </Window>

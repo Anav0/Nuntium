@@ -19,7 +19,6 @@ namespace Nuntium.Core
 
         public static string GetInitials(this string words)
         {
-
             if (string.IsNullOrEmpty(words))
                 return null;
 

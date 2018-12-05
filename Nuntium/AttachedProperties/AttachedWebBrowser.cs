@@ -4,10 +4,10 @@ using System.Windows.Controls;
 
 namespace Nuntium
 {
-    public class WebBrowserAttached
+    public class AttachedWebBrowser
     {
             public static readonly DependencyProperty BodyProperty =
-              DependencyProperty.RegisterAttached("Body", typeof(string), typeof(WebBrowserAttached),
+              DependencyProperty.RegisterAttached("Body", typeof(string), typeof(AttachedWebBrowser),
                new PropertyMetadata(OnChanged));
 
             public static string GetBody(DependencyObject dependencyObject)

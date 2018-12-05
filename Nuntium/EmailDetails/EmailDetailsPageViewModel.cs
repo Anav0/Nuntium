@@ -11,11 +11,15 @@ namespace Nuntium
 
         public string Html { get; set; }
 
+        public string SenderName { get; set; }
+
         public ObservableCollection<AttachFileViewModel> AttachementsList { get; set; }
 
         public EmailDetailsPageViewModel()
         {
             Html = GetHtmlFromLink("http://c0185784a2b233b0db9b-d0e5e4adc266f8aacd2ff78abb166d77.r51.cf2.rackcdn.com/v1_templates/template_02.html");
+
+            SenderName = "Cog";
 
             AttachementsList = new ObservableCollection<AttachFileViewModel>
                 {

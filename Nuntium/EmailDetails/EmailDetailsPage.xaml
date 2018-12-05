@@ -29,14 +29,14 @@
             </Grid.ColumnDefinitions>
 
             <!--Sender avatar-->
-            <local:RoundAvatar Initials="C"
+            <local:RoundAvatar Initials="{Binding SenderName, Converter={local:NameToInitialsConverter}}"
                                AvatarBackground="{StaticResource AccentColorBrush}"
                                Width="{StaticResource RoundAvatarSize}"
                                Height="{StaticResource RoundAvatarSize}"
                                Grid.Column="0" />
 
             <!--Sender name-->
-            <TextBlock Text="Cog" 
+            <TextBlock Text="{Binding SenderName}" 
                        Grid.Column="1" 
                        FontSize="{StaticResource FontSizeRegularExtra}"
                        FontWeight="DemiBold" 
@@ -94,7 +94,7 @@
         </Grid>
 
         <!--Html email display-->
-        <WebBrowser Grid.Row="1" local:WebBrowserAttached.Body="{Binding Html}"/>
+        <WebBrowser Grid.Row="1" local:AttachedWebBrowser.Body="{Binding Html}"/>
 
         <!--Attachments section-->
         <Grid Grid.Row="2" Visibility="{Binding Items.Count,ElementName=attachments, Converter={local:NumberToVisibilityGoneConverter}}">
@@ -118,7 +118,9 @@
                 />
 
             <!--Attached files-->
-            <local:EmailDetailsAttachedSection Grid.Row="1" x:Name="attachments" Items="{Binding AttachementsList}"/>
+            <local:EmailDetailsAttachedSection Grid.Row="1" 
+                                               x:Name="attachments" 
+                                               Items="{Binding AttachementsList}"/>
             
             <!--<Button
                 Grid.Column="2"

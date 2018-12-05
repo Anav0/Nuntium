@@ -94,10 +94,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AttachedProperties\WebBrowserAttached.cs" />
+    <Compile Include="AttachedProperties\AttachedWebBrowser.cs" />
     <Compile Include="Controls\BlankPage.xaml.cs">
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\NameToInitialsConverter.cs" />
     <Compile Include="Converters\StringToVisiblityInverseConverter.cs" />
     <Compile Include="Editor\AddressSection\AddressInputBox.xaml.cs">
       <DependentUpon>AddressInputBox.xaml</DependentUpon>
@@ -128,7 +129,7 @@
     </Compile>
     <Compile Include="Editor\ColorPicker\ColorPickerViewModel.cs" />
     <Compile Include="Editor\CustomRichTextBox.cs" />
-    <Compile Include="CommonControls\IconButtonWithText.xaml.cs">
+    <Compile Include="Controls\IconButtonWithText.xaml.cs">
       <DependentUpon>IconButtonWithText.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BaseMultiValueConverter.cs" />
@@ -247,7 +248,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CommonControls\IconButtonWithText.xaml">
+    <Page Include="Controls\IconButtonWithText.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
