@@ -43,8 +43,8 @@
 
                                 <!--Avatar-->
                                 <local:RoundAvatar 
-                                        Width="40"
-                                        Height="40"
+                                        Width="{StaticResource RoundAvatarSize}"
+                                        Height="{StaticResource RoundAvatarSize}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         AvatarBackground="{Binding AvatarBackground, Converter={local:StringToBrushConverter}, FallbackValue=lightgreen}"

@@ -51,7 +51,7 @@
            BasedOn="{StaticResource BaseRadioButtonStyle}">
 
         <Setter Property="Foreground" Value="{StaticResource SideColorBrush}"/>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="{StaticResource SecondaryBackgroundColorBrush}"/>
 
         <Setter Property="Template">
             <Setter.Value>

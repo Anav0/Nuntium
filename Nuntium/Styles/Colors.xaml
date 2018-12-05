@@ -3,9 +3,13 @@
                     xmlns:local="clr-namespace:Nuntium">
 
     <!--Main colors-->
-    <Color x:Key="MainBackgroundColor">#F9F9F9</Color>
+    <Color x:Key="MainBackgroundColor">#FFFF</Color>
     <SolidColorBrush x:Key="MainBackgroundColorBrush" Color="{StaticResource MainBackgroundColor}" />
 
+    <Color x:Key="SecondaryBackgroundColor">#f9fafa</Color>
+    <SolidColorBrush x:Key="SecondaryBackgroundColorBrush" Color="{StaticResource SecondaryBackgroundColor}" />
+    
+    
     <Color x:Key="MainForeground">#272424</Color>
     <SolidColorBrush x:Key="MainForegroundBrush" Color="{StaticResource MainForeground}" />
 
@@ -78,6 +82,12 @@
     <SolidColorBrush x:Key="AccentBackgroundColorBrush" Color="{StaticResource AccentBackgroundColor}" />
 
 
+    <Color x:Key="LightForegroundColor">#bac4d1</Color>
+    <SolidColorBrush x:Key="LightForegroundColorBrush" Color="{StaticResource LightForegroundColor}" />
+
+    <Color x:Key="VeryLightForegroundColor">#dfe6e6</Color>
+    <SolidColorBrush x:Key="VeryLightForegroundColorBrush" Color="{StaticResource VeryLightForegroundColor}" />
+    
 
 
 </ResourceDictionary>

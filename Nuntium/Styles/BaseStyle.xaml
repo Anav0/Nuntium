@@ -13,12 +13,12 @@
         <Setter Property="BorderBrush" Value="{StaticResource DefaultBorderColorBrush}"/>
 
     </Style>
-   
+
     <!--ToggleButton base style-->
     <Style x:Key="ToggleButtonBaseStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource BaseStyle}">
         <Setter Property="Cursor" Value="Hand"/>
     </Style>
-    
+
     <!--Button base style-->
     <Style x:Key="ButtonBaseStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}">
         <Setter Property="Cursor" Value="Hand"/>

@@ -53,6 +53,7 @@
                     Content="Formatting"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
+                    Background="Transparent"
                         />
 
             <!--Insert menu item-->
@@ -68,6 +69,7 @@
                     ConverterParameter={x:Static core:MenuCategories.Insert}}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
+                    Background="Transparent"
                     />
 
             <!--Options menu item-->
@@ -83,6 +85,7 @@
                     ConverterParameter={x:Static core:MenuCategories.Options}}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
+                    Background="Transparent"
                     />
 
             <!--Send discard buttons-->

@@ -49,6 +49,9 @@
     <Reference Include="Faker.NET47, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Faker.Net.1.1.1\lib\net471\Faker.NET47.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlRenderer, Version=1.5.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.Core.1.5.0.5\lib\net45\HtmlRenderer.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -69,6 +72,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -90,9 +94,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AttachedProperties\WebBrowserAttached.cs" />
     <Compile Include="Controls\BlankPage.xaml.cs">
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\StringToVisiblityInverseConverter.cs" />
     <Compile Include="Editor\AddressSection\AddressInputBox.xaml.cs">
       <DependentUpon>AddressInputBox.xaml</DependentUpon>
     </Compile>
@@ -133,6 +139,9 @@
     <Compile Include="Converters\NullToBooleanConverter.cs" />
     <Compile Include="Converters\NumberToBooleanConverter.cs" />
     <Compile Include="Converters\InverseBoolean.cs" />
+    <Compile Include="EmailDetails\EmailDetailsAttachedSection.xaml.cs">
+      <DependentUpon>EmailDetailsAttachedSection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EmailDetails\EmailDetailsPage.xaml.cs">
       <DependentUpon>EmailDetailsPage.xaml</DependentUpon>
     </Compile>
@@ -290,6 +299,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="EmailDetails\EmailDetailsAttachedSection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="EmailDetails\EmailDetailsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -435,6 +448,10 @@
     <Page Include="Styles\ToolTip.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\UserControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Values.xaml">
       <Generator>MSBuild:Compile</Generator>

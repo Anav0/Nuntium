@@ -15,7 +15,6 @@ namespace Nuntium
             InitializeComponent();
         }
 
-
         #region Initials
 
         public string Initials

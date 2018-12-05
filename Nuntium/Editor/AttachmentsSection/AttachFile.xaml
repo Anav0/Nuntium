@@ -22,9 +22,8 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
 
         <!--File icon-->
         <Image
@@ -42,16 +41,14 @@
             </Image.InputBindings>
         </Image>
 
-
-
         <!--File name-->
         <TextBlock
                 Grid.Row="0"
                 Grid.Column="1"
                 TextTrimming="CharacterEllipsis"
                 FontFamily="{StaticResource NotoSansRegular}"
+                FontSize="{StaticResource FontSizeRegularExtra}"
                 Text="{Binding FileName}"
-                Margin="0" 
                 Padding="6"
                 >
             <TextBlock.InputBindings>
@@ -73,7 +70,7 @@
                 <MouseBinding Command="{Binding FileClickCommand}" MouseAction="LeftClick"/>
             </Label.InputBindings>
         </Label>
-        
+
         <!--Remove button-->
         <Button 
             Style="{StaticResource IconButton}"

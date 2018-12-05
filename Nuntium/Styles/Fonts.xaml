@@ -69,9 +69,15 @@
     <system:String x:Key="FontAwesomeCaretLeft">&#xf104;</system:String>
     <system:String x:Key="FontAwesomeCaretRight">&#xf105;</system:String>
     <system:String x:Key="FontAwesomeSadEmoji">&#xf5b3;</system:String>
-    
+
+    <system:String x:Key="FontAwesomeReplyAll">&#xf122;</system:String>
+    <system:String x:Key="FontAwesomeReply">&#xf3e5;</system:String>
+    <system:String x:Key="FontAwesomeEye">&#xf06e;</system:String>
+    <system:String x:Key="FontAwesomeCloudDownload">&#xf381;</system:String>
+
     <!--Font sizes-->
-    <system:Double x:Key="FontSizeSmall">8</system:Double>
+    <system:Double x:Key="FontSizeSmaller">8</system:Double>
+    <system:Double x:Key="FontSizeSmall">10</system:Double>
     <system:Double x:Key="FontSizeRegular">12</system:Double>
     <system:Double x:Key="FontSizeRegularExtra">14</system:Double>
     <system:Double x:Key="FontSizeBig">16</system:Double>

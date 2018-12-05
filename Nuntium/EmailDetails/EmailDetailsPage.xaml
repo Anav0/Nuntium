@@ -7,8 +7,171 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Nuntium"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="Blue">
+             d:DesignHeight="350" d:DesignWidth="500"
+           >
 
-    </Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--Upper row-->
+        <Grid Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Sender avatar-->
+            <local:RoundAvatar Initials="C"
+                               AvatarBackground="{StaticResource AccentColorBrush}"
+                               Width="{StaticResource RoundAvatarSize}"
+                               Height="{StaticResource RoundAvatarSize}"
+                               Grid.Column="0" />
+
+            <!--Sender name-->
+            <TextBlock Text="Cog" 
+                       Grid.Column="1" 
+                       FontSize="{StaticResource FontSizeRegularExtra}"
+                       FontWeight="DemiBold" 
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Left"
+                       Padding="12 6 6 6 "
+                       />
+
+            <!--Reply buttons and delete-->
+            <Border Grid.Column="2" 
+                    BorderThickness="1" 
+                    CornerRadius="1"
+                    BorderBrush="{StaticResource LightForegroundColorBrush}">
+
+                <StackPanel Orientation="Horizontal" >
+
+                    <!--Reply-->
+                    <Button Style="{StaticResource LightIconButton}"
+                        Content="{StaticResource FontAwesomeReply}"
+                        Padding="16 8"                        
+                        Margin="0"
+                        ToolTip="Reply"
+                        />
+
+                    <Border Style="{StaticResource Separator}" 
+                            Margin="0"
+                            Background="{StaticResource DefaultBorderColorBrush}"
+                            
+                            />
+
+                    <!--Reply all-->
+                    <Button Style="{StaticResource LightIconButton}"
+                        Content="{StaticResource FontAwesomeReplyAll}"
+                        Padding="16 8"
+                        Margin="0"
+                        ToolTip="Reply to all"
+                            />
+
+                    <Border Style="{StaticResource Separator}" 
+                            Margin="0"
+                            Background="{StaticResource DefaultBorderColorBrush}"
+                            />
+
+                    <!--Delete-->
+                    <Button Style="{StaticResource LightIconButton}"
+                        Content="{StaticResource FontAwesomeBin}"
+                        Padding="16 8"                       
+                        Margin="0"
+                        ToolTip="Delete this email"
+                        />
+
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+        <!--Html email display-->
+        <WebBrowser Grid.Row="1" local:WebBrowserAttached.Body="{Binding Html}"/>
+
+        <!--Separator-->
+        <Border Style="{StaticResource HorizontalSeparator}"
+                Grid.Row="2"
+
+                />
+
+        <!--Attachments section-->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+
+            </Grid.ColumnDefinitions>
+            
+            <!--Attached files-->
+            <local:EmailDetailsAttachedSection  Items="{Binding AttachementsList}"/>
+
+            
+            <!--<Button
+                Grid.Column="1"
+                Style="{StaticResource RoundLightIconButon}"
+                Content="{StaticResource FontAwesomeEye}"
+                />-->
+
+            <!--Download button-->
+            <Button
+                Grid.Column="2"
+                Style="{StaticResource RoundLightIconButon}"
+                Content="{StaticResource FontAwesomeCloudDownload}"
+                ToolTip="Download all attached files"
+                />
+
+        </Grid>
+
+        <!--Quick response control-->
+        <Border Grid.Row="5" BorderThickness="0 1 0 1" BorderBrush="{StaticResource DefaultBorderColorBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!--Input-->
+                <TextBox
+                    Background="{StaticResource SecondaryBackgroundColorBrush}"
+                    Grid.Column="0"
+                    Style="{StaticResource PlaceholderTextBox}"
+                    Tag="Write your reply"
+                    />
+
+                <!--Add Attachments-->
+                <Button
+                    Background="{StaticResource SecondaryBackgroundColorBrush}"
+                    Grid.Column="1"
+                    Style="{StaticResource IconButton}"
+                    Content="{StaticResource FontAwesomePaperClip}"
+                    Foreground="{StaticResource LightForegroundColorBrush}"
+                    Margin="0"
+                    Padding="16"
+                    />
+
+                <!--Send message button-->
+                <Border  Grid.Column="2" BorderThickness="1 0 0 0" BorderBrush="{StaticResource DefaultBorderColorBrush}">
+                    <Button
+                            Style="{StaticResource IconButton}"
+                            Content="{StaticResource FontAwesomePaperPlane}"
+                            Foreground="{StaticResource AccentColorBrush}"
+                            Width="36"
+                            Height="36"
+                            />
+                </Border>
+
+            </Grid>
+        </Border>
+
+        </Grid>
 </local:BasePage>

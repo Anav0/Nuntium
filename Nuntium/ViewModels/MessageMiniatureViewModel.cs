@@ -49,7 +49,11 @@ namespace Nuntium
             DeleteCommand = new RelayCommandWithParameter((parameter) => Delete(parameter));
             ToggleStarCommand = new RelayCommand(ToggleStar);
             ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
+            ShowEmailDetailsCommand = new RelayCommand(ShowEmailDetails);
+
         }
+
+      
 
         #region EventHandlers
 
@@ -88,6 +92,8 @@ namespace Nuntium
 
         public ICommand ToggleArchiveCommand { get; set; }
 
+        public ICommand ShowEmailDetailsCommand { get; set; }
+
         #endregion
 
         #region Command Methods
@@ -122,6 +128,10 @@ namespace Nuntium
             RaiseOnItemDeletedEvent();
         }
 
+        private void ShowEmailDetails()
+        {
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, new EmailDetailsPageViewModel());
+        }
 
         #endregion
     }

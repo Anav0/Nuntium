@@ -7,7 +7,7 @@
         xmlns:core="clr-namespace:Nuntium;assembly=Nuntium"
         mc:Ignorable="d"
         WindowStyle="None"
-        AllowsTransparency="True"
+        AllowsTransparency="False"
         WindowStartupLocation="CenterScreen"
         x:Name="AppWindow"
         Icon="Images/Logo/logo.ico"

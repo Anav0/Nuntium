@@ -53,16 +53,10 @@
                                     Background="Transparent"
                                     MaxHeight="170"
                                     >
-                                    <Grid.ContextMenu>
-                                        <ContextMenu >
-                                            <MenuItem Header="Move to category"/>
-                                            <MenuItem Header="Delete message"/>
-                                            <MenuItem Header="Star message"/>
-                                            <MenuItem Header="Archive message"/>
-                                            <MenuItem Header="Mark as unread"/>
-                                            <MenuItem Header="Mark as spam"/>
-                                        </ContextMenu>    
-                                    </Grid.ContextMenu>
+                                    <Grid.InputBindings>
+                                        <MouseBinding Command="{Binding ShowEmailDetailsCommand}" MouseAction="LeftClick"/>
+                                    </Grid.InputBindings>
+                                    
                                     
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -77,32 +71,32 @@
 
                                     <!--Check mark-->
                                     <Border 
-                                    Name="checkMark"
-                                    Grid.Column="0"
-                                    Grid.RowSpan="2"
-                                    BorderThickness="2 0 0 0" 
-                                    BorderBrush="Transparent"/>
+                                        Name="checkMark"
+                                        Grid.Column="0"
+                                        Grid.RowSpan="2"
+                                        BorderThickness="2 0 0 0" 
+                                        BorderBrush="Transparent"/>
 
                                     <!--Avatar-->
                                     <local:RoundAvatar
-                                    x:Name="avatar"
-                                    Width="36"
-                                    Height="36"
-                                    Margin="8"
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Initials="{Binding Initials}"
-                                    AvatarBackground="{Binding AvatarBackground}"
-                                    ImagePath="{Binding ImagePath}"
-                                    />
+                                        x:Name="avatar"
+                                        Width="{StaticResource RoundAvatarSize}"
+                                        Height="{StaticResource RoundAvatarSize}"
+                                        Margin="8"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Initials="{Binding Initials}"
+                                        AvatarBackground="{Binding AvatarBackground}"
+                                        ImagePath="{Binding ImagePath}"
+                                        />
 
                                     <!--Name, title and time-->
                                     <Grid 
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    Margin="8" 
-                                    >
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        Margin="8" 
+                                        >
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>

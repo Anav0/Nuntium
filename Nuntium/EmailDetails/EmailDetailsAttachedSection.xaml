@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Nuntium.AttachmentsSection"
+﻿<UserControl x:Class="Nuntium.EmailDetailsAttachedSection"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,25 +6,12 @@
              xmlns:local="clr-namespace:Nuntium"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{x:Static local:AttachmentsSectionDesign.Instance}"
-             Background="Transparent"
+             x:Name="control"
              >
-
-    <!--Attachments-->
-    <StackPanel 
-        Orientation="Vertical" 
-        Margin="8 0 0 0"
-        >
-
-        <!--Attachments label-->
-        <Label 
-            Content="Attachments"
-            FontSize="{StaticResource FontSizeRegularExtra}"
-            />
 
         <!--Attached files list-->
         <ListView
-        ItemsSource="{Binding Items}"
+        ItemsSource="{Binding Items, ElementName=control}"
         BorderThickness="0"
         Background="Transparent"
         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -43,8 +30,9 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListViewItem}">
                                 <local:AttachFile 
+                                    Style="{StaticResource SecondaryAttachFileStyle}"
                                     DataContext="{Binding}" 
-                                    Margin="4"
+                                    Margin="8"
                                     HorizontalAlignment="Stretch"
                                     />
                             </ControlTemplate>
@@ -55,8 +43,4 @@
 
         </ListView>
 
-        <Border Style="{StaticResource HorizontalSeparator}"/>
-
-    </StackPanel>
-    
 </UserControl>
