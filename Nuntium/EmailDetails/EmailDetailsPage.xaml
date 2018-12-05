@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
 
         <!--Upper row-->
-        <Grid Margin="16">
+        <Grid Grid.Column="0" Margin="16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -96,34 +96,40 @@
         <!--Html email display-->
         <WebBrowser Grid.Row="1" local:WebBrowserAttached.Body="{Binding Html}"/>
 
-        <!--Separator-->
-        <Border Style="{StaticResource HorizontalSeparator}"
-                Grid.Row="2"
-
-                />
-
         <!--Attachments section-->
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="2" Visibility="{Binding Items.Count,ElementName=attachments, Converter={local:NumberToVisibilityGoneConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
 
             </Grid.ColumnDefinitions>
-            
-            <!--Attached files-->
-            <local:EmailDetailsAttachedSection  Items="{Binding AttachementsList}"/>
 
+            <!--Separator-->
+            <Border Style="{StaticResource HorizontalSeparator}"
+                Grid.Row="0"
+                Grid.ColumnSpan="4"
+                />
+
+            <!--Attached files-->
+            <local:EmailDetailsAttachedSection Grid.Row="1" x:Name="attachments" Items="{Binding AttachementsList}"/>
             
             <!--<Button
-                Grid.Column="1"
+                Grid.Column="2"
                 Style="{StaticResource RoundLightIconButon}"
                 Content="{StaticResource FontAwesomeEye}"
                 />-->
 
             <!--Download button-->
             <Button
-                Grid.Column="2"
+                Grid.Column="3"
+                Grid.Row="1"
                 Style="{StaticResource RoundLightIconButon}"
                 Content="{StaticResource FontAwesomeCloudDownload}"
                 ToolTip="Download all attached files"
@@ -131,8 +137,8 @@
 
         </Grid>
 
-        <!--Quick response control-->
-        <Border Grid.Row="5" BorderThickness="0 1 0 1" BorderBrush="{StaticResource DefaultBorderColorBrush}">
+        <!--Quick response section-->
+        <Border Grid.Row="3" BorderThickness="0 1 0 1" BorderBrush="{StaticResource DefaultBorderColorBrush}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
