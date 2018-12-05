@@ -26,13 +26,14 @@
         <ListView
         ItemsSource="{Binding Items}"
         BorderThickness="0"
-            Background="Transparent"
+        Background="Transparent"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
         >
 
             <!--ItemsPanel-->
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="2" HorizontalAlignment="Left"/>
+                    <WrapPanel Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
 
