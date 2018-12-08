@@ -7,8 +7,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Nuntium"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="500"
-           >
+             d:DesignHeight="350" d:DesignWidth="500">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -59,6 +58,7 @@
                         Padding="16 8"                        
                         Margin="0"
                         ToolTip="Reply"
+                        Command="{Binding ReplyCommand}"
                         />
 
                     <Border Style="{StaticResource Separator}" 
@@ -73,6 +73,7 @@
                         Padding="16 8"
                         Margin="0"
                         ToolTip="Reply to all"
+                        Command="{Binding ReplyToAllCommand}"
                             />
 
                     <Border Style="{StaticResource Separator}" 
@@ -86,6 +87,7 @@
                         Padding="16 8"                       
                         Margin="0"
                         ToolTip="Delete this email"
+                        Command="{Binding DeleteCommand}"
                         />
 
                 </StackPanel>
@@ -94,7 +96,10 @@
         </Grid>
 
         <!--Html email display-->
-        <WebBrowser Grid.Row="1" local:AttachedWebBrowser.Body="{Binding Html}"/>
+        <WebBrowser Grid.Row="1" 
+                    local:AttachedWebBrowser.Body="{Binding Html}"
+                    
+                    />
 
         <!--Attachments section-->
         <Grid Grid.Row="2" Visibility="{Binding Items.Count,ElementName=attachments, Converter={local:NumberToVisibilityGoneConverter}}">
@@ -135,6 +140,7 @@
                 Style="{StaticResource RoundLightIconButon}"
                 Content="{StaticResource FontAwesomeCloudDownload}"
                 ToolTip="Download all attached files"
+                Command="{Binding DownloadAllAttachmentsCommand}"
                 />
 
         </Grid>
@@ -154,6 +160,7 @@
                     Grid.Column="0"
                     Style="{StaticResource PlaceholderTextBox}"
                     Tag="Write your reply"
+                    Text="{Binding QuickReply}"
                     />
 
                 <!--Add Attachments-->
@@ -165,17 +172,19 @@
                     Foreground="{StaticResource LightForegroundColorBrush}"
                     Margin="0"
                     Padding="16"
+                    Command="{Binding AddAttachmentCommand}"
                     />
 
                 <!--Send message button-->
                 <Border  Grid.Column="2" BorderThickness="1 0 0 0" BorderBrush="{StaticResource DefaultBorderColorBrush}">
                     <Button
-                            Style="{StaticResource IconButton}"
-                            Content="{StaticResource FontAwesomePaperPlane}"
-                            Foreground="{StaticResource AccentColorBrush}"
-                            Width="36"
-                            Height="36"
-                            />
+                        Style="{StaticResource IconButton}"
+                        Content="{StaticResource FontAwesomePaperPlane}"
+                        Foreground="{StaticResource AccentColorBrush}"
+                        Width="36"
+                        Height="36"
+                        Command="{Binding SendQuickReplyCommand}"
+                        />
                 </Border>
 
             </Grid>
