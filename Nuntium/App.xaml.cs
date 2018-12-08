@@ -29,13 +29,13 @@ namespace Nuntium
 
         private void SetupIoC()
         {
-            IoC.Kernel.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
-
-            IoC.Kernel.Bind<SideMenuViewModel>().ToConstant(new SideMenuViewModel());
+            IoC.Kernel.Bind<IEmailLocator>().ToConstant(new MockedEmailLocator());
 
             IoC.Kernel.Bind<IEventAggregator>().ToConstant(new EventAggregator());
 
-            IoC.Kernel.Bind<TextEditorViewModel>().ToConstant(new TextEditorViewModel());
+            IoC.Kernel.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
+
+            IoC.Kernel.Bind<SideMenuViewModel>().ToConstant(new SideMenuViewModel());
 
             IoC.Kernel.Bind<AddressSectionViewModel>().ToConstant(new AddressSectionViewModel());
 
@@ -44,6 +44,8 @@ namespace Nuntium
             IoC.Kernel.Bind<SearchSectionViewModel>().ToConstant(new SearchSectionViewModel());
 
             IoC.Kernel.Bind<FormattingSubmenuViewModel>().ToConstant(new FormattingSubmenuViewModel());
+
+            IoC.Kernel.Bind<TextEditorViewModel>().ToConstant(new TextEditorViewModel());
         }
     }
 }

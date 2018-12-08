@@ -77,7 +77,6 @@ namespace Nuntium
 
         #endregion
 
-
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!(sender is TextBox box))
@@ -111,6 +110,9 @@ namespace Nuntium
             if (!(new EmailAddressAttribute().IsValid(box.Text)))
                 return;
 
+            if (Addresses == null)
+                Addresses = new ObservableCollection<MailWrapperViewModel>();
+
             var lastChar = 0;
 
             if(excludeLastCharacter)
@@ -118,11 +120,7 @@ namespace Nuntium
                 lastChar = 1;
             }
 
-            var adr = new Address
-            {
-                EmailAddress = box.Text.Remove(box.Text.Length - 1, lastChar),
-                EmailCategory = Purpose,
-            };
+            var adr = box.Text.Remove(box.Text.Length - 1, lastChar);
 
             var wrapperVM = new MailWrapperViewModel
             {
@@ -130,16 +128,48 @@ namespace Nuntium
                 FirstLetter = box.Text[0].ToString().ToUpper(),
             };
 
-            wrapperVM.OnDeleteButtonClick += ((s, args) =>
+            wrapperVM.DeleteCommand = new RelayCommand (() =>
             {
                 Addresses.Remove(wrapperVM);
-                IoC.Kernel.Get<AddressSectionViewModel>().Addresses.Remove(adr);
+                RemoveBasedOnPurpose(wrapperVM);
             });
 
-            IoC.Kernel.Get<AddressSectionViewModel>().Addresses.Add(adr);
+            AddBasedOnPurpose(wrapperVM);
             Addresses.Add(wrapperVM);
 
             box.Text = "";
+        }
+
+        private void AddBasedOnPurpose(MailWrapperViewModel wrapper)
+        {
+            switch(Purpose)
+            {
+                case AddressCategory.BCC:
+                    IoC.Kernel.Get<AddressSectionViewModel>().BCCEmailsList.Add(wrapper);
+                    break;
+                case AddressCategory.CC:
+                    IoC.Kernel.Get<AddressSectionViewModel>().CCEmailsList.Add(wrapper);
+                    break;
+                case AddressCategory.To:
+                    IoC.Kernel.Get<AddressSectionViewModel>().ToEmailsList.Add(wrapper);
+                    break;
+            }
+        }
+
+        private void RemoveBasedOnPurpose(MailWrapperViewModel wrapper)
+        {
+            switch (Purpose)
+            {
+                case AddressCategory.BCC:
+                    IoC.Kernel.Get<AddressSectionViewModel>().BCCEmailsList.Remove(wrapper);
+                    break;
+                case AddressCategory.CC:
+                    IoC.Kernel.Get<AddressSectionViewModel>().CCEmailsList.Remove(wrapper);
+                    break;
+                case AddressCategory.To:
+                    IoC.Kernel.Get<AddressSectionViewModel>().ToEmailsList.Remove(wrapper);
+                    break;
+            }
         }
     }
 }

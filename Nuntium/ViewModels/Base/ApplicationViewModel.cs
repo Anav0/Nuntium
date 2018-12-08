@@ -13,10 +13,9 @@ namespace Nuntium
 
         #endregion
 
-
         public void GoToPage(ApplicationPage page, BaseViewModel viewModel = null)
         {
-            if (page == CurrentPage)
+            if (page == CurrentPage && page != ApplicationPage.EmailDetailsPage)
                 return;
 
             CurrentPageViewModel = viewModel;

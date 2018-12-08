@@ -50,10 +50,7 @@ namespace Nuntium
             ToggleStarCommand = new RelayCommand(ToggleStar);
             ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
             ShowEmailDetailsCommand = new RelayCommand(ShowEmailDetails);
-
         }
-
-      
 
         #region EventHandlers
 
@@ -130,7 +127,7 @@ namespace Nuntium
 
         private void ShowEmailDetails()
         {
-            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, new EmailDetailsPageViewModel());
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, new EmailDetailsPageViewModel(this));
         }
 
         #endregion

@@ -9,7 +9,12 @@ namespace Nuntium
     public class AddressSectionViewModel : BaseViewModel
     {
 
-        public ObservableCollection<Address> Addresses { get; set; } = new ObservableCollection<Address>();
+        public ObservableCollection<MailWrapperViewModel> ToEmailsList { get; set; }
+
+        public ObservableCollection<MailWrapperViewModel> CCEmailsList { get; set; }
+
+        public ObservableCollection<MailWrapperViewModel> BCCEmailsList { get; set; }
+
 
         public bool IsCCandBCCVisible { get; set; }
 
@@ -20,6 +25,11 @@ namespace Nuntium
         public AddressSectionViewModel()
         {
             ShowCCandBCCFieldsCommand = new RelayCommand(ShowCCandBCCFields);
+
+            ToEmailsList = new ObservableCollection<MailWrapperViewModel>();
+            CCEmailsList = new ObservableCollection<MailWrapperViewModel>(); 
+            BCCEmailsList = new ObservableCollection<MailWrapperViewModel>();
+
         }
 
         private void ShowCCandBCCFields() => IsCCandBCCVisible ^= true;

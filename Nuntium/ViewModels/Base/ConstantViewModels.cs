@@ -11,6 +11,8 @@ namespace Nuntium
     {
         public static ConstantViewModels Instance { get; private set; } = new ConstantViewModels();
 
+        public InboxPageViewModel InboxPageVM { get; set; }
+
         public ApplicationViewModel ApplicationViewModelInstance { get; private set; } = IoC.Kernel.Get<ApplicationViewModel>();
 
         public NotificationIconViewModel NotificationIconViewModelInstance { get; private set; } = IoC.Kernel.Get<NotificationIconViewModel>();

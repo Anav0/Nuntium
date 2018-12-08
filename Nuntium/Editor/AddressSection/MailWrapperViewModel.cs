@@ -1,4 +1,5 @@
 ﻿
+using Nuntium.Core;
 using System;
 using System.Windows.Input;
 
@@ -15,20 +16,16 @@ namespace Nuntium
 
         public string FirstLetter { get; set; }
 
-
         public string BubbleColor { get; set; } = "#FF7F50";
 
         #endregion
 
         public ICommand DeleteCommand { get; set; }
 
-        public event EventHandler OnDeleteButtonClick;
-
         public MailWrapperViewModel()
         {
-            DeleteCommand = new RelayCommand(Delete);
+
         }
 
-        private void Delete() => OnDeleteButtonClick?.Invoke(this, new EventArgs());
     }
 }

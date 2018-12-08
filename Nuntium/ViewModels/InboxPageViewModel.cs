@@ -1,4 +1,5 @@
-﻿using Nuntium.Core;
+﻿using Ninject;
+using Nuntium.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -282,19 +283,18 @@ namespace Nuntium
             }
 
             //TODO: delete after frontend is done
-            for (int i = 0; i < 100; i++)
+            foreach (var email in IoC.Kernel.Get<IEmailLocator>().GetAllEmails())
             {
                 var msg = new MessageMiniatureViewModel
                 {
-                    Id = i.ToString(),
+                    Id = email.Id.ToString(),
                     AvatarBackground = ColorHelpers.GenerateRandomColor(),
-                    HasAttachments = rnd.Next(0, 100) < 80,
-                    SendDate = DateHelper.RandomDate(),
-                    SenderName = Faker.Name.FullName(Faker.NameFormats.Standard),
-                    Title = Faker.Lorem.Sentence(),
+                    HasAttachments = email.Attachments.Count > 0 ? true : false,
+                    SendDate = email.SendDate,
+                    SenderName = email.SenderName,
+                    Title = email.Subject,
                     Placement = InboxCategoryType.Inbox,
-                    WasRead = rnd.Next(0, 100) < 60,
-                    MessageSnipit = string.Join(" ", Faker.Lorem.Sentences(10))
+                    MessageSnipit = email.Message
 
                 };
                 msg.OnItemDeleted += DeleteMessage;
@@ -310,9 +310,10 @@ namespace Nuntium
             LoadTeachers();
             GoToCategory();
             SortMessages();
-        }
 
-       
+            //TODO: binding InboxPageViewModel to field
+            ConstantViewModels.Instance.InboxPageVM = this;
+        }
 
         #endregion
 
@@ -356,7 +357,7 @@ namespace Nuntium
             }
         }
 
-        private void DeleteMessage(object sender, EventArgs e)
+        public void DeleteMessage(object sender, EventArgs e)
         {
             if (!(sender is MessageMiniatureViewModel item))
                 return;
@@ -592,14 +593,14 @@ namespace Nuntium
 
             switch (ContactsSortedBy.SortedBy)
             {
-                case Core.SortedBy.Alphabetical:
+                case SortedBy.Alphabetical:
                     ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.FilteredItems.OrderBy(x => x.PersonName));
                     break;
-                case Core.SortedBy.Class:
-                case Core.SortedBy.Position:
+                case SortedBy.Class:
+                case SortedBy.Position:
                     ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.FilteredItems.OrderBy(x => x.PersonPosition));
                     break;
-                case Core.SortedBy.NewMessage:
+                case SortedBy.NewMessage:
                     ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.FilteredItems.OrderBy(x => x.HasNewMessages ? 0 : 1));
                     break;
 
