@@ -14,8 +14,6 @@ namespace Nuntium
 
         public string Address { get; set; }
 
-        public string FirstLetter { get; set; }
-
         public string BubbleColor { get; set; } = "#FF7F50";
 
         #endregion

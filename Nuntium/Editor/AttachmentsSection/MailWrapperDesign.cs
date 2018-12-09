@@ -8,7 +8,6 @@ namespace Nuntium
         public MailWrapperDesign()
         {
             Address = "address@mail.com";
-            FirstLetter = "A";
         }
     }
 }

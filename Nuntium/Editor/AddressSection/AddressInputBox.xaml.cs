@@ -125,7 +125,6 @@ namespace Nuntium
             var wrapperVM = new MailWrapperViewModel
             {
                 Address = box.Text.Remove(box.Text.Length - 1, lastChar).RemoveWhitespace(),
-                FirstLetter = box.Text[0].ToString().ToUpper(),
             };
 
             wrapperVM.DeleteCommand = new RelayCommand (() =>

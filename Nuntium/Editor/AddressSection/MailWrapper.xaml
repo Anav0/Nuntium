@@ -28,7 +28,8 @@
                 HorizontalAlignment="Left"
                 Panel.ZIndex="1"
                 >
-                <Label Content="{Binding FirstLetter}" 
+                <Label 
+                   Content="{Binding Address, Converter={local:NameToInitialsConverter}}" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"
                    Padding="0"
