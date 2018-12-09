@@ -285,7 +285,7 @@
                                     Grid.Row="1"
                                     Grid.Column="2"
                                     Padding="16 0 16 16"
-                                    Text="{Binding MessageSnipit}"
+                                    Text="{Binding Message}"
                                     TextWrapping="Wrap"
                                     TextTrimming="CharacterEllipsis"
                                     Foreground="{StaticResource SideForegroundColorBrush}"

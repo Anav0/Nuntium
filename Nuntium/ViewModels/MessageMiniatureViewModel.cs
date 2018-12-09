@@ -38,7 +38,7 @@ namespace Nuntium
 
         public InboxCategoryType PrevPlacement { get; set; }
 
-        public string MessageSnipit { get; set; }
+        public string Message { get; set; }
 
         public TimeSpan AnimateOutTimeSpan { get; set; } = new TimeSpan(0, 0, 0, 0, 500);
 

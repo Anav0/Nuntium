@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace Nuntium
@@ -35,7 +36,7 @@ namespace Nuntium
         {
             this.DisplayedMessageVM = DisplayedMessageVM;
 
-            this.Html = DisplayedMessageVM.MessageSnipit; //GetHtmlFromLink("http://c0185784a2b233b0db9b-d0e5e4adc266f8aacd2ff78abb166d77.r51.cf2.rackcdn.com/v1_templates/template_02.html");
+            this.Html = DisplayedMessageVM.Message; //GetHtmlFromLink("http://c0185784a2b233b0db9b-d0e5e4adc266f8aacd2ff78abb166d77.r51.cf2.rackcdn.com/v1_templates/template_02.html");
 
             this.SenderName = DisplayedMessageVM.SenderName;
 
@@ -82,9 +83,10 @@ namespace Nuntium
 
         private void Reply()
         {
-            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(Core.ApplicationPage.TextEditor, new TextEditorViewModel());
+            //Go to TextEditor
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
 
-            ConstantViewModels.Instance.AddressSectionVM.Topic = DisplayedMessageVM.Title;
+            AddInformationAboutPrevMessageToTextEditor();
 
             var wrapper = new MailWrapperViewModel
             {
@@ -97,6 +99,22 @@ namespace Nuntium
             });
 
             ConstantViewModels.Instance.AddressSectionVM.ToEmailsList.Add(wrapper);
+        }
+
+        private void AddInformationAboutPrevMessageToTextEditor()
+        {
+            ConstantViewModels.Instance.AddressSectionVM.Topic = "RE: " + DisplayedMessageVM.Title;
+            var editor = IoC.Kernel.Get<CustomRichTextBox>();
+            var document = editor.Document;
+            var email = IoC.Kernel.Get<IEmailLocator>().GetEmailById(DisplayedMessageVM.Id);
+            var to = "";
+            email.ToAddresses.ForEach(x => to += x + ";");
+
+            document.Blocks.Add(new Paragraph(new Run("From: " + email.Address)));
+            document.Blocks.Add(new Paragraph(new Run("Send: " + email.SendDate.ToString())));
+            document.Blocks.Add(new Paragraph(new Run("To: " + to)));
+            document.Blocks.Add(new Paragraph(new Run("Subject: " + email.Subject)));
+            document.Blocks.Add(new Paragraph(new Run(DisplayedMessageVM.Message)));
         }
 
         private string GetHtmlFromLink(string link)

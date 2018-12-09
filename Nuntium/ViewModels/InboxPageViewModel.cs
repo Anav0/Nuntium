@@ -294,7 +294,7 @@ namespace Nuntium
                     SenderName = email.SenderName,
                     Title = email.Subject,
                     Placement = InboxCategoryType.Inbox,
-                    MessageSnipit = email.Message
+                    Message = email.Message
 
                 };
                 msg.OnItemDeleted += DeleteMessage;
