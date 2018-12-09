@@ -83,6 +83,9 @@ namespace Nuntium
 
         private void Reply()
         {
+
+            ConstantViewModels.Instance.AddressSectionVM.ToEmailsList.Clear();
+
             //Go to TextEditor
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
 
