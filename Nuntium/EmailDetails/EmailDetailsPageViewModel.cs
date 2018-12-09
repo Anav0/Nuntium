@@ -1,4 +1,6 @@
 ﻿
+using Ninject;
+using Nuntium.Core;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -86,7 +88,7 @@ namespace Nuntium
 
             var wrapper = new MailWrapperViewModel
             {
-                Address = "kurwa@chuj.pl",
+                Address = IoC.Kernel.Get<IEmailLocator>().GetEmailById(DisplayedMessageVM.Id).Address,
             };
 
             wrapper.DeleteCommand = new RelayCommand(() =>

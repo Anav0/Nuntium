@@ -4,7 +4,7 @@ namespace Nuntium.Core
 {
     public class MockedEmailLocator : IEmailLocator
     {
-        public List<Email> mEmailsList;
+        private List<Email> mEmailsList;
 
         public MockedEmailLocator()
         {
@@ -13,14 +13,16 @@ namespace Nuntium.Core
 
             var people = faker.FakePeople(250);
 
+            int i = 0;
             foreach (var person in people)
             {
+                
                 var firstName = person.FirstName;
                 var lastName = person.LastName;
                 var email = new Email
                 {
-                    Id = new Guid().ToString(),
-                    SenderName = person.FirstName + " "+person.LastName,
+                    Id = i.ToString(),
+                    SenderName = person.FirstName +" "+person.LastName,
                     Address = person.Email,
                     Subject = faker.FakeWords(10).ToTitleCase(),
                     Message = faker.FakeWords(50).ToTitleCase(),
@@ -30,6 +32,8 @@ namespace Nuntium.Core
                 email.ToAddresses.Add("test@test.mail.com");
 
                 mEmailsList.Add(email);
+
+                i++;
             }
         }
 

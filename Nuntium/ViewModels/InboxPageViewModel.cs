@@ -287,7 +287,7 @@ namespace Nuntium
             {
                 var msg = new MessageMiniatureViewModel
                 {
-                    Id = email.Id.ToString(),
+                    Id = email.Id,
                     AvatarBackground = ColorHelpers.GenerateRandomColor(),
                     HasAttachments = email.Attachments.Count > 0 ? true : false,
                     SendDate = email.SendDate,
