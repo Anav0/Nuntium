@@ -12,6 +12,6 @@ namespace Nuntium.Core.Fake
 
         string FakeLastName();
 
-        List<Person> FakePeople(int howMany);
+        List<FakePerson> FakePeople(int howMany);
     }
 }

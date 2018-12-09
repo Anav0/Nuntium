@@ -67,15 +67,15 @@ namespace Nuntium.Core.Fake
             return output;
         }
 
-        public List<Person> FakePeople(int howMany)
+        public List<FakePerson> FakePeople(int howMany)
         {
-            var output = new List<Person>();
+            var output = new List<FakePerson>();
 
             for (int i = 0; i < howMany; i++)
             {
                 var isMale = i % 2 == 0 ? true : false;
 
-                var person = new Person
+                var person = new FakePerson
                 {
                     BirthDate = DateHelper.RandomDate(new DateTime(1980, 12, 30)),
                     FirstName = FakeFirstName(isMale),

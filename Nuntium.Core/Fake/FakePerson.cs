@@ -4,12 +4,10 @@ using System.Text;
 
 namespace Nuntium.Core.Fake
 {
-    public class Person
+    public class FakePerson
     {
         public string FirstName, LastName, Email;
         public DateTime BirthDate;
         public Gender Sex;
-        
-
     }
 }
