@@ -21,6 +21,9 @@ namespace Nuntium
 
         public IEventAggregator EventAggregatorInstance { get; private set; } = IoC.Kernel.Get<IEventAggregator>();
 
+        public IEmailService EmailServiceInstance { get; private set; } = IoC.Kernel.Get<IEmailService>();
+
+
         public TextEditorViewModel TextEditorVM { get; private set; } = IoC.Kernel.Get<TextEditorViewModel>();
 
         public AttachmentsSectionViewModel AttachmentsSectionVM { get; private set; } = IoC.Kernel.Get<AttachmentsSectionViewModel>();

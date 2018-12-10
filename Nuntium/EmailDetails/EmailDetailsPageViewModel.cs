@@ -93,7 +93,7 @@ namespace Nuntium
 
             var wrapper = new MailWrapperViewModel
             {
-                Address = IoC.Kernel.Get<IEmailLocator>().GetEmailById(DisplayedMessageVM.Id).Address,
+                Address = ConstantViewModels.Instance.EmailServiceInstance.GetEmailById(DisplayedMessageVM.Id).Address,
             };
 
             wrapper.DeleteCommand = new RelayCommand(() =>
@@ -109,7 +109,7 @@ namespace Nuntium
             ConstantViewModels.Instance.AddressSectionVM.Topic = "RE: " + DisplayedMessageVM.Title;
             var editor = IoC.Kernel.Get<CustomRichTextBox>();
             var document = editor.Document;
-            var email = IoC.Kernel.Get<IEmailLocator>().GetEmailById(DisplayedMessageVM.Id);
+            var email = ConstantViewModels.Instance.EmailServiceInstance.GetEmailById(DisplayedMessageVM.Id);
             var to = "";
             email.ToAddresses.ForEach(x => to += x + ";");
 

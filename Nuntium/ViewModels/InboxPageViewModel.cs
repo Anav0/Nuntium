@@ -283,7 +283,7 @@ namespace Nuntium
             }
 
             //TODO: delete after frontend is done
-            foreach (var email in IoC.Kernel.Get<IEmailLocator>().GetAllEmails())
+            foreach (var email in ConstantViewModels.Instance.EmailServiceInstance.GetAllEmails())
             {
                 var msg = new MessageMiniatureViewModel
                 {
