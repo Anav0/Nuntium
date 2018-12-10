@@ -16,8 +16,6 @@ namespace Nuntium
 
             SetupIoC();
 
-            Logger.DeleteLogFile();
-
             Current.MainWindow = new MainWindow();
 
             //TODO: this is just a quick hack for fixing the issue width not binding TextEditor's editor at startup
@@ -29,7 +27,7 @@ namespace Nuntium
 
         private void SetupIoC()
         {
-            IoC.Kernel.Bind<IEmailLocator>().ToConstant(new MockedEmailLocator());
+            IoC.Kernel.Bind<IEmailService>().ToConstant(new MockedEmailService());
 
             IoC.Kernel.Bind<IEventAggregator>().ToConstant(new EventAggregator());
 
