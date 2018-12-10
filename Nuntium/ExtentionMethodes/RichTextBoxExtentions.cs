@@ -11,6 +11,10 @@ namespace Nuntium
         public static System.Windows.Point GetEditorPointToScreen(this RichTextBox editor)
         {
             var rect = editor.CaretPosition.GetCharacterRect(LogicalDirection.Backward);
+
+            if (rect.IsEmpty)
+                return new System.Windows.Point();
+
             return editor.PointToScreen(rect.BottomRight);
         }
 
