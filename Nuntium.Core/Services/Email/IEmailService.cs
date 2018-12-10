@@ -2,9 +2,12 @@
 
 namespace Nuntium.Core
 {
-    public interface IEmailLocator
+    public interface IEmailService
     {
         Email GetEmailById(string id);
+
         List<Email> GetAllEmails();
+
+
     }
 }

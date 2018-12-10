@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 namespace Nuntium.Core
 {
-    public class MockedEmailLocator : IEmailLocator
+    public class MockedEmailService : IEmailService
     {
-        private List<Email> mEmailsList;
+        private readonly List<Email> mEmailsList;
 
-        public MockedEmailLocator()
+        public MockedEmailService()
         {
             mEmailsList = new List<Email>();
             var faker = new Fake.Fake();
@@ -16,13 +15,13 @@ namespace Nuntium.Core
             int i = 0;
             foreach (var person in people)
             {
-                
+
                 var firstName = person.FirstName;
                 var lastName = person.LastName;
                 var email = new Email
                 {
                     Id = i.ToString(),
-                    SenderName = person.FirstName +" "+person.LastName,
+                    SenderName = person.FirstName + " " + person.LastName,
                     Address = person.Email,
                     Subject = faker.FakeWords(10).ToTitleCase(),
                     Message = faker.FakeWords(50).ToTitleCase(),
