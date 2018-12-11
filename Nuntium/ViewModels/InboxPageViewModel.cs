@@ -1,11 +1,9 @@
-﻿using Ninject;
-using Nuntium.Core;
+﻿using Nuntium.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Nuntium
@@ -17,21 +15,21 @@ namespace Nuntium
 
         private List<MessageMiniatureViewModel> mRecentlyMovedMessages = new List<MessageMiniatureViewModel>();
 
-        private SortingOption _ContactsSortedBy;
+        private SortingOption mContactsSortedBy;
 
-        private InboxCategoryType _SelectedCategory;
+        private InboxCategoryType mSelectedCategory;
 
-        private SortingOption _MessagesSortedBy;
+        private SortingOption mMessagesSortedBy;
 
-        private bool? _SelectionMode = false;
+        private bool? mSelectionMode = false;
 
         #endregion
 
         #region Public properties
 
-        public ContactsListViewModel ContactListData { get; set; }
+        public ContactsListViewModel ContactListVM { get; set; }
 
-        public MessageMiniatureListViewModel MessageListData { get; set; }
+        public MessageMiniatureListViewModel MessageListVM { get; set; }
 
         public ObservableCollection<SortingOption> ContactsSortingOptions { get; set; }
 
@@ -41,10 +39,10 @@ namespace Nuntium
 
         public SortingOption ContactsSortedBy
         {
-            get => _ContactsSortedBy;
+            get => mContactsSortedBy;
             set
             {
-                _ContactsSortedBy = value;
+                mContactsSortedBy = value;
 
                 SortContacts();
             }
@@ -52,15 +50,15 @@ namespace Nuntium
 
         public InboxCategoryType SelectedCategory
         {
-            get => _SelectedCategory;
+            get => mSelectedCategory;
             set
             {
-                if (_SelectedCategory == value)
+                if (mSelectedCategory == value)
                     return;
 
-                _SelectedCategory = value;
+                mSelectedCategory = value;
 
-                GoToCategory();
+                GoToSelectedCategory();
                 SortMessages();
                 SelectMessages();
             }
@@ -68,10 +66,10 @@ namespace Nuntium
 
         public SortingOption MessagesSortedBy
         {
-            get => _MessagesSortedBy;
+            get => mMessagesSortedBy;
             set
             {
-                _MessagesSortedBy = value;
+                mMessagesSortedBy = value;
 
                 SortMessages();
                 SelectMessages();
@@ -84,12 +82,12 @@ namespace Nuntium
 
         public bool? SelectionMode
         {
-            get => _SelectionMode;
+            get => mSelectionMode;
 
             set
             {
-                if (_SelectionMode != value)
-                    _SelectionMode = value;
+                if (mSelectionMode != value)
+                    mSelectionMode = value;
 
                 SelectMessages();
             }
@@ -117,79 +115,323 @@ namespace Nuntium
 
         #region Constructor
 
-        public InboxPageViewModel()
+        public InboxPageViewModel(IEmailService emailService)
         {
-            var rnd = new Random();
+            InitializeCommands();
+            InitializeSortingOptions();
+            InitializeSubordinateViewModels();
 
-            LoadPupilsCommand = new RelayCommand(LoadPupils);
-            LoadTeachersCommand = new RelayCommand(LoadTeachers);
-            RestoreDeletedMessagesCommand = new RelayCommand(RestoreMessages);
-
-            DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
-            StarSelectedMessagesCommand = new RelayCommand(ToggleStarForSelectedMesseges);
-            ArchiveSelectedMessagesCommand = new RelayCommand(ArchiveSelectedMessages);
-            ShowTextEditorCommand = new RelayCommand(ShowTextEditor);
-            ContactsSortingOptions = new ObservableCollection<SortingOption>
+            foreach (var category in (InboxCategoryType[])Enum.GetValues(typeof(InboxCategoryType)))
             {
-                new SortingOption
-                {
-                    Id = 0,
-                    Option = "Alphabetically",
-                    SortedBy = Core.SortedBy.Alphabetical
-                },
-                new SortingOption
-                {
-                    Id = 1,
-                    Option = "Position",
-                    SortedBy = Core.SortedBy.Position
-                },
+                Messages.Add(category, new ObservableCollection<MessageMiniatureViewModel>());
+            }
 
-                new SortingOption
-                {
-                    Id = 2,
-                    Option = "New messages",
-                    SortedBy = Core.SortedBy.NewMessage
-                },
-            };
+            GetEmailsFromService(emailService);
 
-            MessagesSortingOptions = new ObservableCollection<SortingOption>
+            LoadTeachers();
+            GoToSelectedCategory();
+            SortMessages();
+
+        }
+
+        #endregion
+
+        #region Event handlers
+
+        private void ArchiveMessage(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            IsRestoringArchivedMessages = true;
+
+            mRecentlyMovedMessages.Clear();
+            mRecentlyMovedMessages.Add(item);
+
+            Messages[InboxCategoryType.Archive].Add(item);
+            Messages[item.Placement].Remove(item);
+
+            item.PrevPlacement = item.Placement;
+            item.Placement = InboxCategoryType.Archive;
+
+            //Delete message from displayed list
+            MessageListVM.Items.Remove(item);
+
+            DisplayRestorationPopup();
+
+        }
+
+        private void ToggleStarState(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            if (item.IsStared)
             {
-                new SortingOption
-                {
-                    Id = 0,
-                    Option = "By date",
-                    SortedBy = Core.SortedBy.Date
-                },
-                new SortingOption
-                {
-                    Id = 1,
-                    Option = "Alphabetically",
-                    SortedBy = Core.SortedBy.Alphabetical
-                },
-                new SortingOption
-                {
-                    Id = 2,
-                    Option = "By date",
-                    SortedBy = Core.SortedBy.Date
-                },
+                Messages[InboxCategoryType.Stared].Add(item);
+            }
+            else
+            {
+                Messages[InboxCategoryType.Stared].Remove(item);
+            }
+        }
 
-                new SortingOption
+        public void DeleteMessage(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            IsRestoringArchivedMessages = false;
+
+            mRecentlyMovedMessages.Clear();
+
+            //Add message to recently deleted ones
+            mRecentlyMovedMessages.Add(item);
+
+            MoveToDeletedList(item);
+
+            //Update placement of the message
+            item.PrevPlacement = item.Placement;
+            item.Placement = InboxCategoryType.Deleted;
+
+            //Delete message from displayed list
+            MessageListVM.Items.Remove(item);
+
+            DisplayRestorationPopup();
+        }
+
+        private void OnItemStared(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            if (item.IsStared)
+            {
+                Messages[InboxCategoryType.Stared].Add(item);
+            }
+            else
+            {
+                Messages[InboxCategoryType.Stared].Remove(item);
+            }
+
+        }
+
+        private void OnItemArchived(object sender, EventArgs e)
+        {
+            if (!(sender is MessageMiniatureViewModel item))
+                return;
+
+            if (item.IsArchived)
+            {
+                Messages[item.Placement].Remove(item);
+                Messages[InboxCategoryType.Archive].Add(item);
+
+                item.PrevPlacement = item.Placement;
+                item.Placement = InboxCategoryType.Archive;
+
+            }
+            else
+            {
+                Messages[item.Placement].Remove(item);
+                Messages[item.PrevPlacement].Add(item);
+
+                var tmp = item.Placement;
+                item.Placement = item.PrevPlacement;
+                item.PrevPlacement = tmp;
+            }
+
+            GoToSelectedCategory();
+            SortMessages();
+        }
+
+        #endregion
+
+        #region Command Methods
+
+        private void LoadTeachers()
+        {
+            ContactListVM.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListVM.AllItems.FindAll(x => x.IsStudent == false));
+
+            SortContacts();
+        }
+
+        private void LoadPupils()
+        {
+            ContactListVM.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListVM.AllItems.FindAll(x => x.IsStudent));
+
+            SortContacts();
+        }
+
+        private void SelectMessages()
+        {
+            switch (SelectionMode)
+            {
+                case null:
+                    MessageListVM.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items);
+                    break;
+
+                case true:
+                    switch (MessagesSortedBy.SortedBy)
+                    {
+                        case SortedBy.Unread:
+                            MessageListVM.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.Where(x => !x.WasRead));
+                            break;
+
+                        case SortedBy.Read:
+                            MessageListVM.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.Where(x => x.WasRead));
+                            break;
+
+                        case SortedBy.Stared:
+                            MessageListVM.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.Where(x => x.IsStared));
+                            break;
+
+                        case SortedBy.Unstared:
+                            MessageListVM.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.Where(x => !x.IsStared));
+                            break;
+
+                        default:
+                            MessageListVM.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items);
+                            break;
+                    }
+                    break;
+
+                case false:
+                    MessageListVM.SelectedItems.Clear();
+                    break;
+            }
+        }
+
+        private void RestoreMessages()
+        {
+            IsRestorePopupShown = false;
+
+            mRecentlyMovedMessages.ForEach(item =>
+            {
+                if (item.IsStared && !Messages[InboxCategoryType.Stared].Contains(item))
+                    Messages[InboxCategoryType.Stared].Add(item);
+
+                if (item.PrevPlacement == InboxCategoryType.Archive)
+                    item.IsArchived = true;
+                else item.IsArchived = false;
+
+                Messages[item.Placement].Remove(item);
+                Messages[item.PrevPlacement].Add(item);
+
+                var tmp = item.Placement;
+                item.Placement = item.PrevPlacement;
+                item.PrevPlacement = tmp;
+            });
+
+            GoToSelectedCategory();
+            SortMessages();
+            SelectMessages();
+        }
+
+        private void DeleteSelectedMessages()
+        {
+            new Thread(() =>
+            {
+                IsRestoringArchivedMessages = false;
+
+                mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListVM.SelectedItems);
+
+                for (int i = MessageListVM.SelectedItems.Count - 1; i >= 0; i--)
                 {
-                    Id = 3,
-                    Option = "Unread",
-                    SortedBy = Core.SortedBy.Unread
-                },
+                    var item = MessageListVM.SelectedItems[i];
 
-                 new SortingOption
+                    MoveToDeletedList(item);
+
+                    item.PrevPlacement = item.Placement;
+                    item.Placement = InboxCategoryType.Deleted;
+                }
+
+                GoToSelectedCategory();
+                SortMessages();
+                DisplayRestorationPopup();
+
+            }).Start();
+
+        }
+
+        private void ArchiveSelectedMessages()
+        {
+            //don't archive archived messages
+            if (SelectedCategory == InboxCategoryType.Archive)
+                return;
+
+            new Thread(() =>
+            {
+                IsRestoringArchivedMessages = true;
+
+                mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListVM.SelectedItems);
+
+                for (int i = MessageListVM.SelectedItems.Count - 1; i >= 0; i--)
                 {
-                    Id = 4,
-                    Option = "Read",
-                    SortedBy = Core.SortedBy.Read
-                },
+                    MessageListVM.SelectedItems[i].IsArchived = true;
 
-            };
+                    Messages[InboxCategoryType.Archive].Add(MessageListVM.SelectedItems[i]);
+                    Messages[MessageListVM.SelectedItems[i].Placement].Remove(MessageListVM.SelectedItems[i]);
 
-            ContactListData = new ContactsListViewModel
+                    MessageListVM.SelectedItems[i].PrevPlacement = MessageListVM.SelectedItems[i].Placement;
+                    MessageListVM.SelectedItems[i].Placement = InboxCategoryType.Archive;
+
+                }
+
+                GoToSelectedCategory();
+                SortMessages();
+                DisplayRestorationPopup();
+
+            }).Start();
+
+        }
+
+        private void ToggleStarForSelectedMesseges()
+        {
+            foreach (var message in MessageListVM.SelectedItems)
+            {
+                message.IsStared = true;
+
+                if (!Messages[InboxCategoryType.Stared].Contains(message))
+                    Messages[InboxCategoryType.Stared].Add(message);
+            }
+        }
+
+        private void ShowTextEditor()
+        {
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void GetEmailsFromService(IEmailService emailService)
+        {
+            foreach (var email in emailService.GetAllEmails())
+            {
+                var msg = new MessageMiniatureViewModel(email.Id)
+                {
+                    AvatarBackground = ColorHelpers.GenerateRandomColor(),
+                    HasAttachments = email.Attachments.Count > 0 ? true : false,
+                    SendDate = email.SendDate,
+                    SenderName = email.SenderName,
+                    Subject = email.Subject,
+                    Placement = InboxCategoryType.Inbox,
+                    Message = email.Message
+
+                };
+
+                msg.OnItemDeleted += DeleteMessage;
+                msg.OnItemArchived += ArchiveMessage;
+                msg.OnItemStared += ToggleStarState;
+
+                Messages[InboxCategoryType.Inbox].Add(msg);
+            }
+        }
+
+        private void InitializeSubordinateViewModels()
+        {
+            ContactListVM = new ContactsListViewModel
             {
                 AllItems = new List<ContactViewModel>
                 {
@@ -273,318 +515,88 @@ namespace Nuntium
                 },
             };
 
-            MessageListData = new MessageMiniatureListViewModel();
+            MessageListVM = new MessageMiniatureListViewModel();
 
-            MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>();
+            MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>();
 
-            foreach (var category in (InboxCategoryType[])Enum.GetValues(typeof(InboxCategoryType)))
+            ContactListVM.AllItems.Sort((y, x) => string.Compare(y.PersonName, x.PersonName));
+
+        }
+
+        private void InitializeSortingOptions()
+        {
+            ContactsSortingOptions = new ObservableCollection<SortingOption>
             {
-                Messages.Add(category, new ObservableCollection<MessageMiniatureViewModel>());
-            }
-
-            //TODO: delete after frontend is done
-            foreach (var email in ConstantViewModels.Instance.EmailServiceInstance.GetAllEmails())
-            {
-                var msg = new MessageMiniatureViewModel
+                new SortingOption
                 {
-                    Id = email.Id,
-                    AvatarBackground = ColorHelpers.GenerateRandomColor(),
-                    HasAttachments = email.Attachments.Count > 0 ? true : false,
-                    SendDate = email.SendDate,
-                    SenderName = email.SenderName,
-                    Title = email.Subject,
-                    Placement = InboxCategoryType.Inbox,
-                    Message = email.Message
-
-                };
-                msg.OnItemDeleted += DeleteMessage;
-                msg.OnItemArchived += ArchiveMessage;
-                msg.OnItemStared += ToggleStarState;
-                msg.Initials = msg.SenderName.GetInitials();
-
-                Messages[InboxCategoryType.Inbox].Add(msg);
-            }
-
-            ContactListData.AllItems.Sort((y, x) => string.Compare(y.PersonName, x.PersonName));
-
-            LoadTeachers();
-            GoToCategory();
-            SortMessages();
-
-            //TODO: binding InboxPageViewModel to field
-            ConstantViewModels.Instance.InboxPageVM = this;
-        }
-
-        #endregion
-
-        #region Event handlers
-
-        private void ArchiveMessage(object sender, EventArgs e)
-        {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
-
-            IsRestoringArchivedMessages = true;
-
-            mRecentlyMovedMessages.Clear();
-            mRecentlyMovedMessages.Add(item);
-
-            Messages[InboxCategoryType.Archive].Add(item);
-            Messages[item.Placement].Remove(item);
-
-            item.PrevPlacement = item.Placement;
-            item.Placement = InboxCategoryType.Archive;
-
-            //Delete message from displayed list
-            MessageListData.Items.Remove(item);
-
-            DisplayRestorationPopup();
-
-        }
-
-        private void ToggleStarState(object sender, EventArgs e)
-        {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
-
-            if (item.IsStared)
-            {
-                Messages[InboxCategoryType.Stared].Add(item);
-            }
-            else
-            {
-                Messages[InboxCategoryType.Stared].Remove(item);
-            }
-        }
-
-        public void DeleteMessage(object sender, EventArgs e)
-        {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
-
-            IsRestoringArchivedMessages = false;
-
-            mRecentlyMovedMessages.Clear();
-
-            //Add message to recently deleted ones
-            mRecentlyMovedMessages.Add(item);
-
-            MoveToDeletedList(item);
-
-            //Update placement of the message
-            item.PrevPlacement = item.Placement;
-            item.Placement = InboxCategoryType.Deleted;
-
-            //Delete message from displayed list
-            MessageListData.Items.Remove(item);
-
-            DisplayRestorationPopup();
-        }
-
-        private void OnItemStared(object sender, EventArgs e)
-        {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
-
-            if (item.IsStared)
-            {
-                Messages[InboxCategoryType.Stared].Add(item);
-            }
-            else
-            {
-                Messages[InboxCategoryType.Stared].Remove(item);
-            }
-
-        }
-
-        private void OnItemArchived(object sender, EventArgs e)
-        {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
-
-            if (item.IsArchived)
-            {
-                Messages[item.Placement].Remove(item);
-                Messages[InboxCategoryType.Archive].Add(item);
-
-                item.PrevPlacement = item.Placement;
-                item.Placement = InboxCategoryType.Archive;
-
-            }
-            else
-            {
-                Messages[item.Placement].Remove(item);
-                Messages[item.PrevPlacement].Add(item);
-
-                var tmp = item.Placement;
-                item.Placement = item.PrevPlacement;
-                item.PrevPlacement = tmp;
-            }
-
-            GoToCategory();
-            SortMessages();
-        }
-
-        #endregion
-
-        #region Command Methods
-
-        private void LoadTeachers()
-        {
-            ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.AllItems.FindAll(x => x.IsStudent == false));
-
-            SortContacts();
-        }
-
-        private void LoadPupils()
-        {
-            ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.AllItems.FindAll(x => x.IsStudent));
-
-            SortContacts();
-        }
-
-        private void SelectMessages()
-        {
-            switch (SelectionMode)
-            {
-                case null:
-                    MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items);
-                    break;
-
-                case true:
-                    switch (MessagesSortedBy.SortedBy)
-                    {
-                        case SortedBy.Unread:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => !x.WasRead));
-                            break;
-
-                        case SortedBy.Read:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => x.WasRead));
-                            break;
-
-                        case SortedBy.Stared:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => x.IsStared));
-                            break;
-
-                        case SortedBy.Unstared:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.Where(x => !x.IsStared));
-                            break;
-
-                        default:
-                            MessageListData.SelectedItems = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items);
-                            break;
-                    }
-                    break;
-
-                case false:
-                    MessageListData.SelectedItems.Clear();
-                    break;
-            }
-        }
-
-        private void RestoreMessages()
-        {
-            IsRestorePopupShown = false;
-
-            mRecentlyMovedMessages.ForEach(item =>
-            {
-                if (item.IsStared && !Messages[InboxCategoryType.Stared].Contains(item))
-                    Messages[InboxCategoryType.Stared].Add(item);
-
-                if (item.PrevPlacement == InboxCategoryType.Archive)
-                    item.IsArchived = true;
-                else item.IsArchived = false;
-
-                Messages[item.Placement].Remove(item);
-                Messages[item.PrevPlacement].Add(item);
-
-                var tmp = item.Placement;
-                item.Placement = item.PrevPlacement;
-                item.PrevPlacement = tmp;
-            });
-
-            GoToCategory();
-            SortMessages();
-            SelectMessages();
-        }
-
-        private void DeleteSelectedMessages()
-        {
-            new Thread(() =>
-            {
-                IsRestoringArchivedMessages = false;
-
-                mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
-
-                for (int i = MessageListData.SelectedItems.Count - 1; i >= 0; i--)
+                    Id = 0,
+                    Option = "Alphabetically",
+                    SortedBy = Core.SortedBy.Alphabetical
+                },
+                new SortingOption
                 {
-                    var item = MessageListData.SelectedItems[i];
+                    Id = 1,
+                    Option = "Position",
+                    SortedBy = Core.SortedBy.Position
+                },
 
-                    MoveToDeletedList(item);
-
-                    item.PrevPlacement = item.Placement;
-                    item.Placement = InboxCategoryType.Deleted;
-                }
-
-                GoToCategory();
-                SortMessages();
-                DisplayRestorationPopup();
-
-            }).Start();
-
-        }
-
-        private void ArchiveSelectedMessages()
-        {
-            //don't archive archived messages
-            if (SelectedCategory == InboxCategoryType.Archive)
-                return;
-
-            new Thread(() =>
-            {
-                IsRestoringArchivedMessages = true;
-
-                mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListData.SelectedItems);
-
-                for (int i = MessageListData.SelectedItems.Count - 1; i >= 0; i--)
+                new SortingOption
                 {
-                    MessageListData.SelectedItems[i].IsArchived = true;
+                    Id = 2,
+                    Option = "New messages",
+                    SortedBy = Core.SortedBy.NewMessage
+                },
+            };
 
-                    Messages[InboxCategoryType.Archive].Add(MessageListData.SelectedItems[i]);
-                    Messages[MessageListData.SelectedItems[i].Placement].Remove(MessageListData.SelectedItems[i]);
-
-                    MessageListData.SelectedItems[i].PrevPlacement = MessageListData.SelectedItems[i].Placement;
-                    MessageListData.SelectedItems[i].Placement = InboxCategoryType.Archive;
-
-                }
-
-                GoToCategory();
-                SortMessages();
-                DisplayRestorationPopup();
-
-            }).Start();
-
-        }
-
-        private void ToggleStarForSelectedMesseges()
-        {
-            foreach (var message in MessageListData.SelectedItems)
+            MessagesSortingOptions = new ObservableCollection<SortingOption>
             {
-                message.IsStared = true;
+                new SortingOption
+                {
+                    Id = 0,
+                    Option = "By date",
+                    SortedBy = Core.SortedBy.Date
+                },
+                new SortingOption
+                {
+                    Id = 1,
+                    Option = "Alphabetically",
+                    SortedBy = Core.SortedBy.Alphabetical
+                },
+                new SortingOption
+                {
+                    Id = 2,
+                    Option = "By date",
+                    SortedBy = Core.SortedBy.Date
+                },
 
-                if (!Messages[InboxCategoryType.Stared].Contains(message))
-                    Messages[InboxCategoryType.Stared].Add(message);
-            }
+                new SortingOption
+                {
+                    Id = 3,
+                    Option = "Unread",
+                    SortedBy = Core.SortedBy.Unread
+                },
+
+                 new SortingOption
+                {
+                    Id = 4,
+                    Option = "Read",
+                    SortedBy = Core.SortedBy.Read
+                },
+
+            };
         }
 
-        private void ShowTextEditor()
+        private void InitializeCommands()
         {
-            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
+            LoadPupilsCommand = new RelayCommand(LoadPupils);
+            LoadTeachersCommand = new RelayCommand(LoadTeachers);
+            RestoreDeletedMessagesCommand = new RelayCommand(RestoreMessages);
+
+            DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
+            StarSelectedMessagesCommand = new RelayCommand(ToggleStarForSelectedMesseges);
+            ArchiveSelectedMessagesCommand = new RelayCommand(ArchiveSelectedMessages);
+            ShowTextEditorCommand = new RelayCommand(ShowTextEditor);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void SortContacts()
         {
@@ -594,14 +606,14 @@ namespace Nuntium
             switch (ContactsSortedBy.SortedBy)
             {
                 case SortedBy.Alphabetical:
-                    ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.FilteredItems.OrderBy(x => x.PersonName));
+                    ContactListVM.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListVM.FilteredItems.OrderBy(x => x.PersonName));
                     break;
                 case SortedBy.Class:
                 case SortedBy.Position:
-                    ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.FilteredItems.OrderBy(x => x.PersonPosition));
+                    ContactListVM.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListVM.FilteredItems.OrderBy(x => x.PersonPosition));
                     break;
                 case SortedBy.NewMessage:
-                    ContactListData.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListData.FilteredItems.OrderBy(x => x.HasNewMessages ? 0 : 1));
+                    ContactListVM.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListVM.FilteredItems.OrderBy(x => x.HasNewMessages ? 0 : 1));
                     break;
 
             }
@@ -615,32 +627,32 @@ namespace Nuntium
             switch (MessagesSortedBy.SortedBy)
             {
                 case Core.SortedBy.Alphabetical:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.Title));
+                    MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.OrderBy(x => x.Subject));
                     break;
                 case Core.SortedBy.Date:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderByDescending(x => x.SendDate));
+                    MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.OrderByDescending(x => x.SendDate));
                     break;
                 case Core.SortedBy.Unread:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.WasRead ? 1 : 0));
+                    MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.OrderBy(x => x.WasRead ? 1 : 0));
                     break;
                 case Core.SortedBy.Read:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.WasRead ? 0 : 1));
+                    MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.OrderBy(x => x.WasRead ? 0 : 1));
                     break;
                 case Core.SortedBy.Stared:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.IsStared ? 1 : 0));
+                    MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.OrderBy(x => x.IsStared ? 1 : 0));
                     break;
                 case Core.SortedBy.Unstared:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.IsStared ? 0 : 1));
+                    MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.OrderBy(x => x.IsStared ? 0 : 1));
                     break;
                 case Core.SortedBy.Author:
-                    MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListData.Items.OrderBy(x => x.SenderName));
+                    MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(MessageListVM.Items.OrderBy(x => x.SenderName));
                     break;
             }
         }
 
-        private void GoToCategory()
+        private void GoToSelectedCategory()
         {
-            MessageListData.Items = new ObservableCollection<MessageMiniatureViewModel>(Messages[SelectedCategory]);
+            MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(Messages[SelectedCategory]);
         }
 
         private void DisplayRestorationPopup()

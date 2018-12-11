@@ -213,8 +213,8 @@
                         FontWeight="Bold"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        Text="{Binding ContactListData.FilteredItems.Count}"
-                        Visibility="{Binding ContactListData.FilteredItems.Count, 
+                        Text="{Binding ContactListVM.FilteredItems.Count}"
+                        Visibility="{Binding ContactListVM.FilteredItems.Count, 
                         Converter={local:NumberToVisibilityGoneConverter}}"
                         Foreground="{StaticResource AccentColorBrush}"
                                />
@@ -241,7 +241,7 @@
                 <local:ContactsList 
                         x:Name="contactsList"
                         Grid.Row="3"
-                        DataContext="{Binding ContactListData}"
+                        DataContext="{Binding ContactListVM}"
                         />
 
                 <!--Tabs-->
@@ -325,7 +325,7 @@
                         Grid.Column="1"
                         Style="{StaticResource IconButton}" 
                         Command="{Binding DeleteSelectedMessagesCommand}"
-                        Visibility="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
+                        Visibility="{Binding MessageListVM.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
                         Margin="8"
                         Foreground="{StaticResource SideForegroundColorBrush}"
                         FontFamily="{StaticResource FontAwesomeSolid}"
@@ -341,7 +341,7 @@
                         Grid.Column="2"
                         Style="{StaticResource IconButton}" 
                         Command="{Binding StarSelectedMessagesCommand}"
-                        Visibility="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
+                        Visibility="{Binding MessageListVM.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
                         Margin="{Binding Margin,ElementName=deleteSelectedButton}"
                         Foreground="{StaticResource SideForegroundColorBrush}"
                         FontFamily="{StaticResource FontAwesomeSolid}"
@@ -356,7 +356,7 @@
                     <Button 
                         Grid.Column="3"
                         Command="{Binding ArchiveSelectedMessagesCommand}"
-                        Visibility="{Binding MessageListData.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
+                        Visibility="{Binding MessageListVM.SelectedItems.Count, Converter={local:NumberToVisibilityConverter}}"
                         Margin="{Binding Margin,ElementName=deleteSelectedButton}"
                         FontFamily="{StaticResource FontAwesomeSolid}"
                         FontSize="{StaticResource FontSizeBig}"
@@ -401,7 +401,7 @@
                         >
 
                         <Label 
-                            Content="{Binding MessageListData.SelectedItems.Count}"
+                            Content="{Binding MessageListVM.SelectedItems.Count}"
                             ContentStringFormat="You have selected: {0} messages"
                             Foreground="White"
                             />
@@ -416,7 +416,7 @@
                         >
 
                         <local:MessageMiniatureList 
-                         DataContext="{Binding MessageListData}"
+                         DataContext="{Binding MessageListVM}"
                         />
 
                     </Border>

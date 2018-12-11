@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using Ninject;
+using Nuntium.Core;
+using System.Windows.Controls;
 
 namespace Nuntium
 {
@@ -11,7 +13,7 @@ namespace Nuntium
         public InboxPage()
         {
             //TODO: this is just tmp solution
-            DataContext = new InboxPageViewModel();
+            DataContext = new InboxPageViewModel(IoC.Kernel.Get<IEmailService>());
 
             InitializeComponent();
         }

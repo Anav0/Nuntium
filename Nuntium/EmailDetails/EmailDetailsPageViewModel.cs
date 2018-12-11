@@ -23,47 +23,30 @@ namespace Nuntium
 
         public ObservableCollection<AttachFileViewModel> AttachementsList { get; set; }
 
-        public MessageMiniatureViewModel DisplayedMessageVM { get; set; }
-
         #endregion
+
+        private string mEmailId;
 
         public EmailDetailsPageViewModel()
         {
            
         }
 
-        public EmailDetailsPageViewModel(MessageMiniatureViewModel DisplayedMessageVM)
+        public EmailDetailsPageViewModel(string EmailId, InboxPageViewModel inboxPageViewModel, IEmailService emailService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
-            this.DisplayedMessageVM = DisplayedMessageVM;
+            this.mEmailId = EmailId;
+            var email = emailService.GetEmailById(EmailId);
 
-            this.Html = DisplayedMessageVM.Message; //GetHtmlFromLink("http://c0185784a2b233b0db9b-d0e5e4adc266f8aacd2ff78abb166d77.r51.cf2.rackcdn.com/v1_templates/template_02.html");
+            this.Html = email.Message; //GetHtmlFromLink("http://c0185784a2b233b0db9b-d0e5e4adc266f8aacd2ff78abb166d77.r51.cf2.rackcdn.com/v1_templates/template_02.html");
 
-            this.SenderName = DisplayedMessageVM.SenderName;
+            this.SenderName = email.SenderName;
 
-            DeleteCommand = new RelayCommand(() =>
-            {
-                ConstantViewModels.Instance.InboxPageVM.DeleteMessage(DisplayedMessageVM, new System.EventArgs());
-
-                ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(Core.ApplicationPage.Blank);
-            });
-
-            ReplyCommand = new RelayCommand(Reply);
+            InitializeCommands(editor, addressSectionViewModel, email);
 
             AttachementsList = new ObservableCollection<AttachFileViewModel>();
-            //{
-            //    new AttachFileViewModel
-            //    {
-            //        FileName = "cat1.jpg",
-            //        FileSize = 3058506,
-            //    },
 
-            //    new AttachFileViewModel
-            //    {
-            //        FileName = "cat2.jpg",
-            //        FileSize = 5068576,
-            //    },
-            //};
         }
+       
 
         #region Public Commands
 
@@ -81,7 +64,20 @@ namespace Nuntium
 
         #endregion
 
-        private void Reply()
+        private void InitializeCommands(CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel, Email email)
+        {
+            DeleteCommand = new RelayCommand(() =>
+            {
+                //TODO: Change to event publisher
+                //inboxPageViewModel.DeleteMessage(DisplayedMessageVM, new EventArgs());
+
+                ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
+            });
+
+            ReplyCommand = new RelayCommandWithParameter((param) => { Reply(email, editor, addressSectionViewModel); });
+        }
+
+        private void Reply(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
 
             ConstantViewModels.Instance.AddressSectionVM.ToEmailsList.Clear();
@@ -89,11 +85,11 @@ namespace Nuntium
             //Go to TextEditor
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
 
-            AddInformationAboutPrevMessageToTextEditor();
+            AddInformationAboutEmailToEditor(email, editor, addressSectionViewModel);
 
             var wrapper = new MailWrapperViewModel
             {
-                Address = ConstantViewModels.Instance.EmailServiceInstance.GetEmailById(DisplayedMessageVM.Id).Address,
+                Address = ConstantViewModels.Instance.EmailServiceInstance.GetEmailById(mEmailId).Address,
             };
 
             wrapper.DeleteCommand = new RelayCommand(() =>
@@ -104,20 +100,18 @@ namespace Nuntium
             ConstantViewModels.Instance.AddressSectionVM.ToEmailsList.Add(wrapper);
         }
 
-        private void AddInformationAboutPrevMessageToTextEditor()
+        private void AddInformationAboutEmailToEditor(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
-            ConstantViewModels.Instance.AddressSectionVM.Topic = "RE: " + DisplayedMessageVM.Title;
-            var editor = IoC.Kernel.Get<CustomRichTextBox>();
-            var document = editor.Document;
-            var email = ConstantViewModels.Instance.EmailServiceInstance.GetEmailById(DisplayedMessageVM.Id);
+            addressSectionViewModel.Topic = "RE: " + email.Subject;
+
             var to = "";
             email.ToAddresses.ForEach(x => to += x + ";");
 
-            document.Blocks.Add(new Paragraph(new Run("From: " + email.Address)));
-            document.Blocks.Add(new Paragraph(new Run("Send: " + email.SendDate.ToString())));
-            document.Blocks.Add(new Paragraph(new Run("To: " + to)));
-            document.Blocks.Add(new Paragraph(new Run("Subject: " + email.Subject)));
-            document.Blocks.Add(new Paragraph(new Run(DisplayedMessageVM.Message)));
+            editor.Document.Blocks.Add(new Paragraph(new Run("From: " + email.Address)));
+            editor.Document.Blocks.Add(new Paragraph(new Run("Send: " + email.SendDate.ToString())));
+            editor.Document.Blocks.Add(new Paragraph(new Run("To: " + to)));
+            editor.Document.Blocks.Add(new Paragraph(new Run("Subject: " + email.Subject)));
+            editor.Document.Blocks.Add(new Paragraph(new Run(email.Message)));
         }
 
         private string GetHtmlFromLink(string link)
