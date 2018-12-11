@@ -26,11 +26,11 @@
 
         <!--List of messages-->
         <ListView 
-        Name="MessagesList"
-        VirtualizingPanel.ScrollUnit="Pixel"
-        ItemsSource="{Binding Items}" 
-        SelectedItem="{Binding Selected}"
-        SelectionMode="Extended">
+            Name="MessagesList"
+            VirtualizingPanel.ScrollUnit="Pixel"
+            ItemsSource="{Binding Items}" 
+            SelectedItem="{Binding Selected}"
+            SelectionMode="Extended">
 
             <i:Interaction.Behaviors>
                 <local:MultiSelectionBehavior SelectedItems="{Binding SelectedItems}"/>
@@ -86,12 +86,12 @@
                                         Grid.Column="1"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Initials="{Binding Initials}"
+                                        Initials="{Binding SenderName, Converter={local:NameToInitialsConverter}}"
                                         AvatarBackground="{Binding AvatarBackground}"
                                         ImagePath="{Binding ImagePath}"
                                         />
 
-                                    <!--Name, title and time-->
+                                    <!--Name, Subject and time-->
                                     <Grid 
                                         Grid.Row="0"
                                         Grid.Column="2"
@@ -103,7 +103,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <!--Sender name, message title and "is new" indicator-->
+                                        <!--Sender name, message Subject and "is new" indicator-->
                                         <StackPanel 
                                         Grid.Column="1"
                                         >
@@ -120,9 +120,9 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <!--Message title-->
+                                                <!--Message Subject-->
                                                 <TextBlock 
-                                                Name="title"
+                                                Name="Subject"
                                                 Grid.Column="0"
                                                 Padding="8"
                                                 VerticalAlignment="Center"
@@ -130,7 +130,7 @@
                                                 Foreground="{StaticResource MainForegroundBrush}"
                                                 FontSize="{StaticResource FontSizeRegularExtra}"
                                                 TextTrimming="CharacterEllipsis"
-                                                Text="{Binding Title}"/>
+                                                Text="{Binding Subject}"/>
 
                                                 <!--Is new indicator-->
                                                 <Border
@@ -140,7 +140,7 @@
                                                 Margin="8"
                                                 VerticalAlignment="Center"
                                                 CornerRadius="100" 
-                                                Visibility="{Binding WasRead,Converter={local:InverseBooleanToVisibilityGoneConverter}}"
+                                                Visibility="{Binding WasRead, Converter={local:InverseBooleanToVisibilityGoneConverter}}"
                                                 Background="{StaticResource AccentColorBrush}"
                                                 />
 
@@ -302,13 +302,13 @@
 
                                     <Trigger Property="IsSelected" Value="true">
                                         <Setter Property="Background" TargetName="mainContainer" Value="{StaticResource DimAccentColorBrush}"/>
-                                        <Setter Property="Foreground" TargetName="title" Value="{StaticResource AccentColorBrush}"/>
+                                        <Setter Property="Foreground" TargetName="Subject" Value="{StaticResource AccentColorBrush}"/>
                                         <Setter Property="BorderBrush" TargetName="checkMark" Value="{StaticResource AccentColorBrush}"/>
                                         <Setter Property="Opacity" TargetName="mainContainer" Value="1"/>
                                     </Trigger>
 
                                     <DataTrigger Binding="{Binding WasRead}" Value="True">
-                                        <Setter Property="FontWeight" TargetName="title" Value="medium"/>
+                                        <Setter Property="FontWeight" TargetName="Subject" Value="medium"/>
                                         <Setter Property="Opacity" TargetName="mainContainer" Value="0.60"/>
                                     </DataTrigger>
 

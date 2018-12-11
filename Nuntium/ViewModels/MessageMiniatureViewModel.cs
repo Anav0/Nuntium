@@ -1,4 +1,5 @@
-﻿using Nuntium.Core;
+﻿using Ninject;
+using Nuntium.Core;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -8,11 +9,13 @@ namespace Nuntium
 {
     public class MessageMiniatureViewModel : BaseViewModel
     {
+        #region Private Members
+
+        private string mId;
+
+        #endregion
+
         #region Public properties
-
-        public string Id { get; set; }
-
-        public string Initials { get; set; }
 
         public string AvatarBackground { get; set; }
 
@@ -20,7 +23,7 @@ namespace Nuntium
 
         public string SenderName { get; set; }
 
-        public string Title { get; set; }
+        public string Subject { get; set; }
 
         public DateTime SendDate { get; set; }
 
@@ -44,8 +47,9 @@ namespace Nuntium
 
         #endregion
 
-        public MessageMiniatureViewModel()
+        public MessageMiniatureViewModel(string emailId)
         {
+            mId = emailId;
             DeleteCommand = new RelayCommandWithParameter((parameter) => Delete(parameter));
             ToggleStarCommand = new RelayCommand(ToggleStar);
             ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
@@ -127,7 +131,14 @@ namespace Nuntium
 
         private void ShowEmailDetails()
         {
-            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, new EmailDetailsPageViewModel(this));
+            var inboxVM = IoC.Kernel.Get<InboxPageViewModel>();
+            var emailService = IoC.Kernel.Get<IEmailService>();
+            var editor = IoC.Kernel.Get<CustomRichTextBox>();
+            var adrSectionVM= IoC.Kernel.Get<AddressSectionViewModel>();
+
+            var emailDetailsVM = new EmailDetailsPageViewModel(mId, inboxVM, emailService, editor, adrSectionVM);
+
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, emailDetailsVM);
         }
 
         #endregion
