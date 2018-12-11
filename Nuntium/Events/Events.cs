@@ -7,4 +7,9 @@ namespace Nuntium
 
     public class LineSpacingChangedEvent : PubSubEvent<double> { }
 
+    public class EmailDeletedEvent : PubSubEvent<string> { }
+
+    public class EmailStaredEvent : PubSubEvent<string> { }
+
+    public class EmailArchivedEvent : PubSubEvent<string> { }
 }

@@ -1,5 +1,6 @@
 ﻿using Ninject;
 using Nuntium.Core;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -9,13 +10,10 @@ namespace Nuntium
 {
     public class MessageMiniatureViewModel : BaseViewModel
     {
-        #region Private Members
-
-        private string mId;
-
-        #endregion
 
         #region Public properties
+
+        public string Id { get; set; }
 
         public string AvatarBackground { get; set; }
 
@@ -49,41 +47,12 @@ namespace Nuntium
 
         public MessageMiniatureViewModel(string emailId)
         {
-            mId = emailId;
+            Id = emailId;
             DeleteCommand = new RelayCommandWithParameter((parameter) => Delete(parameter));
             ToggleStarCommand = new RelayCommand(ToggleStar);
             ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
             ShowEmailDetailsCommand = new RelayCommand(ShowEmailDetails);
         }
-
-        #region EventHandlers
-
-        public event EventHandler OnItemDeleted;
-
-        public event EventHandler OnItemStared;
-
-        public event EventHandler OnItemArchived;
-
-        #endregion
-
-        #region Protected Members
-
-        protected virtual void RaiseOnItemDeletedEvent()
-        {
-            OnItemDeleted?.Invoke(this, new EventArgs());
-        }
-
-        protected virtual void RaiseOnItemStared()
-        {
-            OnItemStared?.Invoke(this, new EventArgs());
-        }
-
-        protected virtual void RaiseOnItemArchived()
-        {
-            OnItemArchived?.Invoke(this, new EventArgs());
-        }
-
-        #endregion
 
         #region Public Commands
 
@@ -102,7 +71,7 @@ namespace Nuntium
         private void ToggleStar()
         {
             IsStared ^= true;
-            RaiseOnItemStared();
+            IoC.Kernel.Get<IEventAggregator>().GetEvent<EmailStaredEvent>().Publish(Id);
         }
 
         private async void Archive(object param)
@@ -116,7 +85,8 @@ namespace Nuntium
             await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Right, new Duration(AnimateOutTimeSpan), true, 0.25);
 
             IsArchived = true;
-            RaiseOnItemArchived();
+
+            IoC.Kernel.Get<IEventAggregator>().GetEvent<EmailArchivedEvent>().Publish(Id);
         }
 
         private async void Delete(object param)
@@ -126,7 +96,8 @@ namespace Nuntium
 
             await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Left, new Duration(AnimateOutTimeSpan), true, 0.25);
 
-            RaiseOnItemDeletedEvent();
+            IoC.Kernel.Get<IEventAggregator>().GetEvent<EmailDeletedEvent>().Publish(Id);
+
         }
 
         private void ShowEmailDetails()
@@ -136,7 +107,7 @@ namespace Nuntium
             var editor = IoC.Kernel.Get<CustomRichTextBox>();
             var adrSectionVM= IoC.Kernel.Get<AddressSectionViewModel>();
 
-            var emailDetailsVM = new EmailDetailsPageViewModel(mId, inboxVM, emailService, editor, adrSectionVM);
+            var emailDetailsVM = new EmailDetailsPageViewModel(Id, inboxVM, emailService, editor, adrSectionVM);
 
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, emailDetailsVM);
         }

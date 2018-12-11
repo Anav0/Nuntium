@@ -1,4 +1,6 @@
-﻿using Nuntium.Core;
+﻿using Ninject;
+using Nuntium.Core;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -115,7 +117,7 @@ namespace Nuntium
 
         #region Constructor
 
-        public InboxPageViewModel(IEmailService emailService)
+        public InboxPageViewModel(IEmailService emailService, IEventAggregator eventAggregator)
         {
             InitializeCommands();
             InitializeSortingOptions();
@@ -132,116 +134,72 @@ namespace Nuntium
             GoToSelectedCategory();
             SortMessages();
 
+            eventAggregator.GetEvent<EmailDeletedEvent>().Subscribe((emailId) => { DeleteEmail(emailId); });
+            eventAggregator.GetEvent<EmailArchivedEvent>().Subscribe((emailId) => { ArchiveEmail(emailId); });
+            eventAggregator.GetEvent<EmailStaredEvent>().Subscribe((emailId) => { StarEmail(emailId); });
         }
 
         #endregion
 
         #region Event handlers
 
-        private void ArchiveMessage(object sender, EventArgs e)
+        private void ArchiveEmail(string emailId)
         {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
+            var email = MessageListVM.Items.First(x => x.Id == emailId);
 
             IsRestoringArchivedMessages = true;
 
             mRecentlyMovedMessages.Clear();
-            mRecentlyMovedMessages.Add(item);
+            mRecentlyMovedMessages.Add(email);
 
-            Messages[InboxCategoryType.Archive].Add(item);
-            Messages[item.Placement].Remove(item);
+            Messages[InboxCategoryType.Archive].Add(email);
+            Messages[email.Placement].Remove(email);
 
-            item.PrevPlacement = item.Placement;
-            item.Placement = InboxCategoryType.Archive;
+            email.PrevPlacement = email.Placement;
+            email.Placement = InboxCategoryType.Archive;
 
-            //Delete message from displayed list
-            MessageListVM.Items.Remove(item);
+            MessageListVM.Items.Remove(email);
 
             DisplayRestorationPopup();
 
         }
 
-        private void ToggleStarState(object sender, EventArgs e)
+        public void DeleteEmail(string emailId)
         {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
-
-            if (item.IsStared)
-            {
-                Messages[InboxCategoryType.Stared].Add(item);
-            }
-            else
-            {
-                Messages[InboxCategoryType.Stared].Remove(item);
-            }
-        }
-
-        public void DeleteMessage(object sender, EventArgs e)
-        {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
+            var email = MessageListVM.Items.First(x => x.Id == emailId);
 
             IsRestoringArchivedMessages = false;
 
             mRecentlyMovedMessages.Clear();
 
             //Add message to recently deleted ones
-            mRecentlyMovedMessages.Add(item);
+            mRecentlyMovedMessages.Add(email);
 
-            MoveToDeletedList(item);
+            MoveToDeletedList(email);
 
             //Update placement of the message
-            item.PrevPlacement = item.Placement;
-            item.Placement = InboxCategoryType.Deleted;
+            email.PrevPlacement = email.Placement;
+            email.Placement = InboxCategoryType.Deleted;
 
             //Delete message from displayed list
-            MessageListVM.Items.Remove(item);
+            MessageListVM.Items.Remove(email);
 
             DisplayRestorationPopup();
         }
 
-        private void OnItemStared(object sender, EventArgs e)
+        private void StarEmail(string emailId)
         {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
+            var email = MessageListVM.Items.First(x => x.Id == emailId);
 
-            if (item.IsStared)
+            if (email.IsStared)
             {
-                Messages[InboxCategoryType.Stared].Add(item);
+                Messages[InboxCategoryType.Stared].Add(email);
             }
             else
             {
-                Messages[InboxCategoryType.Stared].Remove(item);
+                Messages[InboxCategoryType.Stared].Remove(email);
             }
 
-        }
-
-        private void OnItemArchived(object sender, EventArgs e)
-        {
-            if (!(sender is MessageMiniatureViewModel item))
-                return;
-
-            if (item.IsArchived)
-            {
-                Messages[item.Placement].Remove(item);
-                Messages[InboxCategoryType.Archive].Add(item);
-
-                item.PrevPlacement = item.Placement;
-                item.Placement = InboxCategoryType.Archive;
-
-            }
-            else
-            {
-                Messages[item.Placement].Remove(item);
-                Messages[item.PrevPlacement].Add(item);
-
-                var tmp = item.Placement;
-                item.Placement = item.PrevPlacement;
-                item.PrevPlacement = tmp;
-            }
-
-            GoToSelectedCategory();
-            SortMessages();
         }
 
         #endregion
@@ -420,10 +378,6 @@ namespace Nuntium
                     Message = email.Message
 
                 };
-
-                msg.OnItemDeleted += DeleteMessage;
-                msg.OnItemArchived += ArchiveMessage;
-                msg.OnItemStared += ToggleStarState;
 
                 Messages[InboxCategoryType.Inbox].Add(msg);
             }
