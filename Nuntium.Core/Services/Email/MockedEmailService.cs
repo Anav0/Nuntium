@@ -10,14 +10,12 @@ namespace Nuntium.Core
             mEmailsList = new List<Email>();
             var faker = new Fake.Fake();
 
-            var people = faker.FakePeople(250);
+            var people = faker.FakePeople(4);
 
             int i = 0;
             foreach (var person in people)
             {
 
-                var firstName = person.FirstName;
-                var lastName = person.LastName;
                 var email = new Email
                 {
                     Id = i.ToString(),
