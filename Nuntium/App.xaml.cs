@@ -33,9 +33,7 @@ namespace Nuntium
 
         private void SetupIoC()
         {
-            IoC.Kernel.Bind<IEmailService>().To<MockedEmailService>();
 
-            IoC.Kernel.Bind<IEventAggregator>().To<EventAggregator>();
 
             IoC.Kernel.Bind<AddressSectionViewModel>().To<AddressSectionViewModel>();
 
@@ -44,6 +42,12 @@ namespace Nuntium
             IoC.Kernel.Bind<SearchSectionViewModel>().To<SearchSectionViewModel>();
 
             IoC.Kernel.Bind<TextEditorViewModel>().To<TextEditorViewModel>();
+
+            IoC.Kernel.Bind<InboxPageViewModel>().To<InboxPageViewModel>();
+
+            IoC.Kernel.Bind<IEventAggregator>().ToConstant(new EventAggregator());
+
+            IoC.Kernel.Bind<IEmailService>().ToConstant(new MockedEmailService());
 
             IoC.Kernel.Bind<FormattingSubmenuViewModel>().ToConstant(new FormattingSubmenuViewModel());
 
