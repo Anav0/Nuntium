@@ -106,7 +106,7 @@ namespace Nuntium
 
         private void ParseAddress(TextBox box, bool excludeLastCharacter = false)
         {
-            //check if email entered is valid if not return (using microsoft method).
+           
             if (!(new EmailAddressAttribute().IsValid(box.Text)))
                 return;
 
@@ -120,11 +120,11 @@ namespace Nuntium
                 lastChar = 1;
             }
 
-            var adr = box.Text.Remove(box.Text.Length - 1, lastChar);
+            box.Text = box.Text.RemoveWhitespace();
 
             var wrapperVM = new MailWrapperViewModel
             {
-                Address = box.Text.Remove(box.Text.Length - 1, lastChar).RemoveWhitespace(),
+                Address = box.Text.Remove(box.Text.Length - 1, lastChar),
             };
 
             wrapperVM.DeleteCommand = new RelayCommand (() =>
