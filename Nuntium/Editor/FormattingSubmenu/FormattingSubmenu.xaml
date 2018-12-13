@@ -254,6 +254,7 @@
                 <!--Lower index-->
                 <Button 
                     Style="{StaticResource IconButton}"
+                    Foreground="{Binding Foreground, ElementName=firstIcon}"
                     Padding="8"
                     Command="EditingCommands.ToggleSubscript"
                     CommandTarget="{Binding ActionTarget, ElementName=control}"
@@ -262,6 +263,7 @@
                 <!--Upper index-->
                 <Button
                     Style="{StaticResource IconButton}"
+                    Foreground="{Binding Foreground, ElementName=firstIcon}"
                     Padding="8"
                     Command="EditingCommands.ToggleSuperscript"
                     CommandTarget="{Binding ActionTarget, ElementName=control}"
@@ -364,6 +366,7 @@
                     <!--Indent-->
                     <Button
                         Style="{StaticResource IconButton}"
+                        Foreground="{Binding Foreground, ElementName=firstIcon}"
                         Padding="8"
                         Command="EditingCommands.IncreaseIndentation"
                         CommandTarget="{Binding ActionTarget, ElementName=control}"
@@ -372,6 +375,7 @@
                     <!--Outdent-->
                     <Button
                         Style="{StaticResource IconButton}"
+                        Foreground="{Binding Foreground, ElementName=firstIcon}"
                         Padding="8"
                         Command="EditingCommands.DecreaseIndentation"
                         CommandTarget="{Binding ActionTarget, ElementName=control}"
