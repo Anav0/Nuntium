@@ -38,13 +38,18 @@
                    />
             </Border>
 
+            <!--TODO: Label doesn't display "_" character read up on RecognizesAccessKey
+            For now on use TextBlock instead
+            -->
             <!--Address -->
-            <Label 
-                Content="{Binding Address}"
+            <TextBlock 
+                Text="{Binding Address}"
                 Padding="8"
+                FontFamily="{StaticResource NotoSansRegular}"
+                FontSize="{StaticResource FontSizeRegular}"
                 Foreground="{StaticResource SideMenuForegroundColorBrush}"
-                HorizontalContentAlignment="Center"
-                VerticalContentAlignment="Center"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 />
 
             <!--Remove button-->
