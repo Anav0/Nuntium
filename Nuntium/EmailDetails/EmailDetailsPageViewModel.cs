@@ -32,7 +32,7 @@ namespace Nuntium
            
         }
 
-        public EmailDetailsPageViewModel(string EmailId, InboxPageViewModel inboxPageViewModel, IEmailService emailService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
+        public EmailDetailsPageViewModel(string EmailId, IEmailService emailService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
             this.mEmailId = EmailId;
             var email = emailService.GetEmailById(EmailId);
@@ -41,13 +41,11 @@ namespace Nuntium
 
             this.SenderName = email.SenderName;
 
-            InitializeCommands(editor, addressSectionViewModel, email);
+            InitializeCommands(email, editor, addressSectionViewModel);
 
             AttachementsList = new ObservableCollection<AttachFileViewModel>();
-
         }
        
-
         #region Public Commands
 
         public ICommand DownloadAllAttachmentsCommand { get; set; }
@@ -64,7 +62,7 @@ namespace Nuntium
 
         #endregion
 
-        private void InitializeCommands(CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel, Email email)
+        private void InitializeCommands(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
             DeleteCommand = new RelayCommand(() =>
             {
@@ -74,30 +72,31 @@ namespace Nuntium
                 ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
             });
 
-            ReplyCommand = new RelayCommandWithParameter((param) => { Reply(email, editor, addressSectionViewModel); });
+            ReplyCommand = new RelayCommand(() => { Reply(email, editor, addressSectionViewModel); });
         }
 
         private void Reply(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
-
-            ConstantViewModels.Instance.AddressSectionVM.ToEmailsList.Clear();
-
-            //Go to TextEditor
-            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
-
+            addressSectionViewModel.ToEmailsList.Clear();
+            
             AddInformationAboutEmailToEditor(email, editor, addressSectionViewModel);
 
             var wrapper = new MailWrapperViewModel
             {
-                Address = ConstantViewModels.Instance.EmailServiceInstance.GetEmailById(mEmailId).Address,
+                Address = email.Address,
             };
 
             wrapper.DeleteCommand = new RelayCommand(() =>
             {
-                ConstantViewModels.Instance.AddressSectionVM.ToEmailsList.Remove(wrapper);
+                addressSectionViewModel.ToEmailsList.Remove(wrapper);
             });
 
-            ConstantViewModels.Instance.AddressSectionVM.ToEmailsList.Add(wrapper);
+            addressSectionViewModel.ToEmailsList.Add(wrapper);
+
+            //Go to TextEditor
+            //TODO: After creating new instance of TextEditor CustomRichTextBox gets rebind. It preventes us from working on the same object
+            //find a way to fix it
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
         }
 
         private void AddInformationAboutEmailToEditor(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
