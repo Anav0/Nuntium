@@ -209,15 +209,11 @@ namespace Nuntium
         private void LoadTeachers()
         {
             ContactListVM.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListVM.AllItems.FindAll(x => x.IsStudent == false));
-
-            SortContacts();
         }
 
         private void LoadPupils()
         {
             ContactListVM.FilteredItems = new ObservableCollection<ContactViewModel>(ContactListVM.AllItems.FindAll(x => x.IsStudent));
-
-            SortContacts();
         }
 
         private void SelectMessages()
@@ -642,7 +638,6 @@ namespace Nuntium
         }
 
         #endregion
-
 
     }
 }
