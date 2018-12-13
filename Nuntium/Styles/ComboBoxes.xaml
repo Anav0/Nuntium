@@ -33,14 +33,9 @@
     <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource BaseStyle}">
 
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
-        <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="Foreground" Value="{StaticResource DefaultTabForegroundColorBrush}"/>
         <Setter Property="FontWeight" Value="Medium"/>
-
+        <Setter Property="BorderThickness" Value="0"/>
+        
         <Setter Property="Control.Template">
 
             <Setter.Value>
@@ -150,4 +145,5 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
 </ResourceDictionary>
