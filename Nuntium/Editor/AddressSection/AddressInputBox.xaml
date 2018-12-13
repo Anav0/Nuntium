@@ -36,22 +36,7 @@
                    Padding="0"
                    />
 
-            <Border.Triggers>
-                <EventTrigger RoutedEvent="MouseEnter">
-                    <BeginStoryboard >
-                        <Storyboard >
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="{StaticResource OpacityAnimationToValue}" Duration="0:0:0.1"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="MouseLeave">
-                    <BeginStoryboard >
-                        <Storyboard >
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Border.Triggers>
+       
 
         </Border>
 
@@ -63,8 +48,6 @@
             Background="Transparent"
             BorderBrush="Red"
             >
-
-
             <!--ItemsPanel-->
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
