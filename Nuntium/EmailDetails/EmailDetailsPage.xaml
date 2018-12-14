@@ -29,7 +29,7 @@
 
             <!--Sender avatar-->
             <local:RoundAvatar Initials="{Binding SenderName, Converter={local:NameToInitialsConverter}}"
-                               AvatarBackground="{StaticResource AccentColorBrush}"
+                               AvatarBackground="{Binding AvatarBockground, Converter={local:StringToBrushConverter}}"
                                Width="{StaticResource RoundAvatarSize}"
                                Height="{StaticResource RoundAvatarSize}"
                                Grid.Column="0" />

@@ -106,7 +106,7 @@ namespace Nuntium
             var editor = IoC.Kernel.Get<CustomRichTextBox>();
             var adrSectionVM= IoC.Kernel.Get<AddressSectionViewModel>();
 
-            var emailDetailsVM = new EmailDetailsPageViewModel(Id, emailService, editor, adrSectionVM);
+            var emailDetailsVM = new EmailDetailsPageViewModel(Id, emailService, editor, adrSectionVM, AvatarBackground);
 
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, emailDetailsVM);
         }

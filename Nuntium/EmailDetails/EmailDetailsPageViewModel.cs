@@ -24,6 +24,8 @@ namespace Nuntium
 
         public ObservableCollection<AttachFileViewModel> AttachementsList { get; set; }
 
+        public string AvatarBockground { get; set; }
+
         #endregion
 
         private string mEmailId;
@@ -33,10 +35,12 @@ namespace Nuntium
            
         }
 
-        public EmailDetailsPageViewModel(string EmailId, IEmailService emailService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
+        public EmailDetailsPageViewModel(string EmailId, IEmailService emailService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel, string avatarBackground)
         {
             this.mEmailId = EmailId;
             var email = emailService.GetEmailById(EmailId);
+
+            this.AvatarBockground = avatarBackground;
 
             this.Html = email.Message; //GetHtmlFromLink("http://c0185784a2b233b0db9b-d0e5e4adc266f8aacd2ff78abb166d77.r51.cf2.rackcdn.com/v1_templates/template_02.html");
 
