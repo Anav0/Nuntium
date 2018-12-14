@@ -1,6 +1,7 @@
 ﻿
 using Ninject;
 using Nuntium.Core;
+using Prism.Events;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -68,6 +69,8 @@ namespace Nuntium
             {
                 //TODO: Change to event publisher
                 //inboxPageViewModel.DeleteMessage(DisplayedMessageVM, new EventArgs());
+
+                IoC.Kernel.Get<IEventAggregator>().GetEvent<EmailDeletedEvent>().Publish(email.Id);
 
                 ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
             });

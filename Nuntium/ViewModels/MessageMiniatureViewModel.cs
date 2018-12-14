@@ -102,12 +102,11 @@ namespace Nuntium
 
         private void ShowEmailDetails()
         {
-            var inboxVM = IoC.Kernel.Get<InboxPageViewModel>();
             var emailService = IoC.Kernel.Get<IEmailService>();
             var editor = IoC.Kernel.Get<CustomRichTextBox>();
             var adrSectionVM= IoC.Kernel.Get<AddressSectionViewModel>();
 
-            var emailDetailsVM = new EmailDetailsPageViewModel(Id, inboxVM, emailService, editor, adrSectionVM);
+            var emailDetailsVM = new EmailDetailsPageViewModel(Id, emailService, editor, adrSectionVM);
 
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, emailDetailsVM);
         }
