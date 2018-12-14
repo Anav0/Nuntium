@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 namespace Nuntium.Core
 {
     public class MockedEmailService : IEmailService
     {
         private readonly List<Email> mEmailsList;
 
+        private Random mRnd;
+
         public MockedEmailService()
         {
+            mRnd = new Random();
             mEmailsList = new List<Email>();
             var faker = new Fake.Fake();
 
@@ -26,7 +30,7 @@ namespace Nuntium.Core
                     SendDate = DateHelper.RandomDate(),
                 };
 
-                email.ToAddresses.Add("test@test.mail.com");
+                if(mRnd.Next(0, 100) > 10) email.ToAddresses.Add("second_address@test.mail.com");
 
                 mEmailsList.Add(email);
 

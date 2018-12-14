@@ -3,6 +3,7 @@ using Ninject;
 using Nuntium.Core;
 using Prism.Events;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
@@ -32,13 +33,14 @@ namespace Nuntium
 
         public EmailDetailsPageViewModel()
         {
-           
+
         }
 
         public EmailDetailsPageViewModel(string EmailId, IEmailService emailService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel, string avatarBackground)
         {
-            this.mEmailId = EmailId;
             var email = emailService.GetEmailById(EmailId);
+
+            this.mEmailId = EmailId;
 
             this.AvatarBockground = avatarBackground;
 
@@ -50,7 +52,7 @@ namespace Nuntium
 
             AttachementsList = new ObservableCollection<AttachFileViewModel>();
         }
-       
+
         #region Public Commands
 
         public ICommand DownloadAllAttachmentsCommand { get; set; }
@@ -80,25 +82,16 @@ namespace Nuntium
             });
 
             ReplyCommand = new RelayCommand(() => { Reply(email, editor, addressSectionViewModel); });
+
+            ReplyToAllCommand = new RelayCommand(() => { ReplyToAll(email, editor, addressSectionViewModel); });
         }
 
-        private void Reply(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
+        private void ReplyToAll(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
             addressSectionViewModel.ToEmailsList.Clear();
-            
-            AddInformationAboutEmailToEditor(email, editor, addressSectionViewModel);
 
-            var wrapper = new MailWrapperViewModel
-            {
-                Address = email.Address,
-            };
-
-            wrapper.DeleteCommand = new RelayCommand(() =>
-            {
-                addressSectionViewModel.ToEmailsList.Remove(wrapper);
-            });
-
-            addressSectionViewModel.ToEmailsList.Add(wrapper);
+            AddInformationAboutReplyToEditor(email, editor);
+            AddInformationAboutReplyToAddressSection(email, addressSectionViewModel, email.ToAddresses);
 
             //Go to TextEditor
             //TODO: After creating new instance of TextEditor CustomRichTextBox gets rebind. It preventes us from working on the same object
@@ -106,16 +99,60 @@ namespace Nuntium
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
         }
 
-        private void AddInformationAboutEmailToEditor(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
+        private void Reply(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
+        {
+            addressSectionViewModel.ToEmailsList.Clear();
+
+            AddInformationAboutReplyToEditor(email, editor);
+            AddInformationAboutReplyToAddressSection(email, addressSectionViewModel);
+
+            //Go to TextEditor
+            //TODO: After creating new instance of TextEditor CustomRichTextBox gets rebind. It preventes us from working on the same object
+            //find a way to fix it
+            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
+        }
+
+        private void AddInformationAboutReplyToAddressSection(Email email, AddressSectionViewModel addressSectionViewModel, List<string> to = null)
         {
             addressSectionViewModel.Topic = "RE: " + email.Subject;
 
-            var to = "";
-            email.ToAddresses.ForEach(x => to += x + ";");
+            addressSectionViewModel.ToEmailsList.Add(new MailWrapperViewModel
+            {
+                Address = email.Address,
+            });
+
+            if (to == null) return;
+
+            foreach (var address in to)
+            {
+                //TODO: add check so it would not reply to login user's email address
+                var wrapper = new MailWrapperViewModel
+                {
+                    Address = address,
+                };
+
+                wrapper.DeleteCommand = new RelayCommand(() =>
+                {
+                    addressSectionViewModel.ToEmailsList.Remove(wrapper);
+                });
+
+                addressSectionViewModel.ToEmailsList.Add(wrapper);
+            }
+
+        }
+
+        private void AddInformationAboutReplyToEditor(Email email, CustomRichTextBox editor)
+        {
+            var toWhom = email.Address;
+            foreach (var address in email.ToAddresses)
+            {
+                //TODO: add check for logged user's email address
+                toWhom += address + " ";
+            }
 
             editor.Document.Blocks.Add(new Paragraph(new Run("From: " + email.Address)));
             editor.Document.Blocks.Add(new Paragraph(new Run("Send: " + email.SendDate.ToString())));
-            editor.Document.Blocks.Add(new Paragraph(new Run("To: " + to)));
+            editor.Document.Blocks.Add(new Paragraph(new Run("To: " + toWhom)));
             editor.Document.Blocks.Add(new Paragraph(new Run("Subject: " + email.Subject)));
             editor.Document.Blocks.Add(new Paragraph(new Run(email.Message)));
         }
