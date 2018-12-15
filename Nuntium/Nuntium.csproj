@@ -141,6 +141,7 @@
       <DependentUpon>EmailDetailsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="EmailDetails\EmailDetailsPageViewModel.cs" />
+    <Compile Include="EmailDetails\MoreOptionsItem.cs" />
     <Compile Include="EventArgs\ControlEventArgs.cs" />
     <Compile Include="EventArgs\FilePathEventArgs.cs" />
     <Compile Include="Events\Events.cs" />
@@ -415,6 +416,10 @@
     <Page Include="Styles\Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ListViewItems.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\MenuItems.xaml">
       <SubType>Designer</SubType>

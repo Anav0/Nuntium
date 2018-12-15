@@ -25,7 +25,11 @@ namespace Nuntium
 
         public ObservableCollection<AttachFileViewModel> AttachementsList { get; set; }
 
-        public string AvatarBockground { get; set; }
+        public string AvatarBockground { get; set; } = "#4c6ef5";
+
+        public bool IsShowMoreOptionsMenuVisible { get; set; }
+
+        public ObservableCollection<MoreOptionsItemViewModel> MoreOptionsItems { set; get; }
 
         #endregion
 
@@ -51,6 +55,55 @@ namespace Nuntium
             InitializeCommands(email, editor, addressSectionViewModel);
 
             AttachementsList = new ObservableCollection<AttachFileViewModel>();
+
+            MoreOptionsItems = new ObservableCollection<MoreOptionsItemViewModel>
+            {
+                new MoreOptionsItemViewModel
+                {
+                    Text = "Mark as unread",
+                    Command = new RelayCommand(()=>{var test = 2+2; }),
+                    Icon = IconType.Envelope
+                },
+                new MoreOptionsItemViewModel
+                {
+                    Text = "Move",
+                    Command = new RelayCommand(()=>{var test = 2+2; }),
+                    Icon = IconType.Suitcase
+                },
+                new MoreOptionsItemViewModel
+                {
+                    Text = "Previous",
+                    Command = new RelayCommand(()=>{var test = 2+2; }),
+                    Icon = IconType.CaretLeft
+                },
+                new MoreOptionsItemViewModel
+                {
+                    Text = "Next",
+                    Command = new RelayCommand(()=>{var test = 2+2; }),
+                    Icon = IconType.CaretRight
+                },
+
+                new MoreOptionsItemViewModel
+                {
+                    Text = "Search",
+                    Command = new RelayCommand(()=>{var test = 2+2; }),
+                    Icon = IconType.Search
+                },
+
+                new MoreOptionsItemViewModel
+                {
+                    Text = "Save as",
+                    Command = new RelayCommand(()=>{var test = 2+2; }),
+                    Icon = IconType.Save
+                },
+
+                new MoreOptionsItemViewModel
+                {
+                    Text = "Print",
+                    Command = new RelayCommand(()=>{var test = 2+2; }),
+                    Icon = IconType.Print
+                },
+            };
         }
 
         #region Public Commands
@@ -66,6 +119,8 @@ namespace Nuntium
         public ICommand SendQuickReplyCommand { get; set; }
 
         public ICommand AddAttachmentCommand { get; set; }
+
+        public ICommand ShowMoreOptionsCommand { get; set; }
 
         #endregion
 
@@ -84,6 +139,8 @@ namespace Nuntium
             ReplyCommand = new RelayCommand(() => { Reply(email, editor, addressSectionViewModel); });
 
             ReplyToAllCommand = new RelayCommand(() => { ReplyToAll(email, editor, addressSectionViewModel); });
+
+            ShowMoreOptionsCommand = new RelayCommand(() => { IsShowMoreOptionsMenuVisible ^= true; });
         }
 
         private void ReplyToAll(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)

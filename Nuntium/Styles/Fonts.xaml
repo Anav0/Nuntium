@@ -69,7 +69,11 @@
     <system:String x:Key="FontAwesomeCaretLeft">&#xf104;</system:String>
     <system:String x:Key="FontAwesomeCaretRight">&#xf105;</system:String>
     <system:String x:Key="FontAwesomeSadEmoji">&#xf5b3;</system:String>
-
+    <system:String x:Key="FontAwesomeEllipsis">&#xf141;</system:String>
+    <system:String x:Key="FontAwesomeSuitcase">&#xf0f2;</system:String>
+    <system:String x:Key="FontAwesomeSave">&#xf0c7;</system:String>
+    <system:String x:Key="FontAwesomePrint">&#xf02f;</system:String>
+    
     <system:String x:Key="FontAwesomeReplyAll">&#xf122;</system:String>
     <system:String x:Key="FontAwesomeReply">&#xf3e5;</system:String>
     <system:String x:Key="FontAwesomeEye">&#xf06e;</system:String>

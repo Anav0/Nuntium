@@ -63,7 +63,7 @@
                                 Foreground="{TemplateBinding Foreground}"
                                 Grid.Column="1"
                                 Text="{Binding Path=Text, ElementName=control, FallbackValue=Paperclip}"
-                                HorizontalAlignment="Center"
+                                HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Padding="4"
                                 />  
@@ -79,7 +79,7 @@
                     <EventTrigger RoutedEvent="MouseEnter">
                         <BeginStoryboard >
                             <Storyboard >
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="{StaticResource OpacityAnimationToValue}" Duration="0:0:0.1"/>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="{StaticResource OpacityAnimationToValue}" Duration="0:0:0.1"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>

@@ -10,7 +10,7 @@ namespace Nuntium
         public NotificationIconDesign()
         {
             NumberOfNotifications = 10;
-            Icon = IconType.Bell;
+            Icon = IconType.Envelope;
             ButtonForeground = "#ffffff";
         }
     }

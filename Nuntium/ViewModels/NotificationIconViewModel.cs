@@ -7,7 +7,7 @@ namespace Nuntium
     {
         #region Public Properties
 
-        public IconType Icon { get; set; } = IconType.Bell;
+        public IconType Icon { get; set; } = IconType.Envelope;
 
         public int NumberOfNotifications { get; set; } = 0;
 

@@ -19,9 +19,9 @@
                 <ResourceDictionary Source="Styles/Scroll.xaml"/>
                 <ResourceDictionary Source="Styles/CheckBox.xaml"/>
                 <ResourceDictionary Source="Styles/MenuItems.xaml"/>
+                <ResourceDictionary Source="Styles/ListViewItems.xaml"/>
                 <ResourceDictionary Source="Styles/Tab.xaml"/>
                 <ResourceDictionary Source="Styles/UserControls.xaml"/>
-
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

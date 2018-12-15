@@ -353,4 +353,31 @@
         </Setter>
     </Style>
 
+
+    <Style x:Key="IconButtonWithTextBackgroundAnim" TargetType="{x:Type local:IconButtonWithText}" >
+
+        <!--Triggers-->
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation Storyboard.TargetProperty="(UserControl.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource SecondaryBackgroundColor}"
+                                            Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation Storyboard.TargetProperty="(UserControl.Background).(SolidColorBrush.Color)"
+                                            To="Transparent"
+                                            Duration="0:0:0.2"/>
+
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

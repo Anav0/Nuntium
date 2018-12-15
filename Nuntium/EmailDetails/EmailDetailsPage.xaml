@@ -89,7 +89,45 @@
                         ToolTip="Delete this email"
                         Command="{Binding DeleteCommand}"
                         />
+                    
+                    <Border Style="{StaticResource Separator}" 
+                            Margin="0"
+                            Background="{StaticResource DefaultBorderColorBrush}"
+                            />
+                    
+                    <!--More options-->
+                    <Button 
+                        x:Name="MoreOptionsButton"
+                        Style="{StaticResource LightIconButton}"
+                        Content="{StaticResource FontAwesomeEllipsis}"
+                        Padding="16 8"                       
+                        Margin="0"
+                        ToolTip="Show more options"
+                        Command="{Binding ShowMoreOptionsCommand}"
+                        />
 
+                    <Popup IsOpen="{Binding IsShowMoreOptionsMenuVisible}"
+                           Placement="Bottom"
+                           PlacementTarget="{Binding ElementName=MoreOptionsButton}"
+                           StaysOpen="False"
+                           >
+                        <ListView ItemsSource="{Binding MoreOptionsItems}">
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <local:IconButtonWithText 
+                                        Style="{StaticResource IconButtonWithTextBackgroundAnim}"
+                                        Foreground="{StaticResource DefaultForegroundColorBrush}"
+                                        DataContext="{Binding}"
+                                        Icon="{Binding Icon, Converter={local:IconTypeToFontAwesomeConverter}}"
+                                        Command="{Binding Command}" 
+                                        Text="{Binding Text}"
+                                        />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Popup>
+                    
                 </StackPanel>
             </Border>
 

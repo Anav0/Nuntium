@@ -2,7 +2,13 @@
 {
     public enum IconType
     {
-        Bell,
-        Comments,
+        Envelope,
+        Suitcase,
+        CaretLeft,
+        CaretRight,
+        Search,
+        Save,
+        Print
+
     }
 }
