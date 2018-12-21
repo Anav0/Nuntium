@@ -14,7 +14,7 @@ namespace Nuntium
         public InboxPage()
         {
             //TODO: this is just tmp solution
-            DataContext = new InboxPageViewModel(IoC.Kernel.Get<IEmailService>(), IoC.Kernel.Get<IEventAggregator>());
+            DataContext = new InboxPageViewModel(IoC.Kernel.Get<IEmailService>(), IoC.Kernel.Get<IEventAggregator>(), IoC.Kernel.Get<ICatalogService>());
 
             InitializeComponent();
         }

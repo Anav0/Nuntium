@@ -106,28 +106,17 @@
                         Command="{Binding ShowMoreOptionsCommand}"
                         />
 
+                    <!--More options popup-->
                     <Popup IsOpen="{Binding IsShowMoreOptionsMenuVisible}"
                            Placement="Bottom"
                            PlacementTarget="{Binding ElementName=MoreOptionsButton}"
                            StaysOpen="False"
+                           x:Name="MoreOptionsPopup"
                            >
-                        <ListView ItemsSource="{Binding MoreOptionsItems}">
 
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <local:IconButtonWithText 
-                                        Style="{StaticResource IconButtonWithTextBackgroundAnim}"
-                                        Foreground="{StaticResource DefaultForegroundColorBrush}"
-                                        DataContext="{Binding}"
-                                        Icon="{Binding Icon, Converter={local:IconTypeToFontAwesomeConverter}}"
-                                        Command="{Binding Command}" 
-                                        Text="{Binding Text}"
-                                        />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                        <local:ComplexMenu DataContext="{Binding ComplexMenuVM}"/>
                     </Popup>
-                    
+
                 </StackPanel>
             </Border>
 

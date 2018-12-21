@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Nuntium
@@ -25,9 +26,11 @@ namespace Nuntium
 
         private bool? mSelectionMode = false;
 
+        IEventAggregator mEventAggregator;
+
         #endregion
 
-        #region Public properties
+        #region Public Properties
 
         public ContactsListViewModel ContactListVM { get; set; }
 
@@ -117,11 +120,13 @@ namespace Nuntium
 
         #region Constructor
 
-        public InboxPageViewModel(IEmailService emailService, IEventAggregator eventAggregator)
+        public InboxPageViewModel(IEmailService emailService, IEventAggregator eventAggregator, ICatalogService catalogService)
         {
+            mEventAggregator = eventAggregator;
             InitializeCommands();
             InitializeSortingOptions();
-            InitializeSubordinateViewModels();
+            InitializeSubordinateViewModels(catalogService);
+            HookToEvents(eventAggregator, catalogService);
 
             foreach (var category in (InboxCategoryType[])Enum.GetValues(typeof(InboxCategoryType)))
             {
@@ -129,16 +134,10 @@ namespace Nuntium
             }
 
             GetEmailsFromService(emailService);
-
             LoadTeachers();
             GoToSelectedCategory();
             SortMessages();
-
-            eventAggregator.GetEvent<EmailDeletedEvent>().Subscribe((emailId) => { DeleteEmail(emailId); });
-            eventAggregator.GetEvent<EmailArchivedEvent>().Subscribe((emailId) => { ArchiveEmail(emailId); });
-            eventAggregator.GetEvent<EmailStaredEvent>().Subscribe((emailId) => { StarEmail(emailId); });
         }
-
         #endregion
 
         #region Event handlers
@@ -359,11 +358,42 @@ namespace Nuntium
 
         #region Private Methods
 
+        private void HookToEvents(IEventAggregator eventAggregator, ICatalogService catalogService)
+        {
+            eventAggregator.GetEvent<EmailDeletedEvent>().Subscribe((emailId) => { DeleteEmail(emailId); });
+            eventAggregator.GetEvent<EmailArchivedEvent>().Subscribe((emailId) => { ArchiveEmail(emailId); });
+            eventAggregator.GetEvent<EmailStaredEvent>().Subscribe((emailId) => { StarEmail(emailId); });
+            eventAggregator.GetEvent<MoveEmailToCatalog>().Subscribe((payload) =>
+            {
+                MessageMiniatureViewModel email = null;
+
+                var catalog = catalogService.GetCatalogById(payload.CatalogId);
+
+                foreach (var group in Messages)
+                {
+                    foreach (var eml in group.Value)
+                    {
+                        if (eml.Id == payload.EmailId)
+                        {
+                            email = eml;
+                            break;
+                        }
+                    }
+                }
+
+
+                if (email == null) MessageBox.Show("Email not found", "MessageMiniatureListViewModel", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (catalog == null) MessageBox.Show("Catalog not found", "MessageMiniatureListViewModel", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                MoveEmailTo(email, catalog.Category);
+            }, true);
+        }
+
         private void GetEmailsFromService(IEmailService emailService)
         {
             foreach (var email in emailService.GetAllEmails())
             {
-                var msg = new MessageMiniatureViewModel(email.Id)
+                var msg = new MessageMiniatureViewModel(email.Id, mEventAggregator)
                 {
                     AvatarBackground = ColorHelpers.GenerateRandomColor(),
                     HasAttachments = email.Attachments.Count > 0 ? true : false,
@@ -371,7 +401,8 @@ namespace Nuntium
                     SenderName = email.SenderName,
                     Subject = email.Subject,
                     Placement = InboxCategoryType.Inbox,
-                    Message = email.Message
+                    Message = email.Message,
+                    WasRead =email.WasRead
 
                 };
 
@@ -379,7 +410,7 @@ namespace Nuntium
             }
         }
 
-        private void InitializeSubordinateViewModels()
+        private void InitializeSubordinateViewModels(ICatalogService catalogService)
         {
             ContactListVM = new ContactsListViewModel
             {
@@ -465,7 +496,7 @@ namespace Nuntium
                 },
             };
 
-            MessageListVM = new MessageMiniatureListViewModel();
+            MessageListVM = new MessageMiniatureListViewModel(mEventAggregator, catalogService);
 
             MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>();
 
@@ -635,6 +666,16 @@ namespace Nuntium
             //If message is already deleted don't add it to the bin.
             if (message.Placement != InboxCategoryType.Deleted)
                 Messages[InboxCategoryType.Deleted].Add(message);
+        }
+
+        private void MoveEmailTo(MessageMiniatureViewModel email, InboxCategoryType catalog)
+        {
+            var tmp = email.Placement;
+            email.PrevPlacement = email.Placement;
+            email.Placement = catalog;
+
+            Messages[email.PrevPlacement].Remove(email);
+            Messages[email.Placement].Add(email);
         }
 
         #endregion

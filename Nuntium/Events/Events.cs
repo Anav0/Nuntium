@@ -1,4 +1,5 @@
 ﻿
+using Nuntium.Core;
 using Prism.Events;
 
 namespace Nuntium
@@ -12,4 +13,10 @@ namespace Nuntium
     public class EmailStaredEvent : PubSubEvent<string> { }
 
     public class EmailArchivedEvent : PubSubEvent<string> { }
+
+    public class MarkEmailAsUnread : PubSubEvent<string> { }
+
+    public class MoveEmailToCatalog : PubSubEvent<EmailCatalogPayload> { }
+
+
 }

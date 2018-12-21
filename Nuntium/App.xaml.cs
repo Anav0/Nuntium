@@ -46,6 +46,8 @@ namespace Nuntium
 
             IoC.Kernel.Bind<IEmailService>().ToConstant(new MockedEmailService());
 
+            IoC.Kernel.Bind<ICatalogService>().ToConstant(new CatalogServiceImpl());
+
             IoC.Kernel.Bind<AddressSectionViewModel>().ToConstant(new AddressSectionViewModel());
 
             IoC.Kernel.Bind<FormattingSubmenuViewModel>().ToConstant(new FormattingSubmenuViewModel());

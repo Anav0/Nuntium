@@ -92,6 +92,9 @@
     <Compile Include="Controls\BlankPage.xaml.cs">
       <DependentUpon>BlankPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ComplexMenu.xaml.cs">
+      <DependentUpon>ComplexMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\NameToInitialsConverter.cs" />
     <Compile Include="Converters\StringToVisiblityInverseConverter.cs" />
     <Compile Include="Editor\AddressSection\AddressInputBox.xaml.cs">
@@ -205,6 +208,7 @@
     <Compile Include="ViewModels\Base\ConstantViewModels.cs" />
     <Compile Include="ViewModels\Base\RelayCommand.cs" />
     <Compile Include="ViewModels\Base\RelayCommandWithParameter.cs" />
+    <Compile Include="ViewModels\ComplexMenuViewModel.cs" />
     <Compile Include="ViewModels\ContactsListViewModel.cs" />
     <Compile Include="ViewModels\ContactViewModel.cs" />
     <Compile Include="ViewModels\InboxPageViewModel.cs" />
@@ -216,6 +220,10 @@
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Window\WindowResizer.cs" />
     <Page Include="Controls\BlankPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ComplexMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

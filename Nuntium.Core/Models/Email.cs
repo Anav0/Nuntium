@@ -9,6 +9,7 @@ namespace Nuntium.Core
         public DateTime SendDate;
         public List<string> ToAddresses, FromAddresses;
         public List<AttachedFile> Attachments;
+        public bool WasRead;
 
         public Email()
         {

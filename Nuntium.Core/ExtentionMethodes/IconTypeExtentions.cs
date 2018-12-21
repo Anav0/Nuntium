@@ -30,6 +30,27 @@ namespace Nuntium.Core
 
                 case IconType.Print:
                     return "\uf02f";
+
+                case IconType.Inbox:
+                    return "\uf01c";
+
+                case IconType.File:
+                    return "\uf15b";
+
+                case IconType.PaperPlane:
+                    return "\uf15b";
+
+                case IconType.Ban:
+                    return "\uf05e";
+
+                case IconType.Star:
+                    return "\uf005";
+
+                case IconType.Archive:
+                    return "\uf187";
+
+                case IconType.Bin:
+                    return "\uf1f8";
                 default:
                     return null;
             }

@@ -75,7 +75,8 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="2">
-                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                     </Border>
 
                     <!--Triggers-->

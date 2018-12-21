@@ -8,7 +8,15 @@
         CaretRight,
         Search,
         Save,
-        Print
+        Print,
+        Inbox,
+        File,
+        PaperPlane,
+        Ban,
+        Star,
+        Archive,
+        Bin,
+
 
     }
 }

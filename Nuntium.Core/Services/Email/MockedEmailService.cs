@@ -31,6 +31,7 @@ namespace Nuntium.Core
                 };
 
                 if(mRnd.Next(0, 100) > 10) email.ToAddresses.Add("second_address@test.mail.com");
+                if (mRnd.Next(0, 100) > 50) email.WasRead = true;
 
                 mEmailsList.Add(email);
 

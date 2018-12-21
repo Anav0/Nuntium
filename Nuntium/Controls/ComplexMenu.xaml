@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="Nuntium.ComplexMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Nuntium"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" 
+             d:DesignWidth="150"
+             Background="{StaticResource DefaultBackgroundColorBrush}">
+    
+    <Border BorderBrush="{StaticResource DefaultBorderColorBrush}"
+            BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--Expand button-->
+            <Button
+                Grid.Row="0"
+                Style="{StaticResource IconButton}" 
+                Content="{StaticResource FontAwesomeCaretLeft}"
+                Foreground="{StaticResource AccentColorBrush}"
+                HorizontalContentAlignment="Left"
+                VerticalContentAlignment="Center"
+                Command="{Binding GoBackCommand}"
+                FontSize="{StaticResource FontSizeBigger}"
+                Margin="0"
+                Visibility="{Binding PrevItems.Count, Converter={local:NumberToVisibilityGoneConverter}}"
+                />
+
+            <ListView Grid.Row="1"
+                  ItemsSource="{Binding Items}"
+                  BorderThickness="0"
+                  >
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:IconButtonWithText 
+                            Style="{StaticResource IconButtonWithTextBackgroundAnim}"
+                            Foreground="{StaticResource DefaultForegroundColorBrush}"
+                            DataContext="{Binding}"
+                            Icon="{Binding Icon, Converter={local:IconTypeToFontAwesomeConverter}}"
+                            Command="{Binding Command}" 
+                            Text="{Binding Text}"
+                            />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Border>
+</UserControl>
