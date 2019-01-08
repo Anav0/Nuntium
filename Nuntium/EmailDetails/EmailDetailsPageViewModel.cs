@@ -16,8 +16,6 @@ namespace Nuntium
     public class EmailDetailsPageViewModel : BaseViewModel
     {
 
-        private IEventAggregator mEventAggregator;
-
         #region Public Properties
 
         public string Html { get; set; }
@@ -32,14 +30,9 @@ namespace Nuntium
 
         public bool IsShowMoreOptionsMenuVisible { get; set; }
 
-        public ObservableCollection<MoreOptionsItemViewModel> MoreOptionsItems { set; get; }
-
-        public ObservableCollection<MoreOptionsItemViewModel> MoveEmailOptionsItems { set; get; }
-        
         public ComplexMenuViewModel ComplexMenuVM { get; set; }
 
         #endregion
-
 
         public EmailDetailsPageViewModel()
         {
@@ -47,31 +40,95 @@ namespace Nuntium
         }
 
         public EmailDetailsPageViewModel(
-            string EmailId, 
-            IEmailService emailService, 
-            CustomRichTextBox editor, 
-            AddressSectionViewModel addressSectionViewModel, 
-            string avatarBackground, 
+            string EmailId,
+            IEmailService emailService,
+            CustomRichTextBox editor,
+            AddressSectionViewModel addressSectionViewModel,
+            string avatarBackground,
             IEventAggregator eventAggregator,
-            ICatalogService catalogService)
+            ICatalogService catalogService
+            )
         {
-            mEventAggregator = eventAggregator;
 
             var email = emailService.GetEmailById(EmailId);
 
             InitializeFields(avatarBackground, email);
 
-            InitializeCommands(email, editor, addressSectionViewModel);
+            InitializeCommands(email, editor, addressSectionViewModel, eventAggregator);
 
-            InitializeLists(catalogService, email);
+            InitializeLists();
+
+            var moveEmailOptionsItems = new ObservableCollection<MoreOptionsItemViewModel>();
+
+            foreach (var catalog in catalogService.GetAllCatalogs())
+            {
+                moveEmailOptionsItems.Add(
+                new MoreOptionsItemViewModel
+                {
+                    Icon = catalog.Icon,
+                    Text = catalog.DisplayName,
+                    Command = new RelayCommand(() =>
+                    {
+                        eventAggregator.GetEvent<MoveEmailToCatalog>().Publish(new EmailCatalogPayload(email.Id, catalog.Id));
+                    }),
+                });
+            }
 
             ComplexMenuVM = new ComplexMenuViewModel
             {
-                Items = MoreOptionsItems,
+                Items = new ObservableCollection<MoreOptionsItemViewModel>
+                {
+                    new MoreOptionsItemViewModel
+                    {
+                        Text = "Mark as unread",
+                        Command = new RelayCommand(() =>
+                        {
+                            eventAggregator.GetEvent<MarkEmailAsUnread>().Publish(email.Id);
+                        }),
+                        Icon = IconType.Envelope
+                    },
+                    new MoreOptionsItemViewModel
+                    {
+                        Text = "Move",
+                        Command = new RelayCommand(()=>
+                        {
+                            ComplexMenuVM.SwapContent(moveEmailOptionsItems);
+                        }),
+                        Icon = IconType.Suitcase
+                    },
+                    new MoreOptionsItemViewModel
+                    {
+                        Text = "Previous",
+                        Command = new RelayCommand(() => {var test = 2+2; }),
+                        Icon = IconType.CaretLeft
+                    },
+                    new MoreOptionsItemViewModel
+                    {
+                        Text = "Next",
+                        Command = new RelayCommand(()=>{var test = 2+2; }),
+                        Icon = IconType.CaretRight
+                    },
+                    new MoreOptionsItemViewModel
+                    {
+                        Text = "Search",
+                        Command = new RelayCommand(()=>{var test = 2+2; }),
+                        Icon = IconType.Search
+                    },
+                    new MoreOptionsItemViewModel
+                    {
+                        Text = "Save as",
+                        Command = new RelayCommand(()=>{var test = 2+2; }),
+                        Icon = IconType.Save
+                    },
+                    new MoreOptionsItemViewModel
+                    {
+                        Text = "Print",
+                        Command = new RelayCommand(()=>{var test = 2+2; }),
+                        Icon = IconType.Print
+                    },
+                }
             };
-
         }
-
 
         #region Public Commands
 
@@ -91,11 +148,11 @@ namespace Nuntium
 
         #endregion
 
-        private void InitializeCommands(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
+        private void InitializeCommands(Email email, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel, IEventAggregator eventAggregator)
         {
             DeleteCommand = new RelayCommand(() =>
             {
-                mEventAggregator.GetEvent<EmailDeletedEvent>().Publish(email.Id);
+                eventAggregator.GetEvent<EmailDeletedEvent>().Publish(email.Id);
 
                 ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
             });
@@ -107,80 +164,9 @@ namespace Nuntium
             ShowMoreOptionsCommand = new RelayCommand(() => { IsShowMoreOptionsMenuVisible ^= true; });
         }
 
-        private void InitializeLists(ICatalogService catalogService, Email email)
+        private void InitializeLists()
         {
             AttachementsList = new ObservableCollection<AttachFileViewModel>();
-
-            MoveEmailOptionsItems = new ObservableCollection<MoreOptionsItemViewModel>();
-
-            foreach (var catalog in catalogService.GetAllCatalogs())
-            {
-                MoveEmailOptionsItems.Add(new MoreOptionsItemViewModel
-                {
-                    Icon = catalog.Icon,
-                    Text = catalog.DisplayName,
-                    Command = new RelayCommand(() =>
-                    {
-                        var payload = new EmailCatalogPayload(email.Id, catalog.Id);
-                        mEventAggregator.GetEvent<MoveEmailToCatalog>().Publish(payload);
-                    }),
-                });
-            }
-
-            MoreOptionsItems = new ObservableCollection<MoreOptionsItemViewModel>
-            {
-                new MoreOptionsItemViewModel
-                {
-                    Text = "Mark as unread",
-                    Command = new RelayCommand(() =>
-                    {
-                        mEventAggregator.GetEvent<MarkEmailAsUnread>().Publish(email.Id);
-                    }),
-                    Icon = IconType.Envelope
-                },
-                new MoreOptionsItemViewModel
-                {
-                    Text = "Move",
-                    Command = new RelayCommand(()=>
-                    {
-                        ComplexMenuVM.SwapContent(MoveEmailOptionsItems);
-                    }),
-                    Icon = IconType.Suitcase
-                },
-                new MoreOptionsItemViewModel
-                {
-                    Text = "Previous",
-                    Command = new RelayCommand(() => {var test = 2+2; }),
-                    Icon = IconType.CaretLeft
-                },
-                new MoreOptionsItemViewModel
-                {
-                    Text = "Next",
-                    Command = new RelayCommand(()=>{var test = 2+2; }),
-                    Icon = IconType.CaretRight
-                },
-
-                new MoreOptionsItemViewModel
-                {
-                    Text = "Search",
-                    Command = new RelayCommand(()=>{var test = 2+2; }),
-                    Icon = IconType.Search
-                },
-
-                new MoreOptionsItemViewModel
-                {
-                    Text = "Save as",
-                    Command = new RelayCommand(()=>{var test = 2+2; }),
-                    Icon = IconType.Save
-                },
-
-                new MoreOptionsItemViewModel
-                {
-                    Text = "Print",
-                    Command = new RelayCommand(()=>{var test = 2+2; }),
-                    Icon = IconType.Print
-                },
-            };
         }
 
         private void InitializeFields(string avatarBackground, Email email)
@@ -200,7 +186,7 @@ namespace Nuntium
             AddInformationAboutReplyToAddressSection(email, addressSectionViewModel, email.ToAddresses);
 
             //Go to TextEditor
-            //TODO: After creating new instance of TextEditor CustomRichTextBox gets rebind. It preventes us from working on the same object
+            //TODO: After creating new instance of TextEditor CustomRichTextBox gets rebind. It prevents us from working on the same object
             //find a way to fix it
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.TextEditor, new TextEditorViewModel());
         }
