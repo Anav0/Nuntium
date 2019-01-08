@@ -46,14 +46,32 @@ namespace Nuntium
 
         #endregion
 
-        public MessageMiniatureViewModel(string emailId, IEventAggregator eventAggregator)
+        public MessageMiniatureViewModel(
+            string emailId, 
+            IEventAggregator eventAggregator, 
+            IEmailService emailService,
+            ICatalogService catalogService, 
+            CustomRichTextBox editor, 
+            AddressSectionViewModel addressSectionViewModel
+            )
         {
             mEventAggregator = eventAggregator;
             Id = emailId;
             DeleteCommand = new RelayCommandWithParameter((parameter) => Delete(parameter));
             ToggleStarCommand = new RelayCommand(ToggleStar);
             ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
-            ShowEmailDetailsCommand = new RelayCommand(ShowEmailDetails);
+            ShowEmailDetailsCommand = new RelayCommand(() => 
+            {
+                new EmailHelper().ShowEmailDetails
+                (
+                   this,
+                   emailService,
+                   eventAggregator,
+                   catalogService,
+                   editor,
+                   addressSectionViewModel
+                );
+            });
         }
 
         #region Public Commands
@@ -100,23 +118,6 @@ namespace Nuntium
 
             mEventAggregator.GetEvent<EmailDeletedEvent>().Publish(Id);
 
-        }
-
-        private void ShowEmailDetails()
-        {
-            //Mark as read
-            //TODO: This function is responsible for two things(marking as read and displaying email details.
-            //Change so it will not break SOLID design principal.
-            WasRead = true;
-
-            var emailService = IoC.Kernel.Get<IEmailService>();
-            var editor = IoC.Kernel.Get<CustomRichTextBox>();
-            var adrSectionVM = IoC.Kernel.Get<AddressSectionViewModel>();
-            var catalogService = IoC.Kernel.Get<ICatalogService>();
-
-            var emailDetailsVM = new EmailDetailsPageViewModel(Id, emailService, editor, adrSectionVM, AvatarBackground, mEventAggregator, catalogService);
-
-            ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, emailDetailsVM);
         }
 
     }

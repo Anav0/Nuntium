@@ -118,7 +118,7 @@ namespace Nuntium
 
         #region Constructor
 
-        public InboxPageViewModel(IEmailService emailService, IEventAggregator eventAggregator, ICatalogService catalogService)
+        public InboxPageViewModel(IEmailService emailService, IEventAggregator eventAggregator, ICatalogService catalogService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
             Messages = new Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>>();
             InitializeCommands();
@@ -131,7 +131,7 @@ namespace Nuntium
                 Messages.Add(category, new ObservableCollection<MessageMiniatureViewModel>());
             }
 
-            GetEmailsFromService(emailService, eventAggregator);
+            GetEmailsFromService(emailService, eventAggregator, catalogService, editor, addressSectionViewModel);
             LoadTeachers();
             GoToSelectedCategory();
             SortMessages();
@@ -346,11 +346,18 @@ namespace Nuntium
             }, true);
         }
 
-        private void GetEmailsFromService(IEmailService emailService, IEventAggregator eventAggregator)
+        private void GetEmailsFromService(IEmailService emailService, IEventAggregator eventAggregator, ICatalogService catalogService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
             foreach (var email in emailService.GetAllEmails())
             {
-                var msg = new MessageMiniatureViewModel(email.Id, eventAggregator)
+                var msg = new MessageMiniatureViewModel(
+                    email.Id, 
+                    eventAggregator, 
+                    emailService,
+                    catalogService,
+                    editor,
+                    addressSectionViewModel
+                    )
                 {
                     AvatarBackground = ColorHelpers.GenerateRandomColor(),
                     HasAttachments = email.Attachments.Count > 0 ? true : false,

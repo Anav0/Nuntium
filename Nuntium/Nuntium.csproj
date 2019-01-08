@@ -144,6 +144,7 @@
       <DependentUpon>EmailDetailsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="EmailDetails\EmailDetailsPageViewModel.cs" />
+    <Compile Include="EmailDetails\EmailHelper.cs" />
     <Compile Include="EmailDetails\MoreOptionsItem.cs" />
     <Compile Include="EventArgs\ControlEventArgs.cs" />
     <Compile Include="EventArgs\FilePathEventArgs.cs" />
