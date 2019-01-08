@@ -8,6 +8,7 @@ namespace Nuntium
 {
     public class AddressSectionViewModel : BaseViewModel
     {
+        public ObservableCollection<MailWrapperViewModel> FromEmailsList { get; set; }
 
         public ObservableCollection<MailWrapperViewModel> ToEmailsList { get; set; }
 
@@ -26,6 +27,7 @@ namespace Nuntium
         {
             ShowCCandBCCFieldsCommand = new RelayCommand(ShowCCandBCCFields);
 
+            FromEmailsList = new ObservableCollection<MailWrapperViewModel>();
             ToEmailsList = new ObservableCollection<MailWrapperViewModel>();
             CCEmailsList = new ObservableCollection<MailWrapperViewModel>(); 
             BCCEmailsList = new ObservableCollection<MailWrapperViewModel>();

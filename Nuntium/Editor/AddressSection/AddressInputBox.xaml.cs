@@ -91,6 +91,10 @@ namespace Nuntium
             {
                 ParseAddress(box, true);
             }
+            else if(lastChar == ' ')
+            {
+                ParseAddress(box, false);
+            }
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -101,13 +105,12 @@ namespace Nuntium
             if (string.IsNullOrEmpty(box.Text))
                 return;
 
-            ParseAddress(box);
+            ParseAddress(box, false);
         }
 
-        private void ParseAddress(TextBox box, bool excludeLastCharacter = false)
+        private void ParseAddress(TextBox box, bool excludeLastCharacter)
         {
-           
-            if (!(new EmailAddressAttribute().IsValid(box.Text)))
+            if (!new EmailAddressAttribute().IsValid(box.Text))
                 return;
 
             if (Addresses == null)
@@ -134,7 +137,6 @@ namespace Nuntium
             });
 
             AddBasedOnPurpose(wrapperVM);
-            Addresses.Add(wrapperVM);
 
             box.Text = "";
         }
@@ -143,6 +145,9 @@ namespace Nuntium
         {
             switch(Purpose)
             {
+                case AddressCategory.From:
+                    IoC.Kernel.Get<AddressSectionViewModel>().FromEmailsList.Add(wrapper);
+                    break;
                 case AddressCategory.BCC:
                     IoC.Kernel.Get<AddressSectionViewModel>().BCCEmailsList.Add(wrapper);
                     break;
@@ -159,6 +164,9 @@ namespace Nuntium
         {
             switch (Purpose)
             {
+                case AddressCategory.From:
+                    IoC.Kernel.Get<AddressSectionViewModel>().FromEmailsList.Remove(wrapper);
+                    break;
                 case AddressCategory.BCC:
                     IoC.Kernel.Get<AddressSectionViewModel>().BCCEmailsList.Remove(wrapper);
                     break;

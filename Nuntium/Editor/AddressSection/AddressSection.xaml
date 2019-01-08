@@ -28,7 +28,9 @@
                     Grid.Column="0"
                     Purpose="From" 
                     Address="igor.motyka@mail.com;"
+                    Addresses="{Binding FromEmailsList}"
                     IsRemovable="False"
+                    IsEnabled="False"
                 >
                
             </local:AddressInputBox>
