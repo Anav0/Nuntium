@@ -104,6 +104,11 @@ namespace Nuntium
 
         private void ShowEmailDetails()
         {
+            //Mark as read
+            //TODO: This function is responsible for two things(marking as read and displaying email details.
+            //Change so it will not break SOLID design principal.
+            WasRead = true;
+
             var emailService = IoC.Kernel.Get<IEmailService>();
             var editor = IoC.Kernel.Get<CustomRichTextBox>();
             var adrSectionVM = IoC.Kernel.Get<AddressSectionViewModel>();
@@ -114,6 +119,9 @@ namespace Nuntium
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, emailDetailsVM);
         }
 
-        #endregion
     }
+
+
+    #endregion
 }
+
