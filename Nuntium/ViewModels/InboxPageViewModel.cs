@@ -26,8 +26,6 @@ namespace Nuntium
 
         private bool? mSelectionMode = false;
 
-        IEventAggregator mEventAggregator;
-
         #endregion
 
         #region Public Properties
@@ -40,7 +38,7 @@ namespace Nuntium
 
         public ObservableCollection<SortingOption> MessagesSortingOptions { get; set; }
 
-        public Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>> Messages { get; set; } = new Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>>();
+        public Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>> Messages { get; set; }
 
         public SortingOption ContactsSortedBy
         {
@@ -122,10 +120,10 @@ namespace Nuntium
 
         public InboxPageViewModel(IEmailService emailService, IEventAggregator eventAggregator, ICatalogService catalogService)
         {
-            mEventAggregator = eventAggregator;
+            Messages = new Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>>();
             InitializeCommands();
             InitializeSortingOptions();
-            InitializeSubordinateViewModels(catalogService);
+            InitializeSubordinateViewModels(catalogService, eventAggregator);
             HookToEvents(eventAggregator, catalogService);
 
             foreach (var category in (InboxCategoryType[])Enum.GetValues(typeof(InboxCategoryType)))
@@ -133,74 +131,11 @@ namespace Nuntium
                 Messages.Add(category, new ObservableCollection<MessageMiniatureViewModel>());
             }
 
-            GetEmailsFromService(emailService);
+            GetEmailsFromService(emailService, eventAggregator);
             LoadTeachers();
             GoToSelectedCategory();
             SortMessages();
         }
-        #endregion
-
-        #region Event handlers
-
-        private void ArchiveEmail(string emailId)
-        {
-            var email = MessageListVM.Items.First(x => x.Id == emailId);
-
-            IsRestoringArchivedMessages = true;
-
-            mRecentlyMovedMessages.Clear();
-            mRecentlyMovedMessages.Add(email);
-
-            Messages[InboxCategoryType.Archive].Add(email);
-            Messages[email.Placement].Remove(email);
-
-            email.PrevPlacement = email.Placement;
-            email.Placement = InboxCategoryType.Archive;
-
-            MessageListVM.Items.Remove(email);
-
-            DisplayRestorationPopup();
-
-        }
-
-        public void DeleteEmail(string emailId)
-        {
-            var email = MessageListVM.Items.First(x => x.Id == emailId);
-
-            IsRestoringArchivedMessages = false;
-
-            mRecentlyMovedMessages.Clear();
-
-            //Add message to recently deleted ones
-            mRecentlyMovedMessages.Add(email);
-
-            MoveToDeletedList(email);
-
-            //Update placement of the message
-            email.PrevPlacement = email.Placement;
-            email.Placement = InboxCategoryType.Deleted;
-
-            //Delete message from displayed list
-            MessageListVM.Items.Remove(email);
-
-            DisplayRestorationPopup();
-        }
-
-        private void StarEmail(string emailId)
-        {
-            var email = MessageListVM.Items.First(x => x.Id == emailId);
-
-            if (email.IsStared)
-            {
-                Messages[InboxCategoryType.Stared].Add(email);
-            }
-            else
-            {
-                Messages[InboxCategoryType.Stared].Remove(email);
-            }
-
-        }
-
         #endregion
 
         #region Command Methods
@@ -254,11 +189,11 @@ namespace Nuntium
             }
         }
 
-        private void RestoreMessages()
+        private void RestoreMessages(List<MessageMiniatureViewModel> messages)
         {
             IsRestorePopupShown = false;
 
-            mRecentlyMovedMessages.ForEach(item =>
+            messages.ForEach(item =>
             {
                 if (item.IsStared && !Messages[InboxCategoryType.Stared].Contains(item))
                     Messages[InboxCategoryType.Stared].Add(item);
@@ -290,12 +225,14 @@ namespace Nuntium
 
                 for (int i = MessageListVM.SelectedItems.Count - 1; i >= 0; i--)
                 {
-                    var item = MessageListVM.SelectedItems[i];
+                    var email = MessageListVM.SelectedItems[i];
 
-                    MoveToDeletedList(item);
+                    MoveEmailTo(email, InboxCategoryType.Deleted);
 
-                    item.PrevPlacement = item.Placement;
-                    item.Placement = InboxCategoryType.Deleted;
+                    //If message gets deleted remove it's email details screen
+                    if (email.Placement == InboxCategoryType.Deleted)
+                        ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
+
                 }
 
                 GoToSelectedCategory();
@@ -338,7 +275,7 @@ namespace Nuntium
 
         }
 
-        private void ToggleStarForSelectedMesseges()
+        private void StarSelectedMessages()
         {
             foreach (var message in MessageListVM.SelectedItems)
             {
@@ -360,20 +297,36 @@ namespace Nuntium
 
         private void HookToEvents(IEventAggregator eventAggregator, ICatalogService catalogService)
         {
-            eventAggregator.GetEvent<EmailDeletedEvent>().Subscribe((emailId) => { DeleteEmail(emailId); });
-            eventAggregator.GetEvent<EmailArchivedEvent>().Subscribe((emailId) => { ArchiveEmail(emailId); });
-            eventAggregator.GetEvent<EmailStaredEvent>().Subscribe((emailId) => { StarEmail(emailId); });
-            eventAggregator.GetEvent<MoveEmailToCatalog>().Subscribe((payload) =>
+            
+            eventAggregator.GetEvent<EmailDeletedEvent>().Subscribe((emailId) => 
+            {
+                var email = MessageListVM.Items.First(x => x.Id == emailId);
+                MoveEmailTo(email, InboxCategoryType.Deleted);
+            });
+
+            eventAggregator.GetEvent<EmailArchivedEvent>().Subscribe((emailId) => 
+            {
+                var email = MessageListVM.Items.First(x => x.Id == emailId);
+                MoveEmailTo(email, InboxCategoryType.Archive);
+            });
+
+            eventAggregator.GetEvent<EmailStaredEvent>().Subscribe((emailId) => 
+            {
+                var email = MessageListVM.Items.First(x => x.Id == emailId);
+                MoveEmailTo(email, InboxCategoryType.Stared);
+            });
+
+            eventAggregator.GetEvent<MoveEmailToCatalog>().Subscribe((emailCatalogPayload) =>
             {
                 MessageMiniatureViewModel email = null;
 
-                var catalog = catalogService.GetCatalogById(payload.CatalogId);
+                var catalog = catalogService.GetCatalogById(emailCatalogPayload.CatalogId);
 
                 foreach (var group in Messages)
                 {
                     foreach (var eml in group.Value)
                     {
-                        if (eml.Id == payload.EmailId)
+                        if (eml.Id == emailCatalogPayload.EmailId)
                         {
                             email = eml;
                             break;
@@ -381,19 +334,23 @@ namespace Nuntium
                     }
                 }
 
-
                 if (email == null) MessageBox.Show("Email not found", "MessageMiniatureListViewModel", MessageBoxButton.OK, MessageBoxImage.Error);
                 if (catalog == null) MessageBox.Show("Catalog not found", "MessageMiniatureListViewModel", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 MoveEmailTo(email, catalog.Category);
+
+                //If message gets deleted remove it's email details screen
+                if (catalog.Category == InboxCategoryType.Deleted && catalog.Category == email.Placement)
+                    ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
+
             }, true);
         }
 
-        private void GetEmailsFromService(IEmailService emailService)
+        private void GetEmailsFromService(IEmailService emailService, IEventAggregator eventAggregator)
         {
             foreach (var email in emailService.GetAllEmails())
             {
-                var msg = new MessageMiniatureViewModel(email.Id, mEventAggregator)
+                var msg = new MessageMiniatureViewModel(email.Id, eventAggregator)
                 {
                     AvatarBackground = ColorHelpers.GenerateRandomColor(),
                     HasAttachments = email.Attachments.Count > 0 ? true : false,
@@ -410,7 +367,7 @@ namespace Nuntium
             }
         }
 
-        private void InitializeSubordinateViewModels(ICatalogService catalogService)
+        private void InitializeSubordinateViewModels(ICatalogService catalogService, IEventAggregator eventAggregator)
         {
             ContactListVM = new ContactsListViewModel
             {
@@ -496,7 +453,7 @@ namespace Nuntium
                 },
             };
 
-            MessageListVM = new MessageMiniatureListViewModel(mEventAggregator, catalogService);
+            MessageListVM = new MessageMiniatureListViewModel(eventAggregator, catalogService);
 
             MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>();
 
@@ -571,10 +528,9 @@ namespace Nuntium
         {
             LoadPupilsCommand = new RelayCommand(LoadPupils);
             LoadTeachersCommand = new RelayCommand(LoadTeachers);
-            RestoreDeletedMessagesCommand = new RelayCommand(RestoreMessages);
-
+            RestoreDeletedMessagesCommand = new RelayCommand(() => RestoreMessages(mRecentlyMovedMessages));
             DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
-            StarSelectedMessagesCommand = new RelayCommand(ToggleStarForSelectedMesseges);
+            StarSelectedMessagesCommand = new RelayCommand(StarSelectedMessages);
             ArchiveSelectedMessagesCommand = new RelayCommand(ArchiveSelectedMessages);
             ShowTextEditorCommand = new RelayCommand(ShowTextEditor);
         }
@@ -636,6 +592,7 @@ namespace Nuntium
             MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(Messages[SelectedCategory]);
         }
 
+        //TODO: fix this broken, bitch ass nigga system
         private void DisplayRestorationPopup()
         {
             IsRestorePopupShown = true;
@@ -650,26 +607,33 @@ namespace Nuntium
             timer.Start();
         }
 
-        private void MoveToDeletedList(MessageMiniatureViewModel message)
-        {
-            message.IsArchived = false;
-
-            //Remove message from category list its on.
-            Messages[message.Placement].Remove(message);
-
-            //If message is being permamently deleted delete it's star also
-            if (message.Placement == InboxCategoryType.Deleted)
-            {
-                Messages[InboxCategoryType.Stared].Remove(message);
-            }
-
-            //If message is already deleted don't add it to the bin.
-            if (message.Placement != InboxCategoryType.Deleted)
-                Messages[InboxCategoryType.Deleted].Add(message);
-        }
-
         private void MoveEmailTo(MessageMiniatureViewModel email, InboxCategoryType catalog)
         {
+            //Is we archiving email mark it appropriately
+            if (catalog == InboxCategoryType.Archive)
+            {
+                email.IsArchived = true;
+
+                IsRestoringArchivedMessages = true;
+                DisplayRestorationPopup();
+            }
+            else
+                email.IsArchived = false;
+               
+            if(catalog == InboxCategoryType.Deleted)
+            {
+                IsRestoringArchivedMessages = false;
+                DisplayRestorationPopup();
+            }
+
+            //If email is going to be permamently deleted, delete it from stared emails also
+            if (catalog == InboxCategoryType.Deleted && email.Placement == InboxCategoryType.Deleted)
+            {
+                Messages[InboxCategoryType.Stared].Remove(email);
+                Messages[email.Placement].Remove(email);
+                return;
+            }
+
             var tmp = email.Placement;
             email.PrevPlacement = email.Placement;
             email.Placement = catalog;
