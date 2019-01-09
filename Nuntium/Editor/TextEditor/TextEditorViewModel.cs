@@ -1,6 +1,7 @@
 ﻿using Ninject;
 using Nuntium.Core;
 using Prism.Events;
+using System;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -43,32 +44,16 @@ namespace Nuntium
 
         private void DisplayDiscardEmailModalBox()
         {
-            var modal = new DefaultModal
-            {
-                Message = "Do you want to discard this email?",
-                Header = "Discard email",
-                YesButtonText = "Discard",
-                NoButtonText = "Cancel",
-            };
-
-            Window window = new Window
-            {
-                Content = modal,
-
-                SizeToContent = SizeToContent.WidthAndHeight,
-                ResizeMode = ResizeMode.NoResize,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-            };
-
-            modal.YesCommand = new RelayCommand(() =>
-            {
-                window.Close();
-                //SaveEmailAsWorkInProgress();
-            });
-
-            modal.NoCommand = new RelayCommand(() => { window.Close(); });
-
-            window.ShowDialog();
+            ConstantViewModels.Instance.ApplicationViewModelInstance.ShowModal(
+                "Do you want to discard this email?",
+                "Discard email",
+                "Discard",
+                "Cancel",
+                new RelayCommand(() =>
+                {
+                    //SaveEmailAsWorkInProgress();
+                }),
+               null);
         }
 
         private void SendEmail()
