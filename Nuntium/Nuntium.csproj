@@ -152,9 +152,7 @@
     <Compile Include="ExtentionMethodes\ButtonStateHelper.cs" />
     <Compile Include="ExtentionMethodes\FlowDocumentExtentions.cs" />
     <Compile Include="ExtentionMethodes\IconExtentions.cs" />
-    <Compile Include="ExtentionMethodes\Int64Extentions.cs" />
     <Compile Include="ExtentionMethodes\RichTextBoxExtentions.cs" />
-    <Compile Include="ExtentionMethodes\StringExtention.cs" />
     <Compile Include="ExtentionMethodes\TextSelectionExtentions.cs" />
     <Compile Include="Editor\HyperLinkFactory\BasicHyperLinkFactory.cs" />
     <Compile Include="Editor\HyperLinkFactory\IHyperLinkFactory.cs" />
@@ -386,7 +384,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\InboxPage.xaml">
+    <Page Include="Pages\InboxSection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -480,8 +478,8 @@
     <Compile Include="Pages\Base\PageHost.xaml.cs">
       <DependentUpon>PageHost.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\InboxPage.xaml.cs">
-      <DependentUpon>InboxPage.xaml</DependentUpon>
+    <Compile Include="Pages\InboxSection.xaml.cs">
+      <DependentUpon>InboxSection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -541,7 +539,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PropertyChanged.Fody.2.6.0\build\PropertyChanged.Fody.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.3.3.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.3.3\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.3.3.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.3.5\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\packages\Fody.3.3.3\build\Fody.targets" Condition="Exists('..\packages\Fody.3.3.3\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\packages\Fody.3.3.5\build\Fody.targets')" />
 </Project>

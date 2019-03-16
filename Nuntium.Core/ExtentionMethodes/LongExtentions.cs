@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nuntium
+namespace Nuntium.Core
 {
     public static class Int64Extentions
     {

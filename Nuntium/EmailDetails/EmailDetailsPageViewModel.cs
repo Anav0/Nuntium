@@ -111,13 +111,18 @@ namespace Nuntium
                     new MoreOptionsItemViewModel
                     {
                         Text = "Search",
-                        Command = new RelayCommand(()=>{var test = 2+2; }),
+                        Command = new RelayCommand(() => {  }),
                         Icon = IconType.Search
                     },
                     new MoreOptionsItemViewModel
                     {
                         Text = "Save as",
-                        Command = new RelayCommand(()=>{var test = 2+2; }),
+                        Command = new RelayCommand(
+                        ()=>
+                        {
+                            //new SmtpEmailSaver().SaveEmailLocally(email);
+                        }
+                        ),
                         Icon = IconType.Save
                     },
                     new MoreOptionsItemViewModel
@@ -128,6 +133,11 @@ namespace Nuntium
                     },
                 }
             };
+        }
+
+        private void SearchForEmail(string searchPhrase)
+        {
+
         }
 
         #region Public Commands

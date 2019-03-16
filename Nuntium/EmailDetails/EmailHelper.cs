@@ -24,5 +24,7 @@ namespace Nuntium
 
             ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.EmailDetailsPage, emailDetailsVM);
         }
+
+       
     }
 }

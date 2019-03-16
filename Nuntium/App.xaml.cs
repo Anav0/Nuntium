@@ -40,7 +40,7 @@ namespace Nuntium
 
             IoC.Kernel.Bind<TextEditorViewModel>().To<TextEditorViewModel>();
 
-            IoC.Kernel.Bind<InboxPageViewModel>().To<InboxPageViewModel>();
+            IoC.Kernel.Bind<InboxSectionViewModel>().To<InboxSectionViewModel>();
 
             IoC.Kernel.Bind<IEventAggregator>().ToConstant(new EventAggregator());
 

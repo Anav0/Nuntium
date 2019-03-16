@@ -16,6 +16,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="2">
+                        
                         <ContentPresenter VerticalAlignment="Center"
                                           HorizontalAlignment="Center" />
                     </Border>
@@ -354,7 +355,6 @@
         </Setter>
     </Style>
 
-
     <Style x:Key="IconButtonWithTextBackgroundAnim" TargetType="{x:Type local:IconButtonWithText}" >
 
         <!--Triggers-->
@@ -381,4 +381,5 @@
             </EventTrigger>
         </Style.Triggers>
     </Style>
+
 </ResourceDictionary>

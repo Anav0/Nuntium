@@ -1,5 +1,4 @@
-﻿using Ninject;
-using Nuntium.Core;
+﻿using Nuntium.Core;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
@@ -11,12 +10,10 @@ using System.Windows.Input;
 
 namespace Nuntium
 {
-    public class InboxPageViewModel : BaseViewModel
+    public class InboxSectionViewModel : BaseViewModel
     {
 
         #region Private Members
-
-        private List<MessageMiniatureViewModel> mRecentlyMovedMessages = new List<MessageMiniatureViewModel>();
 
         private SortingOption mContactsSortedBy;
 
@@ -79,10 +76,6 @@ namespace Nuntium
             }
         }
 
-        public bool IsRestoringArchivedMessages { get; set; }
-
-        public bool IsRestorePopupShown { get; set; }
-
         public bool? SelectionMode
         {
             get => mSelectionMode;
@@ -118,7 +111,7 @@ namespace Nuntium
 
         #region Constructor
 
-        public InboxPageViewModel(IEmailService emailService, IEventAggregator eventAggregator, ICatalogService catalogService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
+        public InboxSectionViewModel(IEmailService emailService, IEventAggregator eventAggregator, ICatalogService catalogService, CustomRichTextBox editor, AddressSectionViewModel addressSectionViewModel)
         {
             Messages = new Dictionary<InboxCategoryType, ObservableCollection<MessageMiniatureViewModel>>();
             InitializeCommands();
@@ -136,6 +129,7 @@ namespace Nuntium
             GoToSelectedCategory();
             SortMessages();
         }
+
         #endregion
 
         #region Command Methods
@@ -189,100 +183,37 @@ namespace Nuntium
             }
         }
 
-        private void RestoreMessages(List<MessageMiniatureViewModel> messages)
-        {
-            IsRestorePopupShown = false;
-
-            messages.ForEach(item =>
-            {
-                if (item.IsStared && !Messages[InboxCategoryType.Stared].Contains(item))
-                    Messages[InboxCategoryType.Stared].Add(item);
-
-                if (item.PrevPlacement == InboxCategoryType.Archive)
-                    item.IsArchived = true;
-                else item.IsArchived = false;
-
-                Messages[item.Placement].Remove(item);
-                Messages[item.PrevPlacement].Add(item);
-
-                var tmp = item.Placement;
-                item.Placement = item.PrevPlacement;
-                item.PrevPlacement = tmp;
-            });
-
-            GoToSelectedCategory();
-            SortMessages();
-            SelectMessages();
-        }
-
         private void DeleteSelectedMessages()
         {
-            new Thread(() =>
+            for (int i = MessageListVM.SelectedItems.Count - 1; i >= 0; i--)
             {
-                IsRestoringArchivedMessages = false;
+                var email = MessageListVM.SelectedItems[i];
 
-                mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListVM.SelectedItems);
+                MoveEmailTo(email, InboxCategoryType.Deleted);
 
-                for (int i = MessageListVM.SelectedItems.Count - 1; i >= 0; i--)
-                {
-                    var email = MessageListVM.SelectedItems[i];
+                //If message gets deleted remove it's email details screen
+                if (email.Placement == InboxCategoryType.Deleted)
+                    ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
 
-                    MoveEmailTo(email, InboxCategoryType.Deleted);
-
-                    //If message gets deleted remove it's email details screen
-                    if (email.Placement == InboxCategoryType.Deleted)
-                        ConstantViewModels.Instance.ApplicationViewModelInstance.GoToPage(ApplicationPage.Blank);
-
-                }
-
-                GoToSelectedCategory();
-                SortMessages();
-                DisplayRestorationPopup();
-
-            }).Start();
-
+            }
         }
 
         private void ArchiveSelectedMessages()
         {
-            //don't archive archived messages
             if (SelectedCategory == InboxCategoryType.Archive)
                 return;
 
-            new Thread(() =>
+            for (int i = MessageListVM.SelectedItems.Count - 1; i >= 0; i--)
             {
-                IsRestoringArchivedMessages = true;
-
-                mRecentlyMovedMessages = new List<MessageMiniatureViewModel>(MessageListVM.SelectedItems);
-
-                for (int i = MessageListVM.SelectedItems.Count - 1; i >= 0; i--)
-                {
-                    MessageListVM.SelectedItems[i].IsArchived = true;
-
-                    Messages[InboxCategoryType.Archive].Add(MessageListVM.SelectedItems[i]);
-                    Messages[MessageListVM.SelectedItems[i].Placement].Remove(MessageListVM.SelectedItems[i]);
-
-                    MessageListVM.SelectedItems[i].PrevPlacement = MessageListVM.SelectedItems[i].Placement;
-                    MessageListVM.SelectedItems[i].Placement = InboxCategoryType.Archive;
-
-                }
-
-                GoToSelectedCategory();
-                SortMessages();
-                DisplayRestorationPopup();
-
-            }).Start();
-
+                MoveEmailTo(MessageListVM.SelectedItems[i], InboxCategoryType.Archive);
+            }
         }
 
         private void StarSelectedMessages()
         {
-            foreach (var message in MessageListVM.SelectedItems)
+            foreach (var email in MessageListVM.SelectedItems)
             {
-                message.IsStared = true;
-
-                if (!Messages[InboxCategoryType.Stared].Contains(message))
-                    Messages[InboxCategoryType.Stared].Add(message);
+                MoveEmailTo(email, InboxCategoryType.Stared);
             }
         }
 
@@ -297,20 +228,20 @@ namespace Nuntium
 
         private void HookToEvents(IEventAggregator eventAggregator, ICatalogService catalogService)
         {
-            
-            eventAggregator.GetEvent<EmailDeletedEvent>().Subscribe((emailId) => 
+
+            eventAggregator.GetEvent<EmailDeletedEvent>().Subscribe((emailId) =>
             {
                 var email = MessageListVM.Items.First(x => x.Id == emailId);
                 MoveEmailTo(email, InboxCategoryType.Deleted);
             });
 
-            eventAggregator.GetEvent<EmailArchivedEvent>().Subscribe((emailId) => 
+            eventAggregator.GetEvent<EmailArchivedEvent>().Subscribe((emailId) =>
             {
                 var email = MessageListVM.Items.First(x => x.Id == emailId);
                 MoveEmailTo(email, InboxCategoryType.Archive);
             });
 
-            eventAggregator.GetEvent<EmailStaredEvent>().Subscribe((emailId) => 
+            eventAggregator.GetEvent<EmailStaredEvent>().Subscribe((emailId) =>
             {
                 var email = MessageListVM.Items.First(x => x.Id == emailId);
                 MoveEmailTo(email, InboxCategoryType.Stared);
@@ -351,8 +282,8 @@ namespace Nuntium
             foreach (var email in emailService.GetAllEmails())
             {
                 var msg = new MessageMiniatureViewModel(
-                    email.Id, 
-                    eventAggregator, 
+                    email.Id,
+                    eventAggregator,
                     emailService,
                     catalogService,
                     editor,
@@ -366,7 +297,7 @@ namespace Nuntium
                     Subject = email.Subject,
                     Placement = InboxCategoryType.Inbox,
                     Message = email.Message,
-                    WasRead =email.WasRead
+                    WasRead = email.WasRead
 
                 };
 
@@ -535,11 +466,22 @@ namespace Nuntium
         {
             LoadPupilsCommand = new RelayCommand(LoadPupils);
             LoadTeachersCommand = new RelayCommand(LoadTeachers);
-            RestoreDeletedMessagesCommand = new RelayCommand(() => RestoreMessages(mRecentlyMovedMessages));
-            DeleteSelectedMessagesCommand = new RelayCommand(DeleteSelectedMessages);
-            StarSelectedMessagesCommand = new RelayCommand(StarSelectedMessages);
-            ArchiveSelectedMessagesCommand = new RelayCommand(ArchiveSelectedMessages);
             ShowTextEditorCommand = new RelayCommand(ShowTextEditor);
+            //TODO: Prepere proper message restoration
+            RestoreDeletedMessagesCommand = new RelayCommand(() => { });
+            StarSelectedMessagesCommand = new RelayCommand(StarSelectedMessages);
+            DeleteSelectedMessagesCommand = new RelayCommand(() =>
+            {
+                DeleteSelectedMessages();
+                GoToSelectedCategory();
+                SortMessages();
+            });
+            ArchiveSelectedMessagesCommand = new RelayCommand(() =>
+            {
+                ArchiveSelectedMessages();
+                GoToSelectedCategory();
+                SortMessages();
+            });
         }
 
         private void SortContacts()
@@ -599,38 +541,29 @@ namespace Nuntium
             MessageListVM.Items = new ObservableCollection<MessageMiniatureViewModel>(Messages[SelectedCategory]);
         }
 
-        //TODO: fix this broken, bitch ass nigga system
-        private void DisplayRestorationPopup()
-        {
-            IsRestorePopupShown = true;
-
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 2000;
-            timer.Elapsed += (s, e) =>
-            {
-                IsRestorePopupShown = false;
-                timer.Stop();
-            };
-            timer.Start();
-        }
-
-        private void MoveEmailTo(MessageMiniatureViewModel email, InboxCategoryType catalog)
+        public void MoveEmailTo(MessageMiniatureViewModel email, InboxCategoryType catalog)
         {
             //Is we archiving email mark it appropriately
             if (catalog == InboxCategoryType.Archive)
             {
                 email.IsArchived = true;
 
-                IsRestoringArchivedMessages = true;
-                DisplayRestorationPopup();
             }
             else
                 email.IsArchived = false;
-               
-            if(catalog == InboxCategoryType.Deleted)
+
+            if (catalog == InboxCategoryType.Stared)
             {
-                IsRestoringArchivedMessages = false;
-                DisplayRestorationPopup();
+                if (email.IsStared)
+                {
+                    email.IsStared = false;
+                    Messages[InboxCategoryType.Stared].Remove(email);
+                    return;
+                }
+
+                email.IsStared = true;
+                Messages[catalog].Add(email);
+                return;
             }
 
             //If email is going to be permamently deleted, delete it from stared emails also
@@ -646,7 +579,7 @@ namespace Nuntium
             email.Placement = catalog;
 
             Messages[email.PrevPlacement].Remove(email);
-            Messages[email.Placement].Add(email);
+            Messages[catalog].Add(email);
         }
 
         #endregion

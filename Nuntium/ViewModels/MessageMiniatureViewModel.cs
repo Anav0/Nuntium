@@ -58,7 +58,7 @@ namespace Nuntium
             mEventAggregator = eventAggregator;
             Id = emailId;
             DeleteCommand = new RelayCommandWithParameter((parameter) => Delete(parameter));
-            ToggleStarCommand = new RelayCommand(ToggleStar);
+            ToggleStarCommand = new RelayCommand(Star);
             ToggleArchiveCommand = new RelayCommandWithParameter((parameter) => Archive(parameter));
             ShowEmailDetailsCommand = new RelayCommand(() => 
             {
@@ -88,15 +88,14 @@ namespace Nuntium
 
         #region Command Methods
 
-        private void ToggleStar()
+        private void Star()
         {
-            IsStared ^= true;
             mEventAggregator.GetEvent<EmailStaredEvent>().Publish(Id);
         }
 
-        private async void Archive(object param)
+        private async void Archive(object callingElement)
         {
-            if (!(param is FrameworkElement element))
+            if (!(callingElement is FrameworkElement element))
                 return;
 
             if (IsArchived)
@@ -104,14 +103,12 @@ namespace Nuntium
 
             await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Right, new Duration(AnimateOutTimeSpan), true, 0.25);
 
-            IsArchived = true;
-
             mEventAggregator.GetEvent<EmailArchivedEvent>().Publish(Id);
         }
 
-        private async void Delete(object param)
+        private async void Delete(object callingElement)
         {
-            if (!(param is FrameworkElement element))
+            if (!(callingElement is FrameworkElement element))
                 return;
 
             await FrameworkElementAnimation.AnimateOut(element, AnimationDirection.Left, new Duration(AnimateOutTimeSpan), true, 0.25);

@@ -6,15 +6,15 @@ using System.Windows.Controls;
 namespace Nuntium
 {
     /// <summary>
-    /// Interaction logic for InboxPage.xaml
+    /// Interaction logic for InboxSection.xaml
     /// </summary>
-    public partial class InboxPage : UserControl
+    public partial class InboxSection : UserControl
     {
 
-        public InboxPage()
+        public InboxSection()
         {
-            //TODO: this is just tmp solution
-            DataContext = new InboxPageViewModel(
+            //TODO: Inject VM in different way
+            DataContext = new InboxSectionViewModel(
                 IoC.Kernel.Get<IEmailService>(), 
                 IoC.Kernel.Get<IEventAggregator>(), 
                 IoC.Kernel.Get<ICatalogService>(),

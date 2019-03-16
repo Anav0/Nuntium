@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Nuntium.Core
@@ -8,6 +9,13 @@ namespace Nuntium.Core
     {
 
         private static Random mRnd = new Random();
+
+        public static string RemoveWhitespace(this string input)
+        {
+            return new string(input.ToCharArray()
+                .Where(c => !char.IsWhiteSpace(c))
+                .ToArray());
+        }
 
         public static string ToTitleCase(this string words)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
+using Nuntium.Core;
 
 namespace Nuntium
 {
